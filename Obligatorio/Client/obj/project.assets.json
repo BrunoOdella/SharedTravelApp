@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\odell\\.nuget\\packages\\": {}
+    "C:\\Users\\user\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Client\\Client.csproj",
+      "projectUniqueName": "C:\\Users\\user\\OneDrive - Nublit\\Documentos\\ORT\\prog de redes\\Obli\\M6A_Ingenieria_242739_231665\\Obligatorio\\Client\\Client.csproj",
       "projectName": "Client",
-      "projectPath": "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Client\\Client.csproj",
-      "packagesPath": "C:\\Users\\odell\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Client\\obj\\",
+      "projectPath": "C:\\Users\\user\\OneDrive - Nublit\\Documentos\\ORT\\prog de redes\\Obli\\M6A_Ingenieria_242739_231665\\Obligatorio\\Client\\Client.csproj",
+      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\user\\OneDrive - Nublit\\Documentos\\ORT\\prog de redes\\Obli\\M6A_Ingenieria_242739_231665\\Obligatorio\\Client\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\odell\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -66,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
