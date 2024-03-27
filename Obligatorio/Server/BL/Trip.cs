@@ -22,5 +22,20 @@ public class Trip
         this._passengers = new List<int>();
     }
 
+    public override bool Equals(object? obj)
+    {
+        if (obj is Trip)
+        {
+            var trip = (Trip)obj;
 
+            return trip._id == _id;
+        }
+        return base.Equals(obj);
+    }
+
+    //Es una buena práctica también sobrescribir GetHashCode cuando se sobrescribe Equals
+    public override int GetHashCode()
+    {
+        return _id;
+    }
 }
