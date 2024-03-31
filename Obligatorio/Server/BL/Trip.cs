@@ -2,9 +2,9 @@
 
 public class Trip
 {
-    private int _id;
-    private int _owner;
-    private List<int> _passengers;
+    private Guid _id;
+    private Guid _owner;
+    private List<Guid> _passengers;
 
     public string Origin { get; set; }
     public string Destination { get; set; }
@@ -17,9 +17,9 @@ public class Trip
 
     public Trip()
     {
-        this._id = 0; //generar un numero acorde a algo
-        this._owner = 0;//generar un numero acorde a algo
-        this._passengers = new List<int>();
+        this._id = Guid.Empty; //generar un numero acorde a algo
+        this._owner = Guid.Empty;//generar un numero acorde a algo
+        this._passengers = new List<Guid>();
     }
 
     public override bool Equals(object? obj)

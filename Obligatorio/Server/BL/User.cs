@@ -2,15 +2,15 @@
 {
     public class User
     {
-        private int _id;
+        private Guid _id;
         private string _password;
 
         public string Name { get; set; }
-        public List<int> Trip;
+        public List<Guid> Trip;
 
         public User()
         {
-            this._id = 0; //generar un numero acorde a algo
+            this._id = Guid.Empty; //generar un numero acorde a algo
         }
     }
 }

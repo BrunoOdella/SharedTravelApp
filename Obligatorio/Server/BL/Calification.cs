@@ -8,13 +8,13 @@ namespace Server.BL
 {
     public class Calificacion
     {
-        private int _userId;
-        private int _tripId;
+        private Guid _userId;
+        private Guid _tripId;
 
         public float Score { get; set; }
         public string Comment { get; set; }
 
-        public Calificacion(int userId, int tripId, float score, string comment)
+        public Calificacion(Guid userId, Guid tripId, float score, string comment)
         {
             this._userId = userId;
             this._tripId = tripId;
