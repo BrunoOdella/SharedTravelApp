@@ -22,28 +22,28 @@ namespace Server.DataAcces.Repositories
         public void RemoveTrip(Trip trip)
         {
             Context context = Context.GetInstance();
-            Guid asociado = GetGuid(trip);
-            context.TripList.Remove(asociado);
+            Guid asociated = GetGuid(trip);
+            context.TripList.Remove(asociated);
             Context.GetSemaphore().Release();
         }
 
         public void RemoveTrip(Guid id)
         {
             Context context = Context.GetInstance();
-            Guid asociado = id;
-            context.TripList.Remove(asociado);
+            Guid asociated = id;
+            context.TripList.Remove(asociated);
             Context.GetSemaphore().Release();
         }
 
         public Trip GetTrip(Guid id)
         {
-            Trip? asociado = null;
-            Context contex = Context.GetInstance();
-            contex.TripList.TryGetValue(id, out asociado);
+            Trip? asociated = null;
+            Context context = Context.GetInstance();
+            context.TripList.TryGetValue(id, out asociated);
             Context.GetSemaphore().Release();
-            if (asociado != null)
+            if (asociated != null)
             {
-                return asociado;
+                return asociated;
             }
             throw new TripManagerException($"Error 404, no se encuentra un Trip con el Guid {id}");
         }
@@ -68,18 +68,18 @@ namespace Server.DataAcces.Repositories
 
         private Guid GetGuid(Trip trip)
         {
-            Guid asociado = Guid.Empty;
+            Guid asociated = Guid.Empty;
             Context context = Context.GetInstance();
             foreach (var elementTrip in context.TripList)
             {
                 if (elementTrip.Equals(trip)) 
                 {
-                    asociado = elementTrip.Key;
+                    asociated = elementTrip.Key;
                     break;
                 }
             }
             Context.GetSemaphore().Release();
-            return asociado;
+            return asociated;
         }
     }
 }
