@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Server\\Server.csproj": {}
+    "C:\\Users\\bruno\\source\\repos\\Facultad\\PDRObli\\M6A_Ingenieria_242739_231665_256680\\Obligatorio\\Server\\Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Server\\Server.csproj": {
+    "C:\\Users\\bruno\\source\\repos\\Facultad\\PDRObli\\M6A_Ingenieria_242739_231665_256680\\Obligatorio\\Server\\Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Server\\Server.csproj",
+        "projectUniqueName": "C:\\Users\\bruno\\source\\repos\\Facultad\\PDRObli\\M6A_Ingenieria_242739_231665_256680\\Obligatorio\\Server\\Server.csproj",
         "projectName": "Server",
-        "projectPath": "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Server\\Server.csproj",
-        "packagesPath": "C:\\Users\\odell\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\odell\\source\\repos\\PDRObligatorio\\M6A_Ingenieria_242739_231665\\Obligatorio\\Server\\obj\\",
+        "projectPath": "C:\\Users\\bruno\\source\\repos\\Facultad\\PDRObli\\M6A_Ingenieria_242739_231665_256680\\Obligatorio\\Server\\Server.csproj",
+        "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bruno\\source\\repos\\Facultad\\PDRObli\\M6A_Ingenieria_242739_231665_256680\\Obligatorio\\Server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\odell\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
