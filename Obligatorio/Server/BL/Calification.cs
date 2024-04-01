@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.BL
 {
-    public class Calificacion
+    public class Calification
     {
         private Guid _userId;
         private Guid _tripId;
@@ -14,7 +14,7 @@ namespace Server.BL
         public float Score { get; set; }
         public string Comment { get; set; }
 
-        public Calificacion(Guid userId, Guid tripId, float score, string comment)
+        public Calification(Guid userId, Guid tripId, float score, string comment)
         {
             this._userId = userId;
             this._tripId = tripId;
