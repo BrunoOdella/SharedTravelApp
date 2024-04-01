@@ -36,6 +36,6 @@ public class Trip
     //Es una buena práctica también sobrescribir GetHashCode cuando se sobrescribe Equals
     public override int GetHashCode()
     {
-        return _id;
+        return _id.GetHashCode();
     }
 }
