@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.Design;
+using System.Net.Sockets;
+using System.Net;
+using System.Text;
 
 namespace Client
 {
@@ -6,7 +9,42 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            Menu();
+            IPEndPoint local = new IPEndPoint(
+                IPAddress.Parse("127.0.0.1"), 0
+            );
+
+            IPEndPoint server = new IPEndPoint(
+                IPAddress.Parse("127.0.0.1"), 5000
+            );
+
+            Socket soc = new Socket(
+                AddressFamily.InterNetwork,
+                SocketType.Stream,
+                ProtocolType.Tcp
+            );
+
+            soc.Bind(local);
+            soc.Connect(server);
+
+            Console.WriteLine("Cliente conectado con el servidor");
+
+            while (true)
+            {
+                Console.WriteLine("Ingrese un mensaje para el servidor");
+                string message = Console.ReadLine();
+                if (String.IsNullOrEmpty(message) || message.Equals("exit"))
+                    break;
+
+                byte[] messageInBytes = Encoding.UTF8.GetBytes(message);
+                soc.Send(messageInBytes);
+
+            }
+
+
+            soc.Shutdown(SocketShutdown.Both);
+            soc.Close();
+
+            //Menu();
         }
 
         public static void Menu()
