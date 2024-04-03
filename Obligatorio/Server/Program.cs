@@ -1,16 +1,20 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using Common;
+using Common.Interfaces;
 
 namespace Server
 {
     internal class Program
     {
+        static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static void Main(string[] args)
         {
-            IPEndPoint localEndPoint = new IPEndPoint(
-                IPAddress.Parse("127.0.0.1"), 5000
-            );
+            var localEndPoint = new IPEndPoint(
+                                     IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
+                                     int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey))
+                                );
 
             Socket soc = new Socket(
                 AddressFamily.InterNetwork,

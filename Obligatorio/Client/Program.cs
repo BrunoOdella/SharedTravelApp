@@ -2,20 +2,24 @@
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using Common.Interfaces;
+using Common;
 
 namespace Client
 {
     internal class Program
     {
+        static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static void Main(string[] args)
         {
             IPEndPoint local = new IPEndPoint(
-                IPAddress.Parse("127.0.0.1"), 0
-            );
-
+                                        IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientIpConfigKey)),
+                                        int.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientPortConfigKey))
+                                );
             IPEndPoint server = new IPEndPoint(
-                IPAddress.Parse("127.0.0.1"), 5000
-            );
+                                        IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ServerIpConfigKey)),
+                                        int.Parse(SettingsMgr.ReadSetting(ClientConfig.SeverPortConfigKey))
+                                );
 
             Socket soc = new Socket(
                 AddressFamily.InterNetwork,
