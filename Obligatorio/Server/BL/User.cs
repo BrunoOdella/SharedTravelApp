@@ -12,5 +12,10 @@
         {
             this._id = Guid.Empty; //generar un numero acorde a algo
         }
+
+        public Guid GetGuid()
+        {
+            return _id;
+        }
     }
 }

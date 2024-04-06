@@ -38,4 +38,9 @@ public class Trip
     {
         return _id.GetHashCode();
     }
+
+    public Guid GetGuid()
+    {
+        return _id;
+    }
 }

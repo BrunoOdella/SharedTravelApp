@@ -2,9 +2,10 @@
 
 public interface ITripRepository
 {
-    void AddTrip(Trip trip);
-    void RemoveTrip(Trip trip);
-    void RemoveTrip(Guid id);
-    Trip GetTrip(Guid id);
-    void UpdateTrip(Trip trip, Guid? id);
+    void Add(Trip trip);
+    void Remove(Trip trip);
+    void Remove(Guid id);
+    Trip Get(Guid id);
+    void Update(Trip trip);
+    List<Trip> GetAll();
 }
