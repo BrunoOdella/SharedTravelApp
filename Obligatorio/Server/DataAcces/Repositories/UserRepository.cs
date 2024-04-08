@@ -9,37 +9,37 @@ public class UserRepository : IUserRepository
 {
     public void Add(User user)
     {
-        Context context = Context.GetAccessWriteUser();
+        UserContext context = UserContext.GetAccessWriteUser();
         context.UserList.Add(user.GetGuid(), user);
-        Context.ReturnWriteAccessUser();
+        UserContext.ReturnWriteAccessUser();
     }
 
-    private void Add(User user, Context context)
+    private void Add(User user, UserContext context)
     {
         context.UserList.Add(user.GetGuid(), user);
     }
 
     public void Delete(User user)
     {
-        Context context = Context.GetAccessWriteUser();
+        UserContext context = UserContext.GetAccessWriteUser();
         Guid asociated = user.GetGuid();
         context.UserList.Remove(asociated);
-        Context.ReturnWriteAccessUser();
+        UserContext.ReturnWriteAccessUser();
     }
 
     public void Delete(Guid id)
     {
-        Context context = Context.GetAccessWriteUser();
+        UserContext context = UserContext.GetAccessWriteUser();
         context.UserList.Remove(id);
-        Context.ReturnWriteAccessUser();
+        UserContext.ReturnWriteAccessUser();
     }
 
     public User Get(Guid id)
     {
         User? asociated = null;
-        Context context = Context.GetAccessReadUser();
+        UserContext context = UserContext.GetAccessReadUser();
         context.UserList.TryGetValue(id, out asociated);
-        Context.ReturnReadAccessUser();
+        UserContext.ReturnReadAccessUser();
         if (asociated != null)
         {
             return asociated;
@@ -49,13 +49,13 @@ public class UserRepository : IUserRepository
 
     public List<User> GetAll()
     {
-        Context context = Context.GetAccessReadUser();
+        UserContext context = UserContext.GetAccessReadUser();
         List<User> all = new List<User>();
         foreach (var user in context.UserList)
         {
             all.Add(user.Value);
         }
-        Context.ReturnReadAccessUser();
+        UserContext.ReturnReadAccessUser();
 
         return all;
     }
@@ -63,7 +63,7 @@ public class UserRepository : IUserRepository
     public void Update(User user)
     {
         Guid id = user.GetGuid();
-        Context context = Context.GetAccessWriteUser();
+        UserContext context = UserContext.GetAccessWriteUser();
         if (context.UserList.ContainsKey(id))
         {
             context.UserList[id] = user;
@@ -72,6 +72,6 @@ public class UserRepository : IUserRepository
         {
             Add(user, context);
         }
-        Context.ReturnWriteAccessUser();
+        UserContext.ReturnWriteAccessUser();
     }
 }

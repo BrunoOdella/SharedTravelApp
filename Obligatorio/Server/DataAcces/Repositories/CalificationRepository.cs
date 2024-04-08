@@ -9,36 +9,36 @@ public class CalificationRepository : ICalificationRepository
 {
     public void Add(Calification calification)
     {
-        Context context = Context.GetAccessWriteCalification();
+        CalificationContext context = CalificationContext.GetAccessWriteCalification();
         context.CalificationList.Add(calification.GetGuid(), calification);
-        Context.ReturnWriteAccessCalification();
+        CalificationContext.ReturnWriteAccessCalification();
     }
-    private void Add(Calification calification, Context context)
+    private void Add(Calification calification, CalificationContext context)
     {
         context.CalificationList.Add(calification.GetGuid(), calification);
     }
 
     public void Delete(Calification calification)
     {
-        Context context = Context.GetAccessWriteCalification();
+        CalificationContext context = CalificationContext.GetAccessWriteCalification();
         Guid asociated = calification.GetGuid();
         context.CalificationList.Remove(asociated);
-        Context.ReturnWriteAccessTrip();
+        CalificationContext.ReturnWriteAccessCalification();
     }
 
     public void Delete(Guid id)
     {
-        Context context = Context.GetAccessWriteCalification();
+        CalificationContext context = CalificationContext.GetAccessWriteCalification();
         context.CalificationList.Remove(id);
-        Context.ReturnWriteAccessCalification();
+        CalificationContext.ReturnWriteAccessCalification();
     }
 
     public Calification Get(Guid id)
     {
         Calification? asociated = null;
-        Context context = Context.GetAccessReadCalification();
+        CalificationContext context = CalificationContext.GetAccessReadCalification();
         context.CalificationList.TryGetValue(id, out asociated);
-        Context.ReturnReadAccessCalification();
+        CalificationContext.ReturnReadAccessCalification();
         if (asociated != null)
         {
             return asociated;
@@ -48,13 +48,13 @@ public class CalificationRepository : ICalificationRepository
 
     public List<Calification> GetAll()
     {
-        Context context = Context.GetAccessReadCalification();
+        CalificationContext context = CalificationContext.GetAccessReadCalification();
         List<Calification> all = new List<Calification>();
         foreach (var calification in context.CalificationList)
         {
             all.Add(calification.Value);
         }
-        Context.ReturnReadAccessCalification();
+        CalificationContext.ReturnReadAccessCalification();
 
         return all;
     }
@@ -62,7 +62,7 @@ public class CalificationRepository : ICalificationRepository
     public void Update(Calification calification)
     {
         Guid id = calification.GetGuid();
-        Context context = Context.GetAccessWriteCalification();
+        CalificationContext context = CalificationContext.GetAccessWriteCalification();
         if (context.CalificationList.ContainsKey(id))
         {
             context.CalificationList[id] = calification;
@@ -71,7 +71,7 @@ public class CalificationRepository : ICalificationRepository
         {
             Add(calification, context);
         }
-        Context.ReturnWriteAccessCalification();
+        CalificationContext.ReturnWriteAccessCalification();
     }
 
     

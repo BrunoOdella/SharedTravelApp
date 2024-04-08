@@ -9,37 +9,37 @@ namespace Server.DataAcces.Repositories
     {
         public void Add(Trip trip)
         {
-            Context context = Context.GetAccessWriteTrip();
+            TripContext context = TripContext.GetAccessWriteTrip();
             context.TripList.Add(trip.GetGuid(),trip);
-            Context.ReturnWriteAccessTrip();
+            TripContext.ReturnWriteAccessTrip();
         }
 
-        private void Add(Trip trip, Context context)
+        private void Add(Trip trip, TripContext context)
         {
             context.TripList.Add(trip.GetGuid(), trip);
         }
 
         public void Remove(Trip trip)
         {
-            Context context = Context.GetAccessWriteTrip();
+            TripContext context = TripContext.GetAccessWriteTrip();
             Guid asociated = trip.GetGuid();
             context.TripList.Remove(asociated);
-            Context.ReturnWriteAccessTrip();
+            TripContext.ReturnWriteAccessTrip();
         }
 
         public void Remove(Guid id)
         {
-            Context context = Context.GetAccessWriteTrip();
+            TripContext context = TripContext.GetAccessWriteTrip();
             context.TripList.Remove(id);
-            Context.ReturnWriteAccessTrip();
+            TripContext.ReturnWriteAccessTrip();
         }
 
         public Trip Get(Guid id)
         {
             Trip? asociated = null;
-            Context context = Context.GetAccessReadTrip();
+            TripContext context = TripContext.GetAccessReadTrip();
             context.TripList.TryGetValue(id, out asociated);
-            Context.ReturnReadAccessTrip();
+            TripContext.ReturnReadAccessTrip();
             if (asociated != null)
             {
                 return asociated;
@@ -50,7 +50,7 @@ namespace Server.DataAcces.Repositories
         public void Update(Trip trip)
         {
             Guid id = trip.GetGuid();
-            Context context = Context.GetAccessWriteTrip();
+            TripContext context = TripContext.GetAccessWriteTrip();
             if (context.TripList.ContainsKey(id))
             {
                 context.TripList[id] = trip;
@@ -59,14 +59,14 @@ namespace Server.DataAcces.Repositories
             {
                 Add(trip, context);
             }
-            Context.ReturnWriteAccessTrip();
+            TripContext.ReturnWriteAccessTrip();
         }
 
         /*
         private Guid GetGuid(Trip trip)
         {
             Guid asociated = Guid.Empty;
-            Context context = Context.GetInstance();
+            TripContext context = TripContext.GetInstance();
             foreach (var elementTrip in context.TripList)
             {
                 if (elementTrip.Equals(trip)) 
@@ -75,20 +75,20 @@ namespace Server.DataAcces.Repositories
                     break;
                 }
             }
-            Context.GetSemaphore().Release();
+            TripContext.GetSemaphore().Release();
             return asociated;
         }
         */
 
         public List<Trip> GetAll()
         {
-            Context context = Context.GetAccessReadTrip();
+            TripContext context = TripContext.GetAccessReadTrip();
             List<Trip> all = new List<Trip>();
             foreach(var trip in context.TripList)
             {
                 all.Add(trip.Value);
             }
-            Context.ReturnReadAccessTrip();
+            TripContext.ReturnReadAccessTrip();
 
             return all;
         }
