@@ -26,29 +26,69 @@ namespace Client
                 SocketType.Stream,
                 ProtocolType.Tcp
             );
-
             soc.Bind(local);
-            soc.Connect(server);
-
-            Console.WriteLine("Cliente conectado con el servidor");
-
-            while (true)
+            try
             {
-                Console.WriteLine("Ingrese un mensaje para el servidor");
-                string message = Console.ReadLine();
-                if (String.IsNullOrEmpty(message) || message.Equals("exit"))
-                    break;
+                
+                soc.Connect(server);
+                Console.WriteLine("Cliente conectado con el servidor");
 
-                byte[] messageInBytes = Encoding.UTF8.GetBytes(message);
-                soc.Send(messageInBytes);
+                NetworkHelper networkHelper = new NetworkHelper(soc);
 
+                while (true)
+                {
+                    ShowMainMenu();
+
+                    string mensaje = Console.ReadLine();
+                    if (String.IsNullOrEmpty(mensaje) || mensaje.Equals("9"))
+                        break;
+
+                    SendMessageToServer(mensaje, networkHelper);
+                }
             }
-
-
-            soc.Shutdown(SocketShutdown.Both);
-            soc.Close();
-
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                soc.Shutdown(SocketShutdown.Both);
+                soc.Close();
+            }
             //Menu();
+        }
+
+        private static void ShowMainMenu()
+        {
+            Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
+            Console.WriteLine("¿Qué desea hacer?");
+            Console.WriteLine("1-Publicar viaje");
+            Console.WriteLine("2-Unirse a un viaje");
+            Console.WriteLine("3-Modificar un viaje");
+            Console.WriteLine("4-Baja de un viaje");
+            Console.WriteLine("5-Buscar un viaje");
+            Console.WriteLine("6-Consultar la información de un viaje especifico");
+            Console.WriteLine("7-Calificar a un conductor");
+            Console.WriteLine("8-Ver calificación de un conductor");
+            Console.WriteLine("9-Salir");
+            Console.Write("Seleccione una opción: ");
+        }
+
+        private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
+        {
+            byte[] usernameInBytes = networkHelper.Receive(Protocol.DataLengthSize);
+            int usernameLength = BitConverter.ToInt32(usernameInBytes);
+            byte[] usernameBufferInBytes = networkHelper.Receive(usernameLength);
+            return Encoding.UTF8.GetString(usernameBufferInBytes);
+        }
+
+        private static void SendMessageToServer(string message, NetworkHelper networkHelper)
+        {
+            byte[] responseBuffer = Encoding.UTF8.GetBytes(message);
+            int responseLength = responseBuffer.Length;
+            byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
+            networkHelper.Send(responseLengthInBytes);
+            networkHelper.Send(responseBuffer);
         }
 
         public static void Menu()
