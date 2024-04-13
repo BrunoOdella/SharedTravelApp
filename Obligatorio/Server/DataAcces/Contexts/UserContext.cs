@@ -1,4 +1,6 @@
 ﻿using Server.BL;
+using System.Text.Json;
+using System;
 
 namespace DataAcces
 {
@@ -6,16 +8,11 @@ namespace DataAcces
     {
         private static UserContext _userInstance = null;
         public Dictionary<Guid, User> UserList = new Dictionary<Guid, User>();
-        private const string UsersFilePath = @"Data\Users.txt";
+        private const string UsersFilePath = @"Data\Users.json";
         private static Semaphore _userSemaphore = new Semaphore(1, 1);
         private static Semaphore _mutexUser = new Semaphore(1, 1);
         private static Semaphore _serviceQueueUser = new Semaphore(1, 1);
         private static int _readersUser = 0;
-
-        private UserContext()
-        {
-            LoadUsersFromTxt();
-        }
 
         public static UserContext GetAccessReadUser()
         {
@@ -28,8 +25,6 @@ namespace DataAcces
             _mutexUser.Release();            //libera acceso al contador
 
             //seccion critica
-            if (_userInstance is null)
-                _userInstance = new UserContext();
             return _userInstance;
             //fin seccion critica
         }
@@ -50,8 +45,6 @@ namespace DataAcces
             _serviceQueueUser.Release();
 
             //seccion critica
-            if (_userInstance is null)
-                _userInstance = new UserContext();
             return _userInstance;
             //fin seccion critica
         }
@@ -61,10 +54,43 @@ namespace DataAcces
             _userSemaphore.Release();
         }
 
-        private void LoadUsersFromTxt()
+        public static void LoadUsersFromTxt()
         {
-            throw new NotImplementedException();
+            //cargar los elementos a una lista
+            List<UserTransfer> source = new List<UserTransfer>();
+            using (StreamReader r = new StreamReader(UsersFilePath))
+            {
+                string json = r.ReadToEnd();
+                source = JsonSerializer.Deserialize<List<UserTransfer>>(json);
+            }
+
+            //agregar los elementos de la lista al diccionario
+            foreach (var elem in source)
+            {
+                User actual = new User()
+                {
+                    Name = elem.nombre,
+                    Trips = new List<Guid>()
+                };
+                Guid actualGuid = new Guid(elem._id);
+                actual.SetGuid(actualGuid);
+                actual.SetPassword(elem._password);
+
+                _userInstance.UserList.Add(actualGuid, actual);
+            }
+        }
+
+        public static UserContext CreateInsance()
+        {
+            _userInstance = new UserContext();
+            return _userInstance;
         }
     }
 
+    internal class UserTransfer
+    {
+        public string nombre { get; set; }
+        public string _id { get; set; }
+        public string _password { get; set; }
+    }
 }

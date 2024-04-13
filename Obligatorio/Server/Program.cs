@@ -5,6 +5,7 @@ using System.Text;
 using Common;
 using Common.Interfaces;
 using System.Threading;
+using DataAcces;
 using Server.BL;
 using Microsoft.VisualBasic.FileIO;
 
@@ -16,6 +17,9 @@ namespace Server
 
         static void Main(string[] args)
         {
+
+            load();
+
             try
             {
                 var localEndPoint = new IPEndPoint(
@@ -49,6 +53,21 @@ namespace Server
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
+        }
+
+        private static void loadTrips(UserContext userContenxt)
+        {
+            TripContext context = TripContext.CreateInsance();
+            context.LoadTripsFromTxt(userContenxt);
+        }
+
+        private static void load()
+        {
+            //load users
+            UserContext context = UserContext.CreateInsance();
+            UserContext.LoadUsersFromTxt();
+            //
+            loadTrips(context);
         }
 
         public static void HandleClient(Socket clientSocket, int clientNumber)
