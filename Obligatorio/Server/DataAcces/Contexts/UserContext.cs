@@ -8,7 +8,7 @@ namespace DataAcces
     {
         private static UserContext _userInstance = null;
         public Dictionary<Guid, User> UserList = new Dictionary<Guid, User>();
-        private const string UsersFilePath = @"Data\Users.json";
+        private const string UsersFilePath = @"D:\\Ort\\Prog de redes\\Obli\\Obligatorio\\Server\\Data\\Users.json";//@"Data\Users.json";
         private static Semaphore _userSemaphore = new Semaphore(1, 1);
         private static Semaphore _mutexUser = new Semaphore(1, 1);
         private static Semaphore _serviceQueueUser = new Semaphore(1, 1);

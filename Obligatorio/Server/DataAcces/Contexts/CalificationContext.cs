@@ -1,4 +1,5 @@
 ﻿using Server.BL;
+using System.Text.Json;
 
 namespace DataAcces
 {
@@ -6,16 +7,12 @@ namespace DataAcces
     {
         private static CalificationContext _calificationInstance = null;
         public Dictionary<Guid, Calification> CalificationList = new Dictionary<Guid, Calification>();
-        private const string CalificationsFilePath = @"Data\Califications.txt";
+        private const string CalificationsFilePath = "D:\\Ort\\Prog de redes\\Obli\\Obligatorio\\Server\\Data\\Califications.json";//@"Data\Califications.txt";
         private static Semaphore _calificationSemaphore = new Semaphore(1, 1);
         private static Semaphore _mutexCalification = new Semaphore(1, 1);
         private static Semaphore _serviceQueueCalification = new Semaphore(1, 1);
         private static int _readersCalification = 0;
 
-        private CalificationContext()
-        {
-            LoadCalificationsFromTxt();
-        }
         public static CalificationContext GetAccessReadCalification()
         {
             _serviceQueueCalification.WaitOne();     //espera de turno
@@ -60,9 +57,38 @@ namespace DataAcces
             _calificationSemaphore.Release();
         }
 
-        private void LoadCalificationsFromTxt()
+        public static void LoadCalificationsFromTxt()
         {
-            throw new NotImplementedException();
+            List<CalificationTransfer> source = new List<CalificationTransfer>();
+            using (StreamReader r = new StreamReader(CalificationsFilePath))
+            {
+                string json = r.ReadToEnd();
+                source = JsonSerializer.Deserialize<List<CalificationTransfer>>(json);
+            }
+
+            foreach (var elem in source)
+            {
+                Guid guidActual = new Guid(elem._id);
+                Calification actual = new Calification(new Guid(elem._passenger), new Guid(elem._trip), elem.calification, elem.Comment);
+                actual.SetGuid(guidActual);
+                _calificationInstance.CalificationList.Add(guidActual, actual);
+            }
         }
+
+        public static CalificationContext CreateInsance()
+        {
+            _calificationInstance = new CalificationContext();
+            return _calificationInstance;
+        }
+
+    }
+
+    internal class CalificationTransfer
+    {
+        public string _id { get; set; }
+        public string _passenger { get; set; }
+        public string _trip { get; set; }
+        public float calification { get; set; }
+        public string Comment { get; set; }
     }
 }

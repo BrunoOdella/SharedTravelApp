@@ -68,6 +68,13 @@ namespace Server
             UserContext.LoadUsersFromTxt();
             //
             loadTrips(context);
+            loadCalification();
+        }
+
+        private static void loadCalification()
+        {
+            CalificationContext context = CalificationContext.CreateInsance();
+            CalificationContext.LoadCalificationsFromTxt(); 
         }
 
         public static void HandleClient(Socket clientSocket, int clientNumber)

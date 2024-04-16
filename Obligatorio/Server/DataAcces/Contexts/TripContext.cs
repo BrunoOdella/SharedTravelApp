@@ -8,7 +8,7 @@ namespace DataAcces
         private static TripContext _tripInstance = null;
         public Dictionary<Guid, Trip> TripList = new Dictionary<Guid, Trip>();
 
-        private const string TripsFilePath = @"Data\Trips.txt";
+        private const string TripsFilePath = @"D:\\Ort\\Prog de redes\\Obli\\Obligatorio\\Server\\Data\\Trips.json";//@"Data\Trips.txt";
         private static Semaphore _tripSemaphore = new Semaphore(1, 1);
         private static Semaphore _mutexTrip = new Semaphore(1, 1);
         private static Semaphore _serviceQueueTrip = new Semaphore(1, 1);

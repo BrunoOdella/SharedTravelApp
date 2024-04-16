@@ -29,5 +29,9 @@ namespace Server.BL
             return _calificationId;
         }
 
+        public void SetGuid(Guid id) {
+            _calificationId = id;
+        }
+
     }
 } 
