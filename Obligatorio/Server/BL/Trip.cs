@@ -17,8 +17,8 @@ public class Trip
 
     public Trip()
     {
-        this._id = Guid.Empty; //generar un numero acorde a algo
-        this._owner = Guid.Empty;//generar un numero acorde a algo
+        this._id = Guid.NewGuid(); //generar un numero acorde a algo
+        this._owner = Guid.NewGuid();//generar un numero acorde a algo
         this._passengers = new List<Guid>();
     }
 
@@ -37,5 +37,25 @@ public class Trip
     public override int GetHashCode()
     {
         return _id.GetHashCode();
+    }
+
+    public Guid GetGuid()
+    {
+        return _id;
+    }
+
+    public void SetGuid(Guid id)
+    {
+        _id = id;
+    }
+
+    public void SetOwner(Guid owner)
+    {
+        _owner = owner;
+    }
+
+    public void SetPassangers(List<Guid> passangers)
+    {
+        _passengers = passangers;
     }
 }

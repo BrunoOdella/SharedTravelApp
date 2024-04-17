@@ -10,6 +10,8 @@ namespace Server.BL
     {
         private Guid _userId;
         private Guid _tripId;
+        private Guid _calificationId;
+
 
         public float Score { get; set; }
         public string Comment { get; set; }
@@ -20,6 +22,15 @@ namespace Server.BL
             this._tripId = tripId;
             this.Score = score;
             this.Comment = comment;
+        }
+
+        public Guid GetGuid()
+        {
+            return _calificationId;
+        }
+
+        public void SetGuid(Guid id) {
+            _calificationId = id;
         }
 
     }

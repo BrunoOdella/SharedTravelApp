@@ -7,40 +7,39 @@ namespace Server.DataAcces.Repositories
 {
     public class TripRepository : ITripRepository
     {
-        public void AddTrip(Trip trip)
+        public void Add(Trip trip)
         {
-            Context context = Context.GetInstance();
-            context.TripList.Add(new Guid(),trip);
-            Context.GetSemaphore().Release();
+            TripContext context = TripContext.GetAccessWriteTrip();
+            context.TripList.Add(trip.GetGuid(),trip);
+            TripContext.ReturnWriteAccessTrip();
         }
 
-        private void AddTrip(Trip trip, Context context)
+        private void Add(Trip trip, TripContext context)
         {
-            context.TripList.Add(new Guid(), trip);
+            context.TripList.Add(trip.GetGuid(), trip);
         }
 
-        public void RemoveTrip(Trip trip)
+        public void Remove(Trip trip)
         {
-            Context context = Context.GetInstance();
-            Guid asociated = GetGuid(trip);
+            TripContext context = TripContext.GetAccessWriteTrip();
+            Guid asociated = trip.GetGuid();
             context.TripList.Remove(asociated);
-            Context.GetSemaphore().Release();
+            TripContext.ReturnWriteAccessTrip();
         }
 
-        public void RemoveTrip(Guid id)
+        public void Remove(Guid id)
         {
-            Context context = Context.GetInstance();
-            Guid asociated = id;
-            context.TripList.Remove(asociated);
-            Context.GetSemaphore().Release();
+            TripContext context = TripContext.GetAccessWriteTrip();
+            context.TripList.Remove(id);
+            TripContext.ReturnWriteAccessTrip();
         }
 
-        public Trip GetTrip(Guid id)
+        public Trip Get(Guid id)
         {
             Trip? asociated = null;
-            Context context = Context.GetInstance();
+            TripContext context = TripContext.GetAccessReadTrip();
             context.TripList.TryGetValue(id, out asociated);
-            Context.GetSemaphore().Release();
+            TripContext.ReturnReadAccessTrip();
             if (asociated != null)
             {
                 return asociated;
@@ -48,28 +47,26 @@ namespace Server.DataAcces.Repositories
             throw new TripManagerException($"Error 404, no se encuentra un Trip con el Guid {id}");
         }
 
-        public void UpdateTrip(Trip trip, Guid? id)
+        public void Update(Trip trip)
         {
-            if (id == null)
+            Guid id = trip.GetGuid();
+            TripContext context = TripContext.GetAccessWriteTrip();
+            if (context.TripList.ContainsKey(id))
             {
-                id = GetGuid(trip);
-            }
-            Context context = Context.GetInstance();
-            if (context.TripList.ContainsKey((Guid) id))
-            {
-                context.TripList[(Guid) id] = trip;
+                context.TripList[id] = trip;
             }
             else
             {
-                AddTrip(trip, context);
+                Add(trip, context);
             }
-            Context.GetSemaphore().Release();
+            TripContext.ReturnWriteAccessTrip();
         }
 
+        /*
         private Guid GetGuid(Trip trip)
         {
             Guid asociated = Guid.Empty;
-            Context context = Context.GetInstance();
+            TripContext context = TripContext.GetInstance();
             foreach (var elementTrip in context.TripList)
             {
                 if (elementTrip.Equals(trip)) 
@@ -78,8 +75,22 @@ namespace Server.DataAcces.Repositories
                     break;
                 }
             }
-            Context.GetSemaphore().Release();
+            TripContext.GetSemaphore().Release();
             return asociated;
+        }
+        */
+
+        public List<Trip> GetAll()
+        {
+            TripContext context = TripContext.GetAccessReadTrip();
+            List<Trip> all = new List<Trip>();
+            foreach(var trip in context.TripList)
+            {
+                all.Add(trip.Value);
+            }
+            TripContext.ReturnReadAccessTrip();
+
+            return all;
         }
     }
 }
