@@ -8,12 +8,14 @@ using System.Threading;
 using DataAcces;
 using Server.BL;
 using Microsoft.VisualBasic.FileIO;
+using Server.DataAcces.Repositories;
 
 namespace Server
 {
     internal class Program
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
+        static readonly UserRepository userRepository = new UserRepository();
 
         static void Main(string[] args)
         {
@@ -52,6 +54,22 @@ namespace Server
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+        private static void LoadUsers()
+        {
+            try
+            {
+                List<User> users = userRepository.GetAll(); // Obtener todos los usuarios
+                // Aquí puedes hacer lo que necesites con la lista de usuarios, como imprimirlos en la consola
+                foreach (var user in users)
+                {
+                    Console.WriteLine($"User: {user.Name}, ID: {user.GetGuid()}"); // Ejemplo de impresión en consola
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error loading users: " + ex.Message);
             }
         }
 
@@ -117,10 +135,12 @@ namespace Server
             switch (opt)
             {
                 case 1:
-                    Console.WriteLine("Eligio la opcion 1");;
+                    Console.WriteLine("Eligio la opcion 1");
+                    LoadUsers();
                     break;
                 case 2:
                     Console.WriteLine("Eligio la opcion 2");
+                    Console.WriteLine(AuthenticateUser("user1", "12346"));
                     break;
                 case 3:
                     Console.WriteLine("Eligio la opcion 3");
@@ -144,6 +164,15 @@ namespace Server
                     Console.WriteLine("Eligio la opcion 9");
                     break;
                 default: break;
+            }
+
+            static bool AuthenticateUser(string username, string password)
+            {
+                var allUsers = userRepository.GetAll();
+
+                var authenticatedUser = allUsers.FirstOrDefault(u => u.Name == username && u._password == password);
+
+                return authenticatedUser != null;
             }
         }
     }

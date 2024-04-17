@@ -7,11 +7,23 @@ namespace DataAcces
     {
         private static CalificationContext _calificationInstance = null;
         public Dictionary<Guid, Calification> CalificationList = new Dictionary<Guid, Calification>();
-        private const string CalificationsFilePath = "D:\\Ort\\Prog de redes\\Obli\\Obligatorio\\Server\\Data\\Califications.json";//@"Data\Califications.txt";
+        private const string FileName = "Califications.json";
         private static Semaphore _calificationSemaphore = new Semaphore(1, 1);
         private static Semaphore _mutexCalification = new Semaphore(1, 1);
         private static Semaphore _serviceQueueCalification = new Semaphore(1, 1);
         private static int _readersCalification = 0;
+
+        private static string CalificationsFilePath
+        {
+            get
+            {
+                string currentDirectory = Directory.GetCurrentDirectory();
+                DirectoryInfo parentDirectory = Directory.GetParent(currentDirectory);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                return Path.Combine(parentDirectory.FullName, "Data", FileName);
+            }
+        }
 
         public static CalificationContext GetAccessReadCalification()
         {

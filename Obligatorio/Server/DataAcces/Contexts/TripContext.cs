@@ -8,11 +8,23 @@ namespace DataAcces
         private static TripContext _tripInstance = null;
         public Dictionary<Guid, Trip> TripList = new Dictionary<Guid, Trip>();
 
-        private const string TripsFilePath = @"D:\\Ort\\Prog de redes\\Obli\\Obligatorio\\Server\\Data\\Trips.json";//@"Data\Trips.txt";
+        private const string FileName = "Trips.json";
         private static Semaphore _tripSemaphore = new Semaphore(1, 1);
         private static Semaphore _mutexTrip = new Semaphore(1, 1);
         private static Semaphore _serviceQueueTrip = new Semaphore(1, 1);
         private static int _readersTrip = 0;
+
+        private static string TripsFilePath
+        {
+            get
+            {
+                string currentDirectory = Directory.GetCurrentDirectory();
+                DirectoryInfo parentDirectory = Directory.GetParent(currentDirectory);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                return Path.Combine(parentDirectory.FullName, "Data", FileName);
+            }
+        }
 
         public static TripContext GetAccessReadTrip()
         {
