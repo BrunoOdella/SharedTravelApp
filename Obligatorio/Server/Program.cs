@@ -16,6 +16,7 @@ namespace Server
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static readonly UserRepository userRepository = new UserRepository();
+        static readonly TripRepository tripRepository = new TripRepository();
 
         static void Main(string[] args)
         {
@@ -167,7 +168,24 @@ namespace Server
                     Console.WriteLine("Eligio la opcion 1");
                     break;
                 case 2:
-                    Console.WriteLine("Eligio la opcion 2");
+                    Console.WriteLine("Eligió la opción 2");
+                    string destination = ReceiveMessageFromClient(networkHelper);
+                    Console.WriteLine("Destino recibido: " + destination); // Agrego para ver qué es lo que le está llegando
+
+                    // Obtener todos los viajes con el destino especificado
+                    List<Trip> tripsToDestination = tripRepository.GetAllTripsByDestination(destination);
+
+                    // Enviar la cantidad de viajes al cliente
+                    string tripCount = tripsToDestination.Count.ToString();
+                    SendMessageToClient(tripCount, networkHelper);
+
+                    // Enviar cada viaje al cliente
+                    foreach (Trip trip in tripsToDestination)
+                    {
+                        string tripString = SerializeTrip(trip);
+                        SendMessageToClient(tripString, networkHelper);
+                    }
+
                     break;
                 case 3:
                     Console.WriteLine("Eligio la opcion 3");
@@ -202,5 +220,40 @@ namespace Server
 
             return authenticatedUser != null;
         }
+
+        private static void JointTrip(NetworkHelper networkHelper, Socket socket, User user, Guid tripID)
+        {
+            try
+            {
+                Trip tripToJoin = tripRepository.Get(tripID);
+
+                if (tripToJoin.AvailableSeats > 0)
+                {
+                    tripToJoin.AvailableSeats--;
+                    tripRepository.Update(tripToJoin);
+
+                    Console.WriteLine("Se ha unido correctamente al viaje.");
+                }
+                else
+                {
+                    Console.WriteLine("No hay asientos disponibles en este viaje.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al unirse al viaje: " + ex.Message);
+            }
+
+            //tengo que ver como volverle a mostrar el menu (desde el cliente en la misma funcion le mando?
+            
+            string option = ReceiveMessageFromClient(networkHelper);
+            GoToOption(option, networkHelper,socket, user);
+        }
+        private static string SerializeTrip(Trip trip)
+        {
+            // Concatenar los atributos del objeto con un delimitador
+            return $"ID:{trip._id},Origen:{trip.Origin},Destino:{trip.Destination},AsientosDisponibles:{trip.AvailableSeats}";
+        }
+
     }
 }

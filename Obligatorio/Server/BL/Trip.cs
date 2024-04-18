@@ -2,9 +2,9 @@
 
 public class Trip
 {
-    private Guid _id;
-    private Guid _owner;
-    private List<Guid> _passengers;
+    public Guid _id;
+    public Guid _owner;
+    public List<Guid> _passengers;
 
     public string Origin { get; set; }
     public string Destination { get; set; }
