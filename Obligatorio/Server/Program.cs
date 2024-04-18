@@ -56,22 +56,6 @@ namespace Server
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
-        private static void LoadUsers()
-        {
-            try
-            {
-                List<User> users = userRepository.GetAll(); // Obtener todos los usuarios
-                // Aquí puedes hacer lo que necesites con la lista de usuarios, como imprimirlos en la consola
-                foreach (var user in users)
-                {
-                    Console.WriteLine($"User: {user.Name}, ID: {user.GetGuid()}"); // Ejemplo de impresión en consola
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error loading users: " + ex.Message);
-            }
-        }
 
         private static void loadTrips(UserContext userContenxt)
         {
@@ -94,6 +78,22 @@ namespace Server
             CalificationContext context = CalificationContext.CreateInsance();
             CalificationContext.LoadCalificationsFromTxt(); 
         }
+        private static string ReceiveMessageFromClient(NetworkHelper networkHelper)
+        {
+            byte[] usernameInBytes = networkHelper.Receive(Protocol.DataLengthSize);
+            int usernameLength = BitConverter.ToInt32(usernameInBytes);
+            byte[] usernameBufferInBytes = networkHelper.Receive(usernameLength);
+            return Encoding.UTF8.GetString(usernameBufferInBytes);
+        }
+
+        private static void SendMessageToClient(string message, NetworkHelper networkHelper)
+        {
+            byte[] responseBuffer = Encoding.UTF8.GetBytes(message);
+            int responseLength = responseBuffer.Length;
+            byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
+            networkHelper.Send(responseLengthInBytes);
+            networkHelper.Send(responseBuffer);
+        }
 
         public static void HandleClient(Socket clientSocket, int clientNumber)
         {
@@ -102,19 +102,49 @@ namespace Server
 
             try
             {
-                while (true)
+                User user = new User();
+                bool validUser = false;
+
+                while (!validUser)
                 {
-                    // Recibir longitud del mensaje
-                    byte[] messageLengthBytes = networkHelper.Receive(Protocol.DataLengthSize);
-                    int messageLength = BitConverter.ToInt32(messageLengthBytes);
+                    string username = ReceiveMessageFromClient(networkHelper);
+                    /*
+                    if (username == "EXIT")
+                    {
+                        Console.WriteLine(ReceiveMessageFromClient(networkHelper));
+                        allSockets.Remove(socketClient);
+                        break;
+                    }
+                    */
+                    string password = ReceiveMessageFromClient(networkHelper);
 
-                    // Recibir el mensaje
-                    byte[] messageBytes = networkHelper.Receive(messageLength);
+                    validUser = AuthenticateUser(username, password);
 
-                    // Convertir el mensaje a string
-                    string chosenOption = Encoding.UTF8.GetString(messageBytes);
+                    string response = "OK";
+                    if (!validUser)
+                    {
+                        response = "ERROR";
+                        SendMessageToClient(response, networkHelper);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Logueado el usuario {clientNumber} con exito");
 
-                    GoToOption(chosenOption, networkHelper, clientSocket);
+                        //ver de arreglar esto (sacarlo para afuera en una funcion o algo)
+                        var allUsers = userRepository.GetAll();
+
+                        var authenticatedUser = allUsers.FirstOrDefault(u => u.Name == username && u._password == password);
+                        Guid userId = authenticatedUser.GetGuid();
+
+                        user = userRepository.Get(userId);
+                        SendMessageToClient(response, networkHelper);
+                        string option = ReceiveMessageFromClient(networkHelper);
+
+                        GoToOption(option,networkHelper, clientSocket, user);
+                        
+                    }
+
+
 
                 }
             }
@@ -129,18 +159,16 @@ namespace Server
             }
         }
 
-        private static void GoToOption(string option,NetworkHelper networkHelper,Socket socket)
+        private static void GoToOption(string option,NetworkHelper networkHelper,Socket socket, User user)
         {
             int opt = Int32.Parse(option);
             switch (opt)
             {
                 case 1:
                     Console.WriteLine("Eligio la opcion 1");
-                    LoadUsers();
                     break;
                 case 2:
                     Console.WriteLine("Eligio la opcion 2");
-                    Console.WriteLine(AuthenticateUser("user1", "12346"));
                     break;
                 case 3:
                     Console.WriteLine("Eligio la opcion 3");
@@ -166,14 +194,15 @@ namespace Server
                 default: break;
             }
 
-            static bool AuthenticateUser(string username, string password)
-            {
-                var allUsers = userRepository.GetAll();
+            
+        }
+        private static bool AuthenticateUser(string username, string password)
+        {
+            var allUsers = userRepository.GetAll();
 
-                var authenticatedUser = allUsers.FirstOrDefault(u => u.Name == username && u._password == password);
+            var authenticatedUser = allUsers.FirstOrDefault(u => u.Name == username && u._password == password);
 
-                return authenticatedUser != null;
-            }
+            return authenticatedUser != null;
         }
     }
 }

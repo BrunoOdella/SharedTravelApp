@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using Common.Interfaces;
 using Common;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Client
 {
@@ -33,18 +34,8 @@ namespace Client
                 soc.Connect(server);
                 Console.WriteLine("Cliente conectado con el servidor");
 
-                NetworkHelper networkHelper = new NetworkHelper(soc);
 
-                while (true)
-                {
-                    ShowMainMenu();
-
-                    string mensaje = Console.ReadLine();
-                    if (String.IsNullOrEmpty(mensaje) || mensaje.Equals("9"))
-                        break;
-
-                    SendMessageToServer(mensaje, networkHelper);
-                }
+                LogIn(soc);
             }
             catch (Exception ex)
             {
@@ -55,10 +46,55 @@ namespace Client
                 soc.Shutdown(SocketShutdown.Both);
                 soc.Close();
             }
-            //Menu();
         }
 
-        private static void ShowMainMenu()
+        private static void LogIn(Socket socketClient)
+        {
+            NetworkHelper networkHelper = new NetworkHelper(socketClient);
+            bool loggedIn = false;
+            while (!loggedIn)
+            {
+                try
+                {
+                    Console.WriteLine("Enter username:");
+                    string username = Console.ReadLine().Trim();
+
+                    if (username.Length == 0 || username == "exit")
+                    {
+                        SendMessageToServer("EXIT", networkHelper);
+                        SendMessageToServer("Closing client...\n", networkHelper);
+                        break;
+                    }
+
+                    Console.WriteLine("Enter password:");
+                    string password = Console.ReadLine().Trim();
+
+                    SendMessageToServer(username, networkHelper);
+                    SendMessageToServer(password, networkHelper);
+
+                    string response = ReceiveMessageFromServer(networkHelper);
+
+                    if (response == "OK")
+                    {
+                        Console.WriteLine("Successfully logged in. \n");
+                        loggedIn = true;
+
+                        ShowMainMenu(networkHelper);
+                    }
+                    else if (response == "ERROR")
+                    {
+                        Console.WriteLine("Incorrect username or password. \n");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(" Error message: " + e.Message);
+                }
+
+            }
+        }
+
+        private static void ShowMainMenu(NetworkHelper networkHelper)
         {
             Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
             Console.WriteLine("¿Qué desea hacer?");
@@ -72,6 +108,10 @@ namespace Client
             Console.WriteLine("8-Ver calificación de un conductor");
             Console.WriteLine("9-Salir");
             Console.Write("Seleccione una opción: ");
+
+            string res = Console.ReadLine().Trim();
+
+            SendMessageToServer(res, networkHelper);
         }
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
