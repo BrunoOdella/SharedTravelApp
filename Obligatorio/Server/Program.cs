@@ -145,7 +145,6 @@ namespace Server
                     }
 
 
-
                 }
             }
             catch (Exception ex)
@@ -194,7 +193,6 @@ namespace Server
                 default: break;
             }
 
-            
         }
         private static bool AuthenticateUser(string username, string password)
         {

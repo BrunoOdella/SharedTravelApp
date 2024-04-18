@@ -106,7 +106,7 @@ namespace Client
             Console.WriteLine("6-Consultar la información de un viaje especifico");
             Console.WriteLine("7-Calificar a un conductor");
             Console.WriteLine("8-Ver calificación de un conductor");
-            Console.WriteLine("9-Salir");
+            Console.WriteLine("9-Cerrar Sesion");
             Console.Write("Seleccione una opción: ");
 
             string res = Console.ReadLine().Trim();
@@ -129,28 +129,6 @@ namespace Client
             byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
             networkHelper.Send(responseLengthInBytes);
             networkHelper.Send(responseBuffer);
-        }
-
-        public static void Menu()
-        {
-            while (!Autentication())
-            {
-                Console.WriteLine("Autenticación fallida. Por favor, intente de nuevo.");
-            }
-
-            Options();
-        }
-
-        public static bool Autentication()
-        {
-            Console.WriteLine("Inicie sesión para continuar:");
-            Console.Write("Ingrese su nombre de usuario: ");
-            string user = Console.ReadLine();
-            Console.Write("Ingrese su contraseña: ");
-            string password = Console.ReadLine();
-
-
-            return user == "admin" && password == "123";
         }
 
         public static void Options()
