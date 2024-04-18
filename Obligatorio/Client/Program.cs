@@ -110,8 +110,19 @@ namespace Client
             Console.Write("Seleccione una opción: ");
 
             string res = Console.ReadLine().Trim();
-
-            SendMessageToServer(res, networkHelper);
+            switch (int.Parse(res))
+            {
+                case 3:
+                    SendMessageToServer("3", networkHelper);
+                    ModifyTrip(networkHelper);
+                    break;
+                case 9:
+                    SendMessageToServer("EXIT", networkHelper);
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
+                    break;
+            }
         }
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
@@ -186,6 +197,76 @@ namespace Client
                         break;
                 }
             } while (stay);
+        }
+
+        private static void ModifyTrip(NetworkHelper networkHelper)
+        {
+            //obtener los viajes del user actual que no esten vencidos
+            Console.WriteLine("Listado de viajes publicados:");
+            string hasTrips = ReceiveMessageFromServer(networkHelper);
+            if (hasTrips == "EMPTY")
+            {
+                Console.WriteLine("No hay viajes publicados para fechas futuras.");
+            }
+            Console.WriteLine(hasTrips); //verificacion - borrar luego
+            //recivo el contador de viajes y muestro uno por uno
+            int count = Int32.Parse(hasTrips);
+            //muestro los viajes
+            for (int i = 0; i < count; i++)
+            {
+                string currentTrip = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(currentTrip);
+            }
+            //fin
+
+            //el user selecciona que viaje o salir
+            Console.WriteLine("¿Que viaje desea modificar?\n    (Para volver escriba SALIR)");
+            string response = "";
+            int wich = -1;
+            do
+            {
+                response = Console.ReadLine().Trim();
+            } while (VerifyResponseModifyTrip(count, response, ref wich) || response.Trim().ToLower() == "salir");
+            
+            if (response.Trim().ToLower() == "salir")
+                return;
+            //
+            //envio que viaje quiero
+            SendMessageToServer($"{response}", networkHelper);
+            //
+            //Que quiero modificar
+            Console.WriteLine(ReceiveMessageFromServer(networkHelper)); //viaje a modificar
+
+            String Origin;
+            String Destination;
+            String DepartureTime;
+            String TotalSeats;
+            String Pet;
+            String Photo;
+
+            Console.WriteLine("Nuevo Origen: (Para no modificar aprete enter)");
+
+            Console.WriteLine("Nuevo Destino: (Para no modificar aprete enter)");
+
+            Console.WriteLine("Nueva fecha y hora de salida (yyyy-mm-dd hh) (Para no modificar aprete enter)");
+
+            Console.WriteLine("Nueva cantidad de asientos disponibles: (Para no modificar aprete enter)");
+
+            Console.WriteLine("¿Es el viaje amigable con mascotas?: (Para no modificar aprete enter)");
+
+            Console.WriteLine("Nuevo precio por pasajero: (Para no modificar aprete enter)");
+
+            Console.WriteLine("Nueva imagen del veiculo: (Para no modificar aprete enter)");
+
+            //Modificacion
+
+
+            //
+        }
+
+        private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
+        {
+            return response.Trim().Length == 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
         }
     }
 }

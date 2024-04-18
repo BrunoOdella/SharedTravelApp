@@ -9,6 +9,7 @@ using DataAcces;
 using Server.BL;
 using Microsoft.VisualBasic.FileIO;
 using Server.DataAcces.Repositories;
+using Server.BL.Repositories;
 
 namespace Server
 {
@@ -16,10 +17,12 @@ namespace Server
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static readonly UserRepository userRepository = new UserRepository();
+        static readonly ITripRepository ITripRepo = new TripRepository();
+
 
         static void Main(string[] args)
         {
-
+            
             load();
 
             try
@@ -171,6 +174,7 @@ namespace Server
                     break;
                 case 3:
                     Console.WriteLine("Eligio la opcion 3");
+                    ModifyTrip(networkHelper, socket, user);
                     break;
                 case 4:
                     Console.WriteLine("Eligio la opcion 4");
@@ -194,6 +198,42 @@ namespace Server
             }
 
         }
+
+        private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            var trips = ITripRepo.GetAll();
+            var map = new Dictionary<int, Guid>();
+            int count = 1;
+            foreach(var trip in trips)
+            {
+                if(trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
+                {
+                    map.Add(count++, trip.GetGuid());
+                }
+            }
+            if(map.Count == 0) 
+            {
+                SendMessageToClient("No hay viajes publicados para fechas futuras.", networkHelper);
+            }
+            else
+            {
+                SendMessageToClient($"{map.Count}", networkHelper);
+                foreach (var trip in map)
+                {
+                    var actualTrip = ITripRepo.Get(trip.Value);
+                    SendMessageToClient($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
+                        $" y Fecha {actualTrip.Departure.ToString()}", networkHelper);
+                }
+            }
+            string selected = ReceiveMessageFromClient(networkHelper);
+            var tripSelected = map[Int32.Parse(selected) - 1];
+            SendMessageToClient($"Viaje seleccionado\n" +
+                $"Origen: {{actualTrip.Origin}}, Destino: {{actualTrip.Destination}}" +
+                $" y Fecha {{actualTrip.Departure.ToString()}}", networkHelper);
+
+
+        }
+
         private static bool AuthenticateUser(string username, string password)
         {
             var allUsers = userRepository.GetAll();
