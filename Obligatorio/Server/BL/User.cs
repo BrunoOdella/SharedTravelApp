@@ -5,7 +5,7 @@ namespace Server.BL
     public class User
     {
         private Guid _id;
-        private string _password;
+        public string _password;
 
         public string Name { get; set; }
         public List<Guid> Trips;
