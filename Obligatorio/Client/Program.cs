@@ -5,6 +5,7 @@ using System.Text;
 using Common.Interfaces;
 using Common;
 using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
 
 namespace Client
 {
@@ -145,42 +146,109 @@ namespace Client
 
         private static void PublishTrip(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Introduzca el origen del viaje:");
-            string origin = Console.ReadLine().Trim();
+            string origin = PromptForNonEmptyString("Introduzca el origen del viaje:");
             SendMessageToServer(origin, networkHelper);
 
-            Console.WriteLine("Introduzca el destino del viaje:");
-            string destination = Console.ReadLine().Trim();
+            string destination = PromptForNonEmptyString("Introduzca el destino del viaje:");
             SendMessageToServer(destination, networkHelper);
 
-            Console.WriteLine("Introduzca la fecha y hora de salida (yyyy-mm-dd hh:mm):");
-            string departure = Console.ReadLine().Trim();
-            SendMessageToServer(departure, networkHelper);
+            DateTime departureDate = PromptForFutureDateTime("Introduzca la fecha y hora de salida (yyyy-mm-dd hh):");
+            SendMessageToServer(departureDate.ToString("o"), networkHelper); 
 
-            Console.WriteLine("Introduzca el número de asientos disponibles:");
-            string availableSeats = Console.ReadLine().Trim();
-            SendMessageToServer(availableSeats, networkHelper);
+            int availableSeats = PromptForInt("Introduzca el número de asientos disponibles:");
+            SendMessageToServer(availableSeats.ToString(), networkHelper);
 
-            Console.WriteLine("Introduzca el total de asientos del vehículo:");
-            string totalSeats = Console.ReadLine().Trim();
-            SendMessageToServer(totalSeats, networkHelper);
+            float pricePerPassenger = PromptForFloat("Introduzca el precio por pasajero:");
+            SendMessageToServer(pricePerPassenger.ToString(), networkHelper);
 
-            Console.WriteLine("Introduzca el precio por pasajero:");
-            string pricePerPassenger = Console.ReadLine().Trim();
-            SendMessageToServer(pricePerPassenger, networkHelper);
+            bool isPetFriendly = PromptForBoolean("¿Es el viaje amigable con mascotas? (si/no):");
+            SendMessageToServer(isPetFriendly.ToString(), networkHelper);
 
-            Console.WriteLine("¿Es el viaje amigable con mascotas? (si/no):");
-            string petFriendly = Console.ReadLine().Trim().ToLower() == "si" ? "true" : "false";
-            SendMessageToServer(petFriendly, networkHelper);
-
-            Console.WriteLine("Introduzca una descripción o enlace a una foto del viaje (opcional):");
             string photo = Console.ReadLine().Trim();
             SendMessageToServer(photo, networkHelper);
+
 
             string response = ReceiveMessageFromServer(networkHelper);
             Console.WriteLine(response);
         }
 
+        private static string PromptForNonEmptyString(string prompt)
+        {
+            string input;
+            do
+            {
+                Console.WriteLine(prompt);
+                input = Console.ReadLine().Trim();
+            } while (string.IsNullOrEmpty(input));
+            return input;
+        }
+
+        private static DateTime PromptForFutureDateTime(string prompt)
+        {
+            DateTime inputDate;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                string input = Console.ReadLine().Trim();
+                if (DateTime.TryParseExact(input, "yyyy-MM-dd HH", CultureInfo.InvariantCulture, DateTimeStyles.None, out inputDate))
+                {
+                    inputDate = new DateTime(inputDate.Year, inputDate.Month, inputDate.Day, inputDate.Hour, 0, 0);
+                    if (inputDate > DateTime.Now)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Por favor, introduzca una fecha y hora futura.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Formato de fecha y hora inválido. Use el formato 'yyyy-MM-dd HH'.");
+                }
+            }
+            return inputDate;
+        }
+
+
+        private static int PromptForInt(string prompt)
+        {
+            int inputValue;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                if (int.TryParse(Console.ReadLine().Trim(), out inputValue))
+                {
+                    return inputValue;
+                }
+                Console.WriteLine("Número inválido, por favor reintente.");
+            }
+        }
+
+        private static float PromptForFloat(string prompt)
+        {
+            float inputValue;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                if (float.TryParse(Console.ReadLine().Trim(), out inputValue))
+                {
+                    return inputValue;
+                }
+                Console.WriteLine("Precio inválido, por favor reintente.");
+            }
+        }
+
+        private static bool PromptForBoolean(string prompt)
+        {
+            string input;
+            do
+            {
+                Console.WriteLine(prompt);
+                input = Console.ReadLine().Trim().ToLower();
+            } while (input != "si" && input != "no");
+            return input == "si";
+        }
 
 
 

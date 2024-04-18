@@ -212,7 +212,6 @@ namespace Server
                 string destination = ReceiveMessageFromClient(networkHelper);
                 DateTime departure = DateTime.Parse(ReceiveMessageFromClient(networkHelper));
                 int totalSeats = int.Parse(ReceiveMessageFromClient(networkHelper));
-                int availableSeats = int.Parse(ReceiveMessageFromClient(networkHelper));
                 float pricePerPassanger = float.Parse(ReceiveMessageFromClient(networkHelper));
                 bool pet = bool.Parse(ReceiveMessageFromClient(networkHelper));
                 string photo = ReceiveMessageFromClient(networkHelper);
