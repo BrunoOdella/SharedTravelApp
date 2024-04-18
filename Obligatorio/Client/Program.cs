@@ -106,20 +106,32 @@ namespace Client
             Console.WriteLine("6-Consultar la información de un viaje especifico");
             Console.WriteLine("7-Calificar a un conductor");
             Console.WriteLine("8-Ver calificación de un conductor");
-            Console.WriteLine("9-Cerrar Sesion");
+            Console.WriteLine("9-Cerrar Sesión");
             Console.Write("Seleccione una opción: ");
 
             string res = Console.ReadLine().Trim();
-
-            SendMessageToServer(res, networkHelper);
+            switch (int.Parse(res))
+            {
+                case 1:
+                    SendMessageToServer("1", networkHelper);
+                    PublishTrip(networkHelper);
+                    break;
+                case 9:
+                    SendMessageToServer("EXIT", networkHelper);
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
+                    break;
+            }
         }
+
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
         {
-            byte[] usernameInBytes = networkHelper.Receive(Protocol.DataLengthSize);
-            int usernameLength = BitConverter.ToInt32(usernameInBytes);
-            byte[] usernameBufferInBytes = networkHelper.Receive(usernameLength);
-            return Encoding.UTF8.GetString(usernameBufferInBytes);
+            byte[] messageInBytes = networkHelper.Receive(Protocol.DataLengthSize);
+            int messageLength = BitConverter.ToInt32(messageInBytes);
+            byte[] messageBufferInBytes = networkHelper.Receive(messageLength);
+            return Encoding.UTF8.GetString(messageBufferInBytes);
         }
 
         private static void SendMessageToServer(string message, NetworkHelper networkHelper)
@@ -131,61 +143,46 @@ namespace Client
             networkHelper.Send(responseBuffer);
         }
 
-        public static void Options()
+        private static void PublishTrip(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
-            bool stay = true;
-            do
-            {
-                Console.WriteLine("¿Qué desea hacer?");
-                Console.WriteLine("1-Publicar viaje");
-                Console.WriteLine("2-Unirse a un viaje");
-                Console.WriteLine("3-Modificar un viaje");
-                Console.WriteLine("4-Baja de un viaje");
-                Console.WriteLine("5-Buscar un viaje");
-                Console.WriteLine("6-Consultar la información de un viaje especifico");
-                Console.WriteLine("7-Calificar a un conductor");
-                Console.WriteLine("8-Ver calificación de un conductor");
-                Console.WriteLine("9-Salir");
-                Console.Write("Seleccione una opción: ");
+            Console.WriteLine("Introduzca el origen del viaje:");
+            string origin = Console.ReadLine().Trim();
+            SendMessageToServer(origin, networkHelper);
 
-                int option = int.Parse(Console.ReadLine() ?? "0");
+            Console.WriteLine("Introduzca el destino del viaje:");
+            string destination = Console.ReadLine().Trim();
+            SendMessageToServer(destination, networkHelper);
 
-                switch (option)
-                {
-                    case 1:
-                        Console.WriteLine("Publicando un viaje...");
-                        break;
-                    case 2:
-                        Console.WriteLine("Uniéndose a un viaje...");
-                        break;
-                    case 3:
-                        Console.WriteLine("Modificando un viaje...");
-                        break;
-                    case 4:
-                        Console.WriteLine("Dando de baja un viaje...");
-                        break;
-                    case 5:
-                        Console.WriteLine("Buscando un viaje...");
-                        break;
-                    case 6:
-                        Console.WriteLine("Consultando información de un viaje...");
-                        break;
-                    case 7:
-                        Console.WriteLine("Calificando a un conductor...");
-                        break;
-                    case 8:
-                        Console.WriteLine("Consultando calificación de un conductor...");
-                        break;
-                    case 9:
-                        stay = false;
-                        Console.WriteLine("Saliendo del sistema...");
-                        break;
-                    default:
-                        Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
-                        break;
-                }
-            } while (stay);
+            Console.WriteLine("Introduzca la fecha y hora de salida (yyyy-mm-dd hh:mm):");
+            string departure = Console.ReadLine().Trim();
+            SendMessageToServer(departure, networkHelper);
+
+            Console.WriteLine("Introduzca el número de asientos disponibles:");
+            string availableSeats = Console.ReadLine().Trim();
+            SendMessageToServer(availableSeats, networkHelper);
+
+            Console.WriteLine("Introduzca el total de asientos del vehículo:");
+            string totalSeats = Console.ReadLine().Trim();
+            SendMessageToServer(totalSeats, networkHelper);
+
+            Console.WriteLine("Introduzca el precio por pasajero:");
+            string pricePerPassenger = Console.ReadLine().Trim();
+            SendMessageToServer(pricePerPassenger, networkHelper);
+
+            Console.WriteLine("¿Es el viaje amigable con mascotas? (si/no):");
+            string petFriendly = Console.ReadLine().Trim().ToLower() == "si" ? "true" : "false";
+            SendMessageToServer(petFriendly, networkHelper);
+
+            Console.WriteLine("Introduzca una descripción o enlace a una foto del viaje (opcional):");
+            string photo = Console.ReadLine().Trim();
+            SendMessageToServer(photo, networkHelper);
+
+            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine(response);
         }
+
+
+
+
     }
 }
