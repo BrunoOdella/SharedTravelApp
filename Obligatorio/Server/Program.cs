@@ -202,37 +202,46 @@ namespace Server
 
         private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
-            var trips = ITripRepo.GetAll();
-            var map = new Dictionary<int, Guid>();
-            int count = 1;
-            foreach(var trip in trips)
+            try
             {
-                if(trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
+                var trips = ITripRepo.GetAll();
+                var map = new Dictionary<int, Guid>();
+                int count = 1;
+                foreach(var trip in trips)
                 {
-                    map.Add(count++, trip.GetGuid());
+                    if(trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
+                    {
+                        map.Add(count++, trip.GetGuid());
+                    }
                 }
-            }
-            if(map.Count == 0) 
-            {
-                SendMessageToClient("No hay viajes publicados para fechas futuras.", networkHelper);
-            }
-            else
-            {
-                SendMessageToClient($"{map.Count}", networkHelper);
-                foreach (var trip in map)
+                if(map.Count == 0) 
                 {
-                    var actualTrip = ITripRepo.Get(trip.Value);
-                    SendMessageToClient($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
-                        $" y Fecha {actualTrip.Departure.ToString()}", networkHelper);
+                    SendMessageToClient("No hay viajes publicados para fechas futuras.", networkHelper);
                 }
+                else
+                {
+                    SendMessageToClient($"{map.Count}", networkHelper);
+                    foreach (var trip in map)
+                    {
+                        var actualTrip = ITripRepo.Get(trip.Value);
+                        SendMessageToClient($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
+                            $" y Fecha {actualTrip.Departure.ToString()}", networkHelper);
+                    }
+                }
+                string selected = ReceiveMessageFromClient(networkHelper);
+                var tripSelected = map[Int32.Parse(selected) - 1];
+                SendMessageToClient($"Viaje seleccionado\n" +
+                    $"Origen: {{actualTrip.Origin}}, Destino: {{actualTrip.Destination}}" +
+                    $" y Fecha {{actualTrip.Departure.ToString()}}", networkHelper);
+
+                //recibir cada elemento del trip, si es EMPTY mantener el actual, sino cambiarlo por el recibido
+                //y previo hacer las comprobaciones adecuadas
             }
-            string selected = ReceiveMessageFromClient(networkHelper);
-            var tripSelected = map[Int32.Parse(selected) - 1];
-            SendMessageToClient($"Viaje seleccionado\n" +
-                $"Origen: {{actualTrip.Origin}}, Destino: {{actualTrip.Destination}}" +
-                $" y Fecha {{actualTrip.Departure.ToString()}}", networkHelper);
-
-
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al modificar el viaje: " + ex.Message);
+                SendMessageToClient("Error al modificar el viaje.", networkHelper);
+            }
         }
 
         private static bool AuthenticateUser(string username, string password)

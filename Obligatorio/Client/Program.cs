@@ -292,31 +292,67 @@ namespace Client
             //Que quiero modificar
             Console.WriteLine(ReceiveMessageFromServer(networkHelper)); //viaje a modificar
 
+            bool modificar;
             String Origin;
             String Destination;
-            String DepartureTime;
-            String TotalSeats;
-            String Pet;
+            DateTime DepartureTime;
+            int PricePerSeat;
+            bool Pet;
             String Photo;
 
-            Console.WriteLine("Nuevo Origen: (Para no modificar aprete enter)");
 
-            Console.WriteLine("Nuevo Destino: (Para no modificar aprete enter)");
+            modificar = PromptForBoolean("¿Modificar Origen? (SI/NO)");
+            if (modificar)
+            {
+                Origin = PromptForNonEmptyString("Nuevo Origen:");
+                SendMessageToServer(Origin, networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
 
-            Console.WriteLine("Nueva fecha y hora de salida (yyyy-mm-dd hh) (Para no modificar aprete enter)");
+            modificar = PromptForBoolean("¿Modificar Destino? (SI/NO)");
+            if (modificar)
+            {
+                Destination = PromptForNonEmptyString("Nuevo Destino:");
+                SendMessageToServer(Destination, networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
 
-            Console.WriteLine("Nueva cantidad de asientos disponibles: (Para no modificar aprete enter)");
+            modificar = PromptForBoolean("¿Modificar fecha y hora de salida? (SI/NO)");
+            if (modificar)
+            {
+                DepartureTime = PromptForFutureDateTime("Nueva fecha y hora de salida (yyyy-mm-dd hh):");
+                SendMessageToServer(DepartureTime.ToString("o"), networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
 
-            Console.WriteLine("¿Es el viaje amigable con mascotas?: (Para no modificar aprete enter)");
+            modificar = PromptForBoolean("¿Modificar si el viaje es amigable con mascotas? (SI/NO)");
+            if (modificar)
+            {
+                Pet = PromptForBoolean("¿Es el viaje amigable con mascotas?:");
+                SendMessageToServer(Pet.ToString(), networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
 
-            Console.WriteLine("Nuevo precio por pasajero: (Para no modificar aprete enter)");
+            modificar = PromptForBoolean("¿Modificar el precio por pasajero? (SI/NO)");
+            if (modificar)
+            {
+                PricePerSeat = PromptForInt("Nuevo precio por pasajero:");
+                SendMessageToServer(PricePerSeat.ToString(), networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
 
-            Console.WriteLine("Nueva imagen del veiculo: (Para no modificar aprete enter)");
+            modificar = PromptForBoolean("¿Modificar la imagen del veiculo? (SI/NO)");
+            if (modificar)
+            {
+                //("Nueva imagen del veiculo:") -> PROMPT
+                //SendMessageToServer(, networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
 
             //Modificacion
+            //RECIBIR UN MODIFICADO O ERROR
 
-
-            //
+            //FIN TOTAL
         }
 
         private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
