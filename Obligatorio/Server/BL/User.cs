@@ -4,7 +4,7 @@ namespace Server.BL
 {
     public class User
     {
-        private Guid _id;
+        public Guid _id;
         public string _password;
 
         public string Name { get; set; }

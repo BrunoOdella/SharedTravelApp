@@ -239,14 +239,24 @@ namespace Server
             try
             {
                 Trip tripToJoin = tripRepository.Get(tripID);
+                //ME TENDRIA QUE FIJAR SI MI USER YA ESTA UNIDO A ESTE TRIP?    O SI NO ES EL OWNER?
 
                 if (tripToJoin.AvailableSeats > 0)
                 {
                     tripToJoin.AvailableSeats--;
+
+                    tripToJoin._passengers.Add(user._id);
+
                     tripRepository.Update(tripToJoin);
 
                     Console.WriteLine("Se ha unido correctamente al viaje.");
-                    
+                    Console.WriteLine("Usuarios unidos al viaje:");
+                    foreach (Guid passengerId in tripToJoin._passengers)
+                    {
+                        User passenger = userRepository.Get(passengerId);
+                        Console.WriteLine($"- {passenger.Name} ({passengerId})");
+                    }
+
                 }
                 else
                 {
@@ -266,7 +276,7 @@ namespace Server
         private static string SerializeTrip(Trip trip)
         {
             // Concatenar los atributos del objeto con un delimitador
-            return $"ID:{trip._id},Origen:{trip.Origin},Destino:{trip.Destination},AsientosDisponibles:{trip.AvailableSeats}";
+            return $"Origen:{trip.Origin} -> Destino:{trip.Destination},Asientos Disponibles:{trip.AvailableSeats}";
         }
 
     }
