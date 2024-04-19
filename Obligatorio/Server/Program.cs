@@ -170,23 +170,36 @@ namespace Server
                 case 2:
                     Console.WriteLine("Eligió la opción 2");
                     string destination = ReceiveMessageFromClient(networkHelper);
-                    Console.WriteLine("Destino recibido: " + destination); // Agrego para ver qué es lo que le está llegando
+                    Console.WriteLine("Destino recibido: " + destination);
 
-                    // Obtener todos los viajes con el destino especificado
                     List<Trip> tripsToDestination = tripRepository.GetAllTripsByDestination(destination);
 
-                    // Enviar la cantidad de viajes al cliente
                     string tripCount = tripsToDestination.Count.ToString();
                     SendMessageToClient(tripCount, networkHelper);
 
-                    // Enviar cada viaje al cliente
-                    foreach (Trip trip in tripsToDestination)
+                    for (int i = 0; i < tripsToDestination.Count; i++)
                     {
-                        string tripString = SerializeTrip(trip);
+                        Trip trip = tripsToDestination[i];
+                        string tripString = $"{i + 1}: {SerializeTrip(trip)}";
                         SendMessageToClient(tripString, networkHelper);
                     }
 
+                    string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
+
+                    if (selectedTripIndex >= 0 && selectedTripIndex < tripsToDestination.Count)
+                    {
+                        Trip selectedTrip = tripsToDestination[selectedTripIndex];
+                        Console.WriteLine("El viaje seleccionado es: "+selectedTrip);
+
+                        JointTrip(networkHelper, socket, user, selectedTrip._id);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Selección de viaje inválida.");
+                    }
                     break;
+
                 case 3:
                     Console.WriteLine("Eligio la opcion 3");
                     break;
@@ -233,6 +246,7 @@ namespace Server
                     tripRepository.Update(tripToJoin);
 
                     Console.WriteLine("Se ha unido correctamente al viaje.");
+                    
                 }
                 else
                 {
@@ -246,8 +260,8 @@ namespace Server
 
             //tengo que ver como volverle a mostrar el menu (desde el cliente en la misma funcion le mando?
             
-            string option = ReceiveMessageFromClient(networkHelper);
-            GoToOption(option, networkHelper,socket, user);
+            //string option = ReceiveMessageFromClient(networkHelper);
+            //GoToOption(option, networkHelper,socket, user);
         }
         private static string SerializeTrip(Trip trip)
         {

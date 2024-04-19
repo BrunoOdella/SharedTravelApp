@@ -117,17 +117,21 @@ namespace Client
             {
                 case "2":
                     Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
-                    string destino = Console.ReadLine().Trim();
-                    SendMessageToServer(destino, networkHelper);
+                    string destination = Console.ReadLine().Trim();
+                    SendMessageToServer(destination, networkHelper);
 
-                    string lenthOfTripListString= ReceiveMessageFromServer(networkHelper);
-                    int lenthOfTripList = int.Parse(lenthOfTripListString);
-                    for (int i = 0; i< lenthOfTripList; i++)
+                    string tripCountString = ReceiveMessageFromServer(networkHelper);
+                    int tripCount = int.Parse(tripCountString);
+
+                    for (int i = 0; i < tripCount; i++)
                     {
                         string trip = ReceiveMessageFromServer(networkHelper);
                         Console.WriteLine(trip);
                     }
 
+                    Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
+                    string selectedTripNumberStr = Console.ReadLine().Trim();
+                    SendMessageToServer(selectedTripNumberStr, networkHelper);
                     break;
                 default:
                     SendMessageToServer(res, networkHelper);
