@@ -83,10 +83,10 @@ namespace Server
         }
         private static string ReceiveMessageFromClient(NetworkHelper networkHelper)
         {
-            byte[] usernameInBytes = networkHelper.Receive(Protocol.DataLengthSize);
-            int usernameLength = BitConverter.ToInt32(usernameInBytes);
-            byte[] usernameBufferInBytes = networkHelper.Receive(usernameLength);
-            return Encoding.UTF8.GetString(usernameBufferInBytes);
+            byte[] messageInBytes = networkHelper.Receive(Protocol.DataLengthSize);
+            int messageLength = BitConverter.ToInt32(messageInBytes);
+            byte[] messageBufferInBytes = networkHelper.Receive(messageLength);
+            return Encoding.UTF8.GetString(messageBufferInBytes);
         }
 
         private static void SendMessageToClient(string message, NetworkHelper networkHelper)
@@ -168,6 +168,7 @@ namespace Server
             {
                 case 1:
                     Console.WriteLine("Eligio la opcion 1");
+                    PublishTrip(networkHelper, socket, user);
                     break;
                 case 2:
                     Console.WriteLine("Eligio la opcion 2");
@@ -242,5 +243,41 @@ namespace Server
 
             return authenticatedUser != null;
         }
+
+        private static void PublishTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            try
+            {
+                string origin = ReceiveMessageFromClient(networkHelper);
+                string destination = ReceiveMessageFromClient(networkHelper);
+                DateTime departure = DateTime.Parse(ReceiveMessageFromClient(networkHelper));
+                int totalSeats = int.Parse(ReceiveMessageFromClient(networkHelper));
+                float pricePerPassanger = float.Parse(ReceiveMessageFromClient(networkHelper));
+                bool pet = bool.Parse(ReceiveMessageFromClient(networkHelper));
+                string photo = ReceiveMessageFromClient(networkHelper);
+
+                Trip newTrip = new Trip()
+                {
+                    Origin = origin,
+                    Destination = destination,
+                    Departure = departure,
+                    TotalSeats = totalSeats,
+                    PricePerPassanger = pricePerPassanger,
+                    Pet = pet,
+                    Photo = photo,
+                };
+
+                TripRepository tripRepository = new TripRepository();
+                tripRepository.Add(newTrip);
+
+                SendMessageToClient("Viaje publicado con éxito.", networkHelper);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al publicar el viaje: " + ex.Message);
+                SendMessageToClient("Error al publicar el viaje.", networkHelper);
+            }
+        }
+
     }
 }
