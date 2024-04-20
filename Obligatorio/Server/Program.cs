@@ -340,10 +340,8 @@ namespace Server
 
 
 
-        private static void SendStreamToClient(NetworkHelper networkHelper)
+        private static void SendStreamToClient(NetworkHelper networkHelper,string filePath)
         {
-            string filePath = Console.ReadLine();
-
             FileInfo fileInfo = new FileInfo(filePath);
             string fileName = fileInfo.Name;
             byte[] fileNameInBytes = Encoding.UTF8.GetBytes(fileName);
