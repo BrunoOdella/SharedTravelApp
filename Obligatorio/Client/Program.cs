@@ -120,25 +120,7 @@ namespace Client
                     PublishTrip(networkHelper);
                     break;
                 case 2:
-                    Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
-                    string destination = Console.ReadLine().Trim();
-                    SendMessageToServer(destination, networkHelper);
-
-                    string tripCountString = ReceiveMessageFromServer(networkHelper);
-                    int tripCount = int.Parse(tripCountString);
-
-                    for (int i = 0; i < tripCount; i++)
-                    {
-                        string trip = ReceiveMessageFromServer(networkHelper);
-                        Console.WriteLine(trip);
-                    }
-
-                    Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
-                    string selectedTripNumberStr = Console.ReadLine().Trim();
-                    SendMessageToServer(selectedTripNumberStr, networkHelper);
-
-                    Console.WriteLine("Se ha unido correctamente al viaje");
-                    ShowMainMenu(networkHelper);
+                    JoinTrip(networkHelper);
                     break;
                 case 3:
                     //SendMessageToServer("3", networkHelper);
@@ -376,6 +358,29 @@ namespace Client
             //RECIBIR UN MODIFICADO O ERROR
 
             //FIN TOTAL
+        }
+
+        private static void JoinTrip(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
+            string destination = Console.ReadLine().Trim();
+            SendMessageToServer(destination, networkHelper);
+
+            string tripCountString = ReceiveMessageFromServer(networkHelper);
+            int tripCount = int.Parse(tripCountString);
+
+            for (int i = 0; i < tripCount; i++)
+            {
+                string trip = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(trip);
+            }
+
+            Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
+            string selectedTripNumberStr = Console.ReadLine().Trim();
+            SendMessageToServer(selectedTripNumberStr, networkHelper);
+
+            Console.WriteLine("Se ha unido correctamente al viaje");
+            ShowMainMenu(networkHelper);
         }
 
         private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
