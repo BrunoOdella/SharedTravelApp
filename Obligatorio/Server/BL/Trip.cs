@@ -58,4 +58,9 @@ public class Trip
     {
         _passengers = passangers;
     }
+
+    public Guid GetOwner()
+    {
+        return _owner;
+    }
 }

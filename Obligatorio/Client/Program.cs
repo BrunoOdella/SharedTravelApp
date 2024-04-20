@@ -5,6 +5,7 @@ using System.Text;
 using Common.Interfaces;
 using Common;
 using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
 
 namespace Client
 {
@@ -106,16 +107,19 @@ namespace Client
             Console.WriteLine("6-Consultar la información de un viaje especifico");
             Console.WriteLine("7-Calificar a un conductor");
             Console.WriteLine("8-Ver calificación de un conductor");
-            Console.WriteLine("9-Cerrar Sesion");
+            Console.WriteLine("9-Cerrar Sesión");
             Console.Write("Seleccione una opción: ");
 
             string res = Console.ReadLine().Trim();
-
             SendMessageToServer(res, networkHelper);
 
-            switch (res)
+            switch (int.Parse(res))
             {
-                case "2":
+                case 1:
+                    //SendMessageToServer("1", networkHelper);
+                    PublishTrip(networkHelper);
+                    break;
+                case 2:
                     Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
                     string destination = Console.ReadLine().Trim();
                     SendMessageToServer(destination, networkHelper);
@@ -136,18 +140,26 @@ namespace Client
                     Console.WriteLine("Se ha unido correctamente al viaje");
                     ShowMainMenu(networkHelper);
                     break;
+                case 3:
+                    //SendMessageToServer("3", networkHelper);
+                    ModifyTrip(networkHelper);
+                    break;
+                case 9:
+                    //SendMessageToServer("EXIT", networkHelper);
+                    break;
                 default:
-                    SendMessageToServer(res, networkHelper);
+                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
                     break;
             }
         }
 
+
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
         {
-            byte[] usernameInBytes = networkHelper.Receive(Protocol.DataLengthSize);
-            int usernameLength = BitConverter.ToInt32(usernameInBytes);
-            byte[] usernameBufferInBytes = networkHelper.Receive(usernameLength);
-            return Encoding.UTF8.GetString(usernameBufferInBytes);
+            byte[] messageInBytes = networkHelper.Receive(Protocol.DataLengthSize);
+            int messageLength = BitConverter.ToInt32(messageInBytes);
+            byte[] messageBufferInBytes = networkHelper.Receive(messageLength);
+            return Encoding.UTF8.GetString(messageBufferInBytes);
         }
 
         private static void SendMessageToServer(string message, NetworkHelper networkHelper)
@@ -159,61 +171,216 @@ namespace Client
             networkHelper.Send(responseBuffer);
         }
 
-        public static void Options()
+        private static void PublishTrip(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
-            bool stay = true;
+            string origin = PromptForNonEmptyString("Introduzca el origen del viaje:");
+            SendMessageToServer(origin, networkHelper);
+
+            string destination = PromptForNonEmptyString("Introduzca el destino del viaje:");
+            SendMessageToServer(destination, networkHelper);
+
+            DateTime departureDate = PromptForFutureDateTime("Introduzca la fecha y hora de salida (yyyy-mm-dd hh):");
+            SendMessageToServer(departureDate.ToString("o"), networkHelper); 
+
+            int availableSeats = PromptForInt("Introduzca el número de asientos disponibles:");
+            SendMessageToServer(availableSeats.ToString(), networkHelper);
+
+            float pricePerPassenger = PromptForFloat("Introduzca el precio por pasajero:");
+            SendMessageToServer(pricePerPassenger.ToString(), networkHelper);
+
+            bool isPetFriendly = PromptForBoolean("¿Es el viaje amigable con mascotas? (si/no):");
+            SendMessageToServer(isPetFriendly.ToString(), networkHelper);
+
+            string photo = Console.ReadLine().Trim();
+            SendMessageToServer(photo, networkHelper);
+
+
+            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine(response);
+        }
+
+        private static string PromptForNonEmptyString(string prompt)
+        {
+            string input;
             do
             {
-                Console.WriteLine("¿Qué desea hacer?");
-                Console.WriteLine("1-Publicar viaje");
-                Console.WriteLine("2-Unirse a un viaje");
-                Console.WriteLine("3-Modificar un viaje");
-                Console.WriteLine("4-Baja de un viaje");
-                Console.WriteLine("5-Buscar un viaje");
-                Console.WriteLine("6-Consultar la información de un viaje especifico");
-                Console.WriteLine("7-Calificar a un conductor");
-                Console.WriteLine("8-Ver calificación de un conductor");
-                Console.WriteLine("9-Salir");
-                Console.Write("Seleccione una opción: ");
+                Console.WriteLine(prompt);
+                input = Console.ReadLine().Trim();
+            } while (string.IsNullOrEmpty(input));
+            return input;
+        }
 
-                int option = int.Parse(Console.ReadLine() ?? "0");
-
-                switch (option)
+        private static DateTime PromptForFutureDateTime(string prompt)
+        {
+            DateTime inputDate;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                string input = Console.ReadLine().Trim();
+                if (DateTime.TryParseExact(input, "yyyy-MM-dd HH", CultureInfo.InvariantCulture, DateTimeStyles.None, out inputDate))
                 {
-                    case 1:
-                        Console.WriteLine("Publicando un viaje...");
+                    inputDate = new DateTime(inputDate.Year, inputDate.Month, inputDate.Day, inputDate.Hour, 0, 0);
+                    if (inputDate > DateTime.Now)
+                    {
                         break;
-                    case 2:
-                        Console.WriteLine("Uniéndose a un viaje...");
-                        break;
-                    case 3:
-                        Console.WriteLine("Modificando un viaje...");
-                        break;
-                    case 4:
-                        Console.WriteLine("Dando de baja un viaje...");
-                        break;
-                    case 5:
-                        Console.WriteLine("Buscando un viaje...");
-                        break;
-                    case 6:
-                        Console.WriteLine("Consultando información de un viaje...");
-                        break;
-                    case 7:
-                        Console.WriteLine("Calificando a un conductor...");
-                        break;
-                    case 8:
-                        Console.WriteLine("Consultando calificación de un conductor...");
-                        break;
-                    case 9:
-                        stay = false;
-                        Console.WriteLine("Saliendo del sistema...");
-                        break;
-                    default:
-                        Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
-                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Por favor, introduzca una fecha y hora futura.");
+                    }
                 }
-            } while (stay);
+                else
+                {
+                    Console.WriteLine("Formato de fecha y hora inválido. Use el formato 'yyyy-MM-dd HH'.");
+                }
+            }
+            return inputDate;
+        }
+
+
+        private static int PromptForInt(string prompt)
+        {
+            int inputValue;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                if (int.TryParse(Console.ReadLine().Trim(), out inputValue))
+                {
+                    return inputValue;
+                }
+                Console.WriteLine("Número inválido, por favor reintente.");
+            }
+        }
+
+        private static float PromptForFloat(string prompt)
+        {
+            float inputValue;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                if (float.TryParse(Console.ReadLine().Trim(), out inputValue))
+                {
+                    return inputValue;
+                }
+                Console.WriteLine("Precio inválido, por favor reintente.");
+            }
+        }
+
+        private static bool PromptForBoolean(string prompt)
+        {
+            string input;
+            do
+            {
+                Console.WriteLine(prompt);
+                input = Console.ReadLine().Trim().ToLower();
+            } while (input != "si" && input != "no");
+            return input == "si";
+        }
+
+        private static void ModifyTrip(NetworkHelper networkHelper)
+        {
+            //obtener los viajes del user actual que no esten vencidos
+            Console.WriteLine("Listado de viajes publicados:");
+            string hasTrips = ReceiveMessageFromServer(networkHelper);
+            if (hasTrips == "EMPTY")
+            {
+                Console.WriteLine("No hay viajes publicados para fechas futuras.");
+            }
+            Console.WriteLine(hasTrips); //verificacion - borrar luego
+            //recivo el contador de viajes y muestro uno por uno
+            int count = Int32.Parse(hasTrips);
+            //muestro los viajes
+            for (int i = 0; i < count; i++)
+            {
+                string currentTrip = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(currentTrip);
+            }
+            //fin
+
+            //el user selecciona que viaje o salir
+            Console.WriteLine("¿Que viaje desea modificar?\n    (Para volver escriba SALIR)");
+            string response = "";
+            int wich = -1;
+            do
+            {
+                response = Console.ReadLine().Trim();
+            } while (VerifyResponseModifyTrip(count, response, ref wich) || response.Trim().ToLower() == "salir");
+            
+            if (response.Trim().ToLower() == "salir")
+                return;
+            //
+            //envio que viaje quiero
+            SendMessageToServer($"{response}", networkHelper);
+            //
+            //Que quiero modificar
+            Console.WriteLine(ReceiveMessageFromServer(networkHelper)); //viaje a modificar
+
+            bool modificar;
+            String Origin;
+            String Destination;
+            DateTime DepartureTime;
+            int PricePerSeat;
+            bool Pet;
+            String Photo;
+
+
+            modificar = PromptForBoolean("¿Modificar Origen? (SI/NO)");
+            if (modificar)
+            {
+                Origin = PromptForNonEmptyString("Nuevo Origen:");
+                SendMessageToServer(Origin, networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
+
+            modificar = PromptForBoolean("¿Modificar Destino? (SI/NO)");
+            if (modificar)
+            {
+                Destination = PromptForNonEmptyString("Nuevo Destino:");
+                SendMessageToServer(Destination, networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
+
+            modificar = PromptForBoolean("¿Modificar fecha y hora de salida? (SI/NO)");
+            if (modificar)
+            {
+                DepartureTime = PromptForFutureDateTime("Nueva fecha y hora de salida (yyyy-mm-dd hh):");
+                SendMessageToServer(DepartureTime.ToString("o"), networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
+
+            modificar = PromptForBoolean("¿Modificar si el viaje es amigable con mascotas? (SI/NO)");
+            if (modificar)
+            {
+                Pet = PromptForBoolean("¿Es el viaje amigable con mascotas?:");
+                SendMessageToServer(Pet.ToString(), networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
+
+            modificar = PromptForBoolean("¿Modificar el precio por pasajero? (SI/NO)");
+            if (modificar)
+            {
+                PricePerSeat = PromptForInt("Nuevo precio por pasajero:");
+                SendMessageToServer(PricePerSeat.ToString(), networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
+
+            modificar = PromptForBoolean("¿Modificar la imagen del veiculo? (SI/NO)");
+            if (modificar)
+            {
+                //("Nueva imagen del veiculo:") -> PROMPT
+                //SendMessageToServer(, networkHelper);
+            }
+            else SendMessageToServer("EMPTY", networkHelper);
+
+            //Modificacion
+            //RECIBIR UN MODIFICADO O ERROR
+
+            //FIN TOTAL
+        }
+
+        private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
+        {
+            return response.Trim().Length == 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
         }
     }
 }

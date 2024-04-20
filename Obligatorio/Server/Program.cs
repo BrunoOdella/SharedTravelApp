@@ -9,18 +9,20 @@ using DataAcces;
 using Server.BL;
 using Microsoft.VisualBasic.FileIO;
 using Server.DataAcces.Repositories;
+using Server.BL.Repositories;
 
 namespace Server
 {
     internal class Program
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
-        static readonly UserRepository userRepository = new UserRepository();
-        static readonly TripRepository tripRepository = new TripRepository();
+        static readonly IUserRepository userRepository = new UserRepository();
+        static readonly ITripRepository ITripRepo = new TripRepository();
+
 
         static void Main(string[] args)
         {
-
+            
             load();
 
             try
@@ -81,10 +83,10 @@ namespace Server
         }
         private static string ReceiveMessageFromClient(NetworkHelper networkHelper)
         {
-            byte[] usernameInBytes = networkHelper.Receive(Protocol.DataLengthSize);
-            int usernameLength = BitConverter.ToInt32(usernameInBytes);
-            byte[] usernameBufferInBytes = networkHelper.Receive(usernameLength);
-            return Encoding.UTF8.GetString(usernameBufferInBytes);
+            byte[] messageInBytes = networkHelper.Receive(Protocol.DataLengthSize);
+            int messageLength = BitConverter.ToInt32(messageInBytes);
+            byte[] messageBufferInBytes = networkHelper.Receive(messageLength);
+            return Encoding.UTF8.GetString(messageBufferInBytes);
         }
 
         private static void SendMessageToClient(string message, NetworkHelper networkHelper)
@@ -166,13 +168,14 @@ namespace Server
             {
                 case 1:
                     Console.WriteLine("Eligio la opcion 1");
+                    PublishTrip(networkHelper, socket, user);
                     break;
                 case 2:
                     Console.WriteLine("Eligió la opción 2");
                     string destination = ReceiveMessageFromClient(networkHelper);
                     Console.WriteLine("Destino recibido: " + destination);
 
-                    List<Trip> tripsToDestination = tripRepository.GetAllTripsByDestination(destination);
+                    List<Trip> tripsToDestination = ITripRepo.GetAllTripsByDestination(destination);
 
                     string tripCount = tripsToDestination.Count.ToString();
                     SendMessageToClient(tripCount, networkHelper);
@@ -202,6 +205,7 @@ namespace Server
 
                 case 3:
                     Console.WriteLine("Eligio la opcion 3");
+                    ModifyTrip(networkHelper, socket, user);
                     break;
                 case 4:
                     Console.WriteLine("Eligio la opcion 4");
@@ -225,6 +229,51 @@ namespace Server
             }
 
         }
+
+        private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            try
+            {
+                var trips = ITripRepo.GetAll();
+                var map = new Dictionary<int, Guid>();
+                int count = 1;
+                foreach(var trip in trips)
+                {
+                    if(trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
+                    {
+                        map.Add(count++, trip.GetGuid());
+                    }
+                }
+                if(map.Count == 0) 
+                {
+                    SendMessageToClient("No hay viajes publicados para fechas futuras.", networkHelper);
+                }
+                else
+                {
+                    SendMessageToClient($"{map.Count}", networkHelper);
+                    foreach (var trip in map)
+                    {
+                        var actualTrip = ITripRepo.Get(trip.Value);
+                        SendMessageToClient($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
+                            $" y Fecha {actualTrip.Departure.ToString()}", networkHelper);
+                    }
+                }
+                string selected = ReceiveMessageFromClient(networkHelper);
+                var tripSelected = map[Int32.Parse(selected) - 1];
+                SendMessageToClient($"Viaje seleccionado\n" +
+                    $"Origen: {{actualTrip.Origin}}, Destino: {{actualTrip.Destination}}" +
+                    $" y Fecha {{actualTrip.Departure.ToString()}}", networkHelper);
+
+                //recibir cada elemento del trip, si es EMPTY mantener el actual, sino cambiarlo por el recibido
+                //y previo hacer las comprobaciones adecuadas
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al modificar el viaje: " + ex.Message);
+                SendMessageToClient("Error al modificar el viaje.", networkHelper);
+            }
+        }
+
         private static bool AuthenticateUser(string username, string password)
         {
             var allUsers = userRepository.GetAll();
@@ -238,7 +287,7 @@ namespace Server
         {
             try
             {
-                Trip tripToJoin = tripRepository.Get(tripID);
+                Trip tripToJoin = ITripRepo.Get(tripID);
                 //ME TENDRIA QUE FIJAR SI MI USER YA ESTA UNIDO A ESTE TRIP?    O SI NO ES EL OWNER?
 
                 //este if lo podria sacar porque ya lo chequeo en el respositorio
@@ -248,7 +297,7 @@ namespace Server
 
                     tripToJoin._passengers.Add(user._id);
 
-                    tripRepository.Update(tripToJoin);
+                    ITripRepo.Update(tripToJoin);
 
                     Console.WriteLine("Se ha unido correctamente al viaje.");
 
@@ -284,6 +333,40 @@ namespace Server
         {
             // Concatenar los atributos del objeto con un delimitador
             return $"Origen:{trip.Origin} -> Destino:{trip.Destination},Asientos Disponibles:{trip.AvailableSeats}";
+        }
+        private static void PublishTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            try
+            {
+                string origin = ReceiveMessageFromClient(networkHelper);
+                string destination = ReceiveMessageFromClient(networkHelper);
+                DateTime departure = DateTime.Parse(ReceiveMessageFromClient(networkHelper));
+                int totalSeats = int.Parse(ReceiveMessageFromClient(networkHelper));
+                float pricePerPassanger = float.Parse(ReceiveMessageFromClient(networkHelper));
+                bool pet = bool.Parse(ReceiveMessageFromClient(networkHelper));
+                string photo = ReceiveMessageFromClient(networkHelper);
+
+                Trip newTrip = new Trip()
+                {
+                    Origin = origin,
+                    Destination = destination,
+                    Departure = departure,
+                    TotalSeats = totalSeats,
+                    PricePerPassanger = pricePerPassanger,
+                    Pet = pet,
+                    Photo = photo,
+                };
+
+                TripRepository tripRepository = new TripRepository();
+                tripRepository.Add(newTrip);
+
+                SendMessageToClient("Viaje publicado con éxito.", networkHelper);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al publicar el viaje: " + ex.Message);
+                SendMessageToClient("Error al publicar el viaje.", networkHelper);
+            }
         }
 
     }
