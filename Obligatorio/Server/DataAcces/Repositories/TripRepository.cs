@@ -92,5 +92,23 @@ namespace Server.DataAcces.Repositories
 
             return all;
         }
+
+        public List<Trip> GetAllTripsByDestination(string destination)
+        {
+            TripContext context = TripContext.GetAccessReadTrip();
+            List<Trip> tripsByDestination = new List<Trip>();
+
+            foreach (var trip in context.TripList)
+            {
+                if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase) && trip.Value.AvailableSeats>0)
+                {
+                    tripsByDestination.Add(trip.Value);
+                }
+            }
+
+            TripContext.ReturnReadAccessTrip();
+            return tripsByDestination;
+        }
+
     }
 }

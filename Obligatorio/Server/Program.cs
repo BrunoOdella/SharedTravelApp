@@ -16,7 +16,7 @@ namespace Server
     internal class Program
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
-        static readonly UserRepository userRepository = new UserRepository();
+        static readonly IUserRepository userRepository = new UserRepository();
         static readonly ITripRepository ITripRepo = new TripRepository();
 
 
@@ -171,8 +171,9 @@ namespace Server
                     PublishTrip(networkHelper, socket, user);
                     break;
                 case 2:
-                    Console.WriteLine("Eligio la opcion 2");
+                    JoinTrip(networkHelper, socket, user);
                     break;
+
                 case 3:
                     Console.WriteLine("Eligio la opcion 3");
                     ModifyTrip(networkHelper, socket, user);
@@ -253,6 +254,68 @@ namespace Server
             return authenticatedUser != null;
         }
 
+        private static void JoinTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            string destination = ReceiveMessageFromClient(networkHelper);
+
+            List<Trip> tripsToDestination = ITripRepo.GetAllTripsByDestination(destination);
+
+            string tripCount = tripsToDestination.Count.ToString();
+            SendMessageToClient(tripCount, networkHelper);
+
+            for (int i = 0; i < tripsToDestination.Count; i++)
+            {
+                Trip trip = tripsToDestination[i];
+                string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                SendMessageToClient(tripString, networkHelper);
+            }
+
+            string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+            int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
+
+            if (selectedTripIndex >= 0 && selectedTripIndex < tripsToDestination.Count)
+            {
+                Trip selectedTrip = tripsToDestination[selectedTripIndex];
+                Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
+
+                try
+                {
+                    Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
+                    //MANEJAR LOS CASOS DE QUE:
+                    //YA ESTA UNIDO A ESE TRIP
+                    //ES EL OWNER DE ESE TRIP
+
+                    //este if  (que checkea lo de available seats) lo podria sacar porque ya lo chequeo en el respositorio
+                    if (tripToJoin.AvailableSeats > 0)
+                    {
+                        tripToJoin.AvailableSeats--;
+
+                        tripToJoin._passengers.Add(user._id);
+
+                        ITripRepo.Update(tripToJoin);
+
+                        Console.WriteLine("Se ha unido correctamente al viaje.");
+
+                        string nextOption = ReceiveMessageFromClient(networkHelper);
+                        GoToOption(nextOption, networkHelper, socket, user);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("No hay asientos disponibles en este viaje.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error al unirse al viaje: " + ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Selección de viaje inválida.");
+            }
+        }
+        
         private static void PublishTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
             try
@@ -286,6 +349,11 @@ namespace Server
                 Console.WriteLine("Error al publicar el viaje: " + ex.Message);
                 SendMessageToClient("Error al publicar el viaje.", networkHelper);
             }
+        }
+        private static string SerializeTrip(Trip trip)
+        {
+            // Concatenar los atributos del objeto con un delimitador
+            return $"Origen:{trip.Origin} -> Destino:{trip.Destination},Asientos Disponibles:{trip.AvailableSeats}";
         }
 
     }
