@@ -263,7 +263,7 @@ namespace Server
                 int totalSeats = int.Parse(ReceiveMessageFromClient(networkHelper));
                 float pricePerPassanger = float.Parse(ReceiveMessageFromClient(networkHelper));
                 bool pet = bool.Parse(ReceiveMessageFromClient(networkHelper));
-                string photo = ReceiveMessageFromClient(networkHelper);
+                string photo = ReceiveStreamFromClient(networkHelper);
 
                 Trip newTrip = new Trip()
                 {
@@ -288,5 +288,105 @@ namespace Server
             }
         }
 
+
+        private static string ReceiveStreamFromClient(NetworkHelper networkHelper)
+        {
+            byte[] fileNameLengthInBytes = networkHelper.Receive(Protocol.fileNameLengthSize);
+            int fileNameLength = BitConverter.ToInt32(fileNameLengthInBytes);
+
+            byte[] fileNameInBytes = networkHelper.Receive(fileNameLength);
+            string fileName = Encoding.UTF8.GetString(fileNameInBytes);
+
+            byte[] fileLengthInBytes = networkHelper.Receive(Protocol.fileSizeLength);
+            long fileLength = BitConverter.ToInt64(fileLengthInBytes);
+
+            long numberOfParts = Protocol.numberOfParts(fileLength);
+
+            int currentPart = 1;
+            int offset = 0;
+
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string relativePath = "ReceivedFiles"; 
+            string saveDirectory = Path.Combine(basePath, relativePath);
+
+            if (!Directory.Exists(saveDirectory))
+            {
+                Directory.CreateDirectory(saveDirectory);
+            }
+
+            string savePath = Path.Combine(saveDirectory, fileName);
+
+            FileStreamHelper fs = new FileStreamHelper();
+            while (offset < fileLength)
+            {
+                bool isLastPart = (currentPart == numberOfParts);
+                int numberOfBytesToReceive = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
+                Console.WriteLine($"Recibiendo parte #{currentPart}, de {numberOfBytesToReceive} bytes");
+
+                byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
+
+                fs.Write(savePath, buffer);
+
+                currentPart++;
+                offset += numberOfBytesToReceive;
+            }
+
+            Console.WriteLine($"Archivo recibido completamente y guardado en {savePath}, tamaño total {fileLength} bytes");
+
+            return savePath;
+        }
+
+
+
+
+
+        private static void SendStreamToClient(NetworkHelper networkHelper)
+        {
+            string filePath = Console.ReadLine();
+
+            FileInfo fileInfo = new FileInfo(filePath);
+            string fileName = fileInfo.Name;
+            byte[] fileNameInBytes = Encoding.UTF8.GetBytes(fileName);
+            int fileNameLength = fileNameInBytes.Length;
+            byte[] fileNameLengthInBytes = BitConverter.GetBytes(fileNameLength);
+            networkHelper.Send(fileNameLengthInBytes);
+
+            networkHelper.Send(fileNameInBytes);
+
+            long fileLength = fileInfo.Length;
+            byte[] fileLengthInBytes = BitConverter.GetBytes(fileLength);
+            networkHelper.Send(fileLengthInBytes);
+
+
+            long numberOfParts = Protocol.numberOfParts(fileLength);
+
+            int currentPart = 1;
+            int offset = 0;
+
+            FileStreamHelper fs = new FileStreamHelper();
+            while (offset < fileLength)
+            {
+                bool isLastPart = (currentPart == numberOfParts);
+
+                int numberOfBytesToSend;
+                if (isLastPart)
+                {
+                    numberOfBytesToSend = (int)(fileLength - offset);
+                }
+                else
+                {
+                    numberOfBytesToSend = Protocol.MaxPartSize;
+                }
+                Console.WriteLine($"Enviando parte #{currentPart}, de {numberOfBytesToSend} bytes");
+
+                byte[] bytesReadFromDisk = fs.Read(filePath, offset, numberOfBytesToSend);
+
+                networkHelper.Send(bytesReadFromDisk);
+                currentPart++;
+                offset += numberOfBytesToSend;
+            }
+            Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
+
+        }
     }
 }
