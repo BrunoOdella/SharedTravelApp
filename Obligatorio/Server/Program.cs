@@ -241,6 +241,7 @@ namespace Server
                 Trip tripToJoin = tripRepository.Get(tripID);
                 //ME TENDRIA QUE FIJAR SI MI USER YA ESTA UNIDO A ESTE TRIP?    O SI NO ES EL OWNER?
 
+                //este if lo podria sacar porque ya lo chequeo en el respositorio
                 if (tripToJoin.AvailableSeats > 0)
                 {
                     tripToJoin.AvailableSeats--;
@@ -250,12 +251,18 @@ namespace Server
                     tripRepository.Update(tripToJoin);
 
                     Console.WriteLine("Se ha unido correctamente al viaje.");
+
+                    /*
+                     * ESTO ES PARA CHEQUEAR QUE SE AÑADIO CORRECTAMENTE
                     Console.WriteLine("Usuarios unidos al viaje:");
                     foreach (Guid passengerId in tripToJoin._passengers)
                     {
                         User passenger = userRepository.Get(passengerId);
                         Console.WriteLine($"- {passenger.Name} ({passengerId})");
                     }
+                    */
+                    string nextOption = ReceiveMessageFromClient(networkHelper);
+                    GoToOption(nextOption, networkHelper, socket, user);
 
                 }
                 else

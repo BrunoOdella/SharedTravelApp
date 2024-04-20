@@ -132,6 +132,9 @@ namespace Client
                     Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
                     string selectedTripNumberStr = Console.ReadLine().Trim();
                     SendMessageToServer(selectedTripNumberStr, networkHelper);
+
+                    Console.WriteLine("Se ha unido correctamente al viaje");
+                    ShowMainMenu(networkHelper);
                     break;
                 default:
                     SendMessageToServer(res, networkHelper);

@@ -100,7 +100,7 @@ namespace Server.DataAcces.Repositories
 
             foreach (var trip in context.TripList)
             {
-                if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase))
+                if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase) && trip.Value.AvailableSeats>0)
                 {
                     tripsByDestination.Add(trip.Value);
                 }
