@@ -9,5 +9,5 @@ public interface ITripRepository
     void Update(Trip trip);
     List<Trip> GetAll();
 
-    List<Trip> GetAllTripsByDestination(string destination);
+    List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination);
 }

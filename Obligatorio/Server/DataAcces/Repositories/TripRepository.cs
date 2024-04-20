@@ -93,26 +93,28 @@ namespace Server.DataAcces.Repositories
             return all;
         }
 
-        public List<Trip> GetAllTripsByDestination(string destination)
+        public List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination)
         {
             TripContext context = TripContext.GetAccessReadTrip();
-            List<Trip> tripsByDestination = new List<Trip>();
+            List<Trip> tripsByOriginDestination = new List<Trip>();
 
             foreach (var trip in context.TripList)
             {
-                if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase) && trip.Value.AvailableSeats>0)
+                if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase) 
+                    && trip.Value.Origin.Equals(origin, StringComparison.OrdinalIgnoreCase)
+                    && trip.Value.AvailableSeats>0)
                 {
-                    tripsByDestination.Add(trip.Value);
+                    tripsByOriginDestination.Add(trip.Value);
                 }
             }
 
-            if (tripsByDestination.Count == 0)
+            if (tripsByOriginDestination.Count == 0)
             {
-                throw new Exception("No hay viajes disponibles para el destino especificado.");
+                throw new Exception("No hay viajes disponibles para el origen y destino especificado.");
             }
 
             TripContext.ReturnReadAccessTrip();
-            return tripsByDestination;
+            return tripsByOriginDestination;
         }
 
     }

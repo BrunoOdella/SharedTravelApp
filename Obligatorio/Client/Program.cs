@@ -362,8 +362,13 @@ namespace Client
 
         private static void JoinTrip(NetworkHelper networkHelper)
         {
+            Console.WriteLine("Ingrese el origen del viaje al que se quiere unir:");
+            string origin = Console.ReadLine().Trim();
+
             Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
             string destination = Console.ReadLine().Trim();
+
+            SendMessageToServer(origin, networkHelper);
             SendMessageToServer(destination, networkHelper);
 
             string response = ReceiveMessageFromServer(networkHelper);
@@ -395,8 +400,7 @@ namespace Client
                 }
                 else
                 {
-                    Console.WriteLine("No hay viajes disponibles para el destino especificado.");
-                    // Volver a mostrar el menú
+                    Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
                     ShowMainMenu(networkHelper);
                 }
             }

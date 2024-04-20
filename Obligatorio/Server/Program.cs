@@ -256,19 +256,20 @@ namespace Server
 
         private static void JoinTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
+            string origin = ReceiveMessageFromClient(networkHelper);
             string destination = ReceiveMessageFromClient(networkHelper);
 
-            List<Trip> tripsToDestination;
+            List<Trip> tripsToOriginAndDestination;
             try
             {
-                tripsToDestination = ITripRepo.GetAllTripsByDestination(destination);
+                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
 
-                string tripCount = tripsToDestination.Count.ToString();
+                string tripCount = tripsToOriginAndDestination.Count.ToString();
                 SendMessageToClient(tripCount, networkHelper);
 
-                for (int i = 0; i < tripsToDestination.Count; i++)
+                for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
                 {
-                    Trip trip = tripsToDestination[i];
+                    Trip trip = tripsToOriginAndDestination[i];
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
                     SendMessageToClient(tripString, networkHelper);
                 }
@@ -276,9 +277,9 @@ namespace Server
                 string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
                 int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
-                if (selectedTripIndex >= 0 && selectedTripIndex < tripsToDestination.Count)
+                if (selectedTripIndex >= 0 && selectedTripIndex < tripsToOriginAndDestination.Count)
                 {
-                    Trip selectedTrip = tripsToDestination[selectedTripIndex];
+                    Trip selectedTrip = tripsToOriginAndDestination[selectedTripIndex];
                     Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
 
                     try
@@ -364,7 +365,7 @@ namespace Server
         private static string SerializeTrip(Trip trip)
         {
             // Concatenar los atributos del objeto con un delimitador
-            return $"Origen:{trip.Origin} -> Destino:{trip.Destination},Asientos Disponibles:{trip.AvailableSeats}";
+            return $"Origen:{trip.Origin} -> Destino:{trip.Destination},Asientos Disponibles:{trip.AvailableSeats}, Fecha y hora :{trip.Departure} ";
         }
 
     }
