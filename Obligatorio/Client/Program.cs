@@ -366,7 +366,9 @@ namespace Client
         {
             //obtener los viajes del user actual que no esten vencidos
             Console.WriteLine("Listado de viajes publicados:");
+
             string hasTrips = ReceiveMessageFromServer(networkHelper);
+
             if (hasTrips == "EMPTY")
             {
                 Console.WriteLine("No hay viajes publicados para fechas futuras.");
@@ -389,8 +391,13 @@ namespace Client
             do
             {
                 response = Console.ReadLine().Trim();
-            } while (VerifyResponseModifyTrip(count, response, ref wich) || response.Trim().ToLower() == "salir");
-            
+                Int32.TryParse(response, out wich);
+                bool a = (response.Trim().Length == 0 || wich < 0 || wich > count + 1);
+                bool b = response.Trim().ToLower() == "salir";
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count + 1) || response.Trim().ToLower() == "salir");
+
+            //response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
+
             if (response.Trim().ToLower() == "salir")
                 return;
             //
@@ -452,20 +459,24 @@ namespace Client
             modificar = PromptForBoolean("¿Modificar la imagen del veiculo? (SI/NO)");
             if (modificar)
             {
-                //("Nueva imagen del veiculo:") -> PROMPT
-                //SendMessageToServer(, networkHelper);
+                SendMessageToServer(modificar.ToString(), networkHelper); //avisarle al server que va recibir una foto
+                SendStreamToServer(networkHelper);
             }
-            else SendMessageToServer("EMPTY", networkHelper);
+            else
+            {
+                SendMessageToServer(modificar.ToString(), networkHelper);
+                SendMessageToServer("EMPTY", networkHelper);
+            }
 
             //Modificacion
             //RECIBIR UN MODIFICADO O ERROR
-
+            Console.WriteLine(ReceiveMessageFromServer(networkHelper));
             //FIN TOTAL
         }
 
         private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
         {
-            return response.Trim().Length == 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
+            return response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
         }
     }
 }

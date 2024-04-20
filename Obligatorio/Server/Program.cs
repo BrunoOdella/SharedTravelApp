@@ -216,7 +216,7 @@ namespace Server
                 }
                 if(map.Count == 0) 
                 {
-                    SendMessageToClient("No hay viajes publicados para fechas futuras.", networkHelper);
+                    SendMessageToClient("EMPTY", networkHelper);
                 }
                 else
                 {
@@ -229,13 +229,54 @@ namespace Server
                     }
                 }
                 string selected = ReceiveMessageFromClient(networkHelper);
-                var tripSelected = map[Int32.Parse(selected) - 1];
+                var tripSelected = map[Int32.Parse(selected)];
+                var selectedTrip = ITripRepo.Get(tripSelected);
                 SendMessageToClient($"Viaje seleccionado\n" +
-                    $"Origen: {{actualTrip.Origin}}, Destino: {{actualTrip.Destination}}" +
-                    $" y Fecha {{actualTrip.Departure.ToString()}}", networkHelper);
+                    $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
+                    $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper);
 
                 //recibir cada elemento del trip, si es EMPTY mantener el actual, sino cambiarlo por el recibido
                 //y previo hacer las comprobaciones adecuadas
+
+
+                string newOrigin = ReceiveMessageFromClient(networkHelper);
+                if (newOrigin != "EMPTY")
+                {
+                    selectedTrip.Origin = newOrigin;
+                }
+
+                string newDestination = ReceiveMessageFromClient(networkHelper);
+                if (newDestination != "EMPTY")
+                {
+                    selectedTrip.Destination = newDestination;
+                }
+
+                string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
+                if (newPricePerSeat != "EMPTY")
+                {
+                    selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
+                }
+
+                string newPet = ReceiveMessageFromClient(networkHelper);
+                if (newPet != "EMPTY")
+                {
+                    selectedTrip.Pet = bool.Parse(newPet);
+                }
+
+                DateTime newDepartureTime;
+                if (DateTime.TryParse(ReceiveMessageFromClient(networkHelper), out newDepartureTime))
+                {
+                    selectedTrip.Departure = newDepartureTime;
+                }
+
+                string newPhoto;
+                if (bool.Parse(ReceiveMessageFromClient(networkHelper)))
+                {
+                    newPhoto = ReceiveStreamFromClient(networkHelper);
+                }
+
+                SendMessageToClient($"Viaje actualizado", networkHelper);
+
             }
             catch (Exception ex)
             {
