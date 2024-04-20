@@ -366,22 +366,43 @@ namespace Client
             string destination = Console.ReadLine().Trim();
             SendMessageToServer(destination, networkHelper);
 
-            string tripCountString = ReceiveMessageFromServer(networkHelper);
-            int tripCount = int.Parse(tripCountString);
+            string response = ReceiveMessageFromServer(networkHelper);
 
-            for (int i = 0; i < tripCount; i++)
+            if (response.StartsWith("ERROR"))
             {
-                string trip = ReceiveMessageFromServer(networkHelper);
-                Console.WriteLine(trip);
+                Console.WriteLine(response.Substring(5)); 
+                Console.WriteLine();
+                ShowMainMenu(networkHelper);
             }
+            else
+            {
+                int tripCount = int.Parse(response);
 
-            Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
-            string selectedTripNumberStr = Console.ReadLine().Trim();
-            SendMessageToServer(selectedTripNumberStr, networkHelper);
+                if (tripCount > 0)
+                {
+                    for (int i = 0; i < tripCount; i++)
+                    {
+                        string trip = ReceiveMessageFromServer(networkHelper);
+                        Console.WriteLine(trip);
+                    }
 
-            Console.WriteLine("Se ha unido correctamente al viaje");
-            ShowMainMenu(networkHelper);
+                    Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
+                    string selectedTripNumberStr = Console.ReadLine().Trim();
+                    SendMessageToServer(selectedTripNumberStr, networkHelper);
+
+                    Console.WriteLine("Se ha unido correctamente al viaje");
+                    ShowMainMenu(networkHelper);
+                }
+                else
+                {
+                    Console.WriteLine("No hay viajes disponibles para el destino especificado.");
+                    // Volver a mostrar el menú
+                    ShowMainMenu(networkHelper);
+                }
+            }
         }
+
+
 
         private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
         {

@@ -106,6 +106,11 @@ namespace Server.DataAcces.Repositories
                 }
             }
 
+            if (tripsByDestination.Count == 0)
+            {
+                throw new Exception("No hay viajes disponibles para el destino especificado.");
+            }
+
             TripContext.ReturnReadAccessTrip();
             return tripsByDestination;
         }
