@@ -116,18 +116,18 @@ namespace Client
             switch (int.Parse(res))
             {
                 case 1:
-                    //SendMessageToServer("1", networkHelper);
                     PublishTrip(networkHelper);
                     break;
                 case 2:
                     JoinTrip(networkHelper);
                     break;
                 case 3:
-                    //SendMessageToServer("3", networkHelper);
                     ModifyTrip(networkHelper);
                     break;
+                case 5:
+                    TripSearch(networkHelper);
+                    break;
                 case 9:
-                    //SendMessageToServer("EXIT", networkHelper);
                     break;
                 default:
                     Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
@@ -405,6 +405,98 @@ namespace Client
                 }
             }
         }
+         private static void TripSearch (NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Desea:");
+            Console.WriteLine("1. Ver la lista de todos los viajes");
+            Console.WriteLine("2. Ver la lista de viajes ingrsando el origen y destino deseados");
+
+            string res = Console.ReadLine().Trim();
+            SendMessageToServer(res, networkHelper);
+
+            switch (int.Parse(res))
+            {
+                case 1:
+                    ViewAllTrips(networkHelper);
+                    break;
+                case 2:
+                    ViewTripsOriginDestination(networkHelper);
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
+                    break;
+            }
+        }
+
+        
+        private static void ViewAllTrips(NetworkHelper networkHelper)
+        {
+            string response = ReceiveMessageFromServer(networkHelper);
+            int tripCount = int.Parse(response);
+
+            Console.WriteLine();
+            if (tripCount > 0)
+            {
+                for (int i = 0; i < tripCount; i++)
+                {
+                    string trip = ReceiveMessageFromServer(networkHelper);
+                    Console.WriteLine(trip);
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+                
+            }
+            else
+            {
+                Console.WriteLine("No hay viajes disponibles");
+                
+            }
+            ShowMainMenu(networkHelper);
+        }
+
+        private static void ViewTripsOriginDestination(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Ingrese el origen del viaje al que se quiere unir:");
+            string origin = Console.ReadLine().Trim();
+
+            Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
+            string destination = Console.ReadLine().Trim();
+
+            SendMessageToServer(origin, networkHelper);
+            SendMessageToServer(destination, networkHelper);
+
+            string response = ReceiveMessageFromServer(networkHelper);
+
+            if (response.StartsWith("ERROR"))
+            {
+                Console.WriteLine(response.Substring(5));
+                Console.WriteLine();
+               
+            }
+            else
+            {
+                Console.WriteLine();
+                int tripCount = int.Parse(response);
+
+                if (tripCount > 0)
+                {
+                    for (int i = 0; i < tripCount; i++)
+                    {
+                        string trip = ReceiveMessageFromServer(networkHelper);
+                        Console.WriteLine(trip);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
+                    
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+            ShowMainMenu(networkHelper);
+        }
+
 
 
 

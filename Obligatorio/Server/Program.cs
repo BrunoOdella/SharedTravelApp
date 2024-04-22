@@ -167,7 +167,6 @@ namespace Server
             switch (opt)
             {
                 case 1:
-                    Console.WriteLine("Eligio la opcion 1");
                     PublishTrip(networkHelper, socket, user);
                     break;
                 case 2:
@@ -175,31 +174,27 @@ namespace Server
                     break;
 
                 case 3:
-                    Console.WriteLine("Eligio la opcion 3");
                     ModifyTrip(networkHelper, socket, user);
                     break;
                 case 4:
-                    Console.WriteLine("Eligio la opcion 4");
                     break;
                 case 5:
-                    Console.WriteLine("Eligio la opcion 5");
+                    TripSearch(networkHelper, socket, user);
                     break;
                 case 6:
-                    Console.WriteLine("Eligio la opcion 6");
                     break;
                 case 7:
-                    Console.WriteLine("Eligio la opcion 7");
                     break;
                 case 8:
-                    Console.WriteLine("Eligio la opcion 8");
                     break;
                 case 9:
-                    Console.WriteLine("Eligio la opcion 9");
                     break;
                 default: break;
             }
 
         }
+
+        
 
         private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
@@ -327,7 +322,7 @@ namespace Server
             }
         }
 
-
+        
         private static void PublishTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
             try
@@ -362,6 +357,69 @@ namespace Server
                 SendMessageToClient("Error al publicar el viaje.", networkHelper);
             }
         }
+
+        private static void TripSearch(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            string option = ReceiveMessageFromClient(networkHelper);
+            int opt = Int32.Parse(option);
+            switch (opt)
+            {
+                case 1:
+                    Console.WriteLine("Eligio la opcion 1");
+                    ViewAllTrips(networkHelper, socket, user);
+                    break;
+                case 2:
+                    ViewTripsOriginDestination(networkHelper, socket, user);
+                    break;
+                default: break;
+            }
+        }
+
+        private static void ViewAllTrips(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            List<Trip> allTrips;
+            allTrips = ITripRepo.GetAll();
+
+            string tripCount = allTrips.Count.ToString();
+            SendMessageToClient(tripCount, networkHelper);
+
+            for (int i = 0; i < allTrips.Count; i++)
+            {
+                Trip trip = allTrips[i];
+                string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                SendMessageToClient(tripString, networkHelper);
+            }
+        }
+
+        private static void ViewTripsOriginDestination(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            string origin = ReceiveMessageFromClient(networkHelper);
+            string destination = ReceiveMessageFromClient(networkHelper);
+
+            List<Trip> tripsToOriginAndDestination;
+            try
+            {
+                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
+
+                string tripCount = tripsToOriginAndDestination.Count.ToString();
+                SendMessageToClient(tripCount, networkHelper);
+
+                for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
+                {
+                    Trip trip = tripsToOriginAndDestination[i];
+                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                    SendMessageToClient(tripString, networkHelper);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Enviar mensaje al cliente sobre la falta de viajes disponibles
+                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                string nextOption = ReceiveMessageFromClient(networkHelper);
+                GoToOption(nextOption, networkHelper, socket, user);
+            }
+        }
+
         private static string SerializeTrip(Trip trip)
         {
             // Concatenar los atributos del objeto con un delimitador
