@@ -377,7 +377,7 @@ namespace Server
                     ViewAllTrips(networkHelper, socket, user);
                     break;
                 case 2:
-                    JoinTrip(networkHelper, socket, user);
+                    ViewTripsOriginDestination(networkHelper, socket, user);
                     break;
                 default: break;
             }
@@ -396,6 +396,35 @@ namespace Server
                 Trip trip = allTrips[i];
                 string tripString = $"{i + 1}: {SerializeTrip(trip)}";
                 SendMessageToClient(tripString, networkHelper);
+            }
+        }
+
+        private static void ViewTripsOriginDestination(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            string origin = ReceiveMessageFromClient(networkHelper);
+            string destination = ReceiveMessageFromClient(networkHelper);
+
+            List<Trip> tripsToOriginAndDestination;
+            try
+            {
+                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
+
+                string tripCount = tripsToOriginAndDestination.Count.ToString();
+                SendMessageToClient(tripCount, networkHelper);
+
+                for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
+                {
+                    Trip trip = tripsToOriginAndDestination[i];
+                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                    SendMessageToClient(tripString, networkHelper);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Enviar mensaje al cliente sobre la falta de viajes disponibles
+                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                string nextOption = ReceiveMessageFromClient(networkHelper);
+                GoToOption(nextOption, networkHelper, socket, user);
             }
         }
 
