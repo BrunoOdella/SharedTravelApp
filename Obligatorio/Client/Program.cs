@@ -126,6 +126,10 @@ namespace Client
                     //SendMessageToServer("3", networkHelper);
                     ModifyTrip(networkHelper);
                     break;
+                case 5:
+                    //SendMessageToServer("3", networkHelper);
+                    TripSearch(networkHelper);
+                    break;
                 case 9:
                     //SendMessageToServer("EXIT", networkHelper);
                     break;
@@ -403,6 +407,51 @@ namespace Client
                     Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
                     ShowMainMenu(networkHelper);
                 }
+            }
+        }
+         private static void TripSearch (NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Desea:");
+            Console.WriteLine("1. Ver la lista de todos los viajes");
+            Console.WriteLine("2. Ver la lista de viajes ingrsando el origen y destino deseados");
+
+            string res = Console.ReadLine().Trim();
+            SendMessageToServer(res, networkHelper);
+
+            switch (int.Parse(res))
+            {
+                case 1:
+                    //SendMessageToServer("1", networkHelper);
+                    ViewAllTrips(networkHelper);
+                    break;
+                case 2:
+                    //ViewTripsOriginDestination(networkHelper);
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
+                    break;
+            }
+        }
+
+        private static void ViewAllTrips(NetworkHelper networkHelper)
+        {
+            string response = ReceiveMessageFromServer(networkHelper);
+            int tripCount = int.Parse(response);
+
+            if (tripCount > 0)
+            {
+                for (int i = 0; i < tripCount; i++)
+                {
+                    string trip = ReceiveMessageFromServer(networkHelper);
+                    Console.WriteLine(trip);
+                }
+
+                ShowMainMenu(networkHelper);
+            }
+            else
+            {
+                Console.WriteLine("No hay viajes disponibles");
+                ShowMainMenu(networkHelper);
             }
         }
 

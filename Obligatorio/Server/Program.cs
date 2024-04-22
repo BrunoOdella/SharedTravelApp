@@ -183,6 +183,7 @@ namespace Server
                     break;
                 case 5:
                     Console.WriteLine("Eligio la opcion 5");
+                    TripSearch(networkHelper, socket, user);
                     break;
                 case 6:
                     Console.WriteLine("Eligio la opcion 6");
@@ -200,6 +201,8 @@ namespace Server
             }
 
         }
+
+        
 
         private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
@@ -327,7 +330,7 @@ namespace Server
             }
         }
 
-
+        
         private static void PublishTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
             try
@@ -362,6 +365,40 @@ namespace Server
                 SendMessageToClient("Error al publicar el viaje.", networkHelper);
             }
         }
+
+        private static void TripSearch(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            string option = ReceiveMessageFromClient(networkHelper);
+            int opt = Int32.Parse(option);
+            switch (opt)
+            {
+                case 1:
+                    Console.WriteLine("Eligio la opcion 1");
+                    ViewAllTrips(networkHelper, socket, user);
+                    break;
+                case 2:
+                    JoinTrip(networkHelper, socket, user);
+                    break;
+                default: break;
+            }
+        }
+
+        private static void ViewAllTrips(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            List<Trip> allTrips;
+            allTrips = ITripRepo.GetAll();
+
+            string tripCount = allTrips.Count.ToString();
+            SendMessageToClient(tripCount, networkHelper);
+
+            for (int i = 0; i < allTrips.Count; i++)
+            {
+                Trip trip = allTrips[i];
+                string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                SendMessageToClient(tripString, networkHelper);
+            }
+        }
+
         private static string SerializeTrip(Trip trip)
         {
             // Concatenar los atributos del objeto con un delimitador
