@@ -179,6 +179,7 @@ namespace Server
                     break;
                 case 4:
                     Console.WriteLine("Eligio la opcion 4");
+                    WithdrawFromTrip(networkHelper, socket, user);
                     break;
                 case 5:
                     Console.WriteLine("Eligio la opcion 5");
@@ -198,6 +199,49 @@ namespace Server
                 default: break;
             }
 
+        }
+
+        private static void WithdrawFromTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            try
+            {
+                List<Trip> trips = ITripRepo.GetAll();
+                List<Trip> UserInTrips = new List<Trip>();
+                foreach (Trip trip in trips)
+                {
+                    if (trip.PassangerInTrip(user.GetGuid()) && trip.Departure > DateTime.Now)
+                        UserInTrips.Add(trip);
+                }
+
+                if (!UserInTrips.Any())
+                {
+                    SendMessageToClient("EMPY", networkHelper);
+                    return;
+                }
+                SendMessageToClient($"{UserInTrips.Count}", networkHelper);
+                int count = 1;
+                foreach (Trip trip in UserInTrips)
+                {
+                    SendMessageToClient($"{count} | Origen: {trip.Destination}, Destino: {trip.Destination}, " +
+                                        $"Fecha de salida: {trip.Departure}", networkHelper);
+                    count++;
+                }
+
+                string selected = ReceiveMessageFromClient(networkHelper);
+
+                int pos = int.Parse(selected) - 1;
+
+                Trip TripSelected = UserInTrips[pos];
+                TripSelected.Withdraw(user.GetGuid());
+
+                SendMessageToClient("OK", networkHelper);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al eliminar el pasajero del viaje: " + ex.Message);
+                SendMessageToClient("Error al eliminar el pasajero del viaje.", networkHelper);
+            }
+            
         }
 
         private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
