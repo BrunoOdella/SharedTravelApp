@@ -116,22 +116,18 @@ namespace Client
             switch (int.Parse(res))
             {
                 case 1:
-                    //SendMessageToServer("1", networkHelper);
                     PublishTrip(networkHelper);
                     break;
                 case 2:
                     JoinTrip(networkHelper);
                     break;
                 case 3:
-                    //SendMessageToServer("3", networkHelper);
                     ModifyTrip(networkHelper);
                     break;
                 case 5:
-                    //SendMessageToServer("3", networkHelper);
                     TripSearch(networkHelper);
                     break;
                 case 9:
-                    //SendMessageToServer("EXIT", networkHelper);
                     break;
                 default:
                     Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
@@ -438,6 +434,7 @@ namespace Client
             string response = ReceiveMessageFromServer(networkHelper);
             int tripCount = int.Parse(response);
 
+            Console.WriteLine();
             if (tripCount > 0)
             {
                 for (int i = 0; i < tripCount; i++)
@@ -445,14 +442,16 @@ namespace Client
                     string trip = ReceiveMessageFromServer(networkHelper);
                     Console.WriteLine(trip);
                 }
-
-                ShowMainMenu(networkHelper);
+                Console.WriteLine();
+                Console.WriteLine();
+                
             }
             else
             {
                 Console.WriteLine("No hay viajes disponibles");
-                ShowMainMenu(networkHelper);
+                
             }
+            ShowMainMenu(networkHelper);
         }
 
         private static void ViewTripsOriginDestination(NetworkHelper networkHelper)
@@ -476,6 +475,7 @@ namespace Client
             }
             else
             {
+                Console.WriteLine();
                 int tripCount = int.Parse(response);
 
                 if (tripCount > 0)

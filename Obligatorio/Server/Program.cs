@@ -167,7 +167,6 @@ namespace Server
             switch (opt)
             {
                 case 1:
-                    Console.WriteLine("Eligio la opcion 1");
                     PublishTrip(networkHelper, socket, user);
                     break;
                 case 2:
@@ -175,27 +174,20 @@ namespace Server
                     break;
 
                 case 3:
-                    Console.WriteLine("Eligio la opcion 3");
                     ModifyTrip(networkHelper, socket, user);
                     break;
                 case 4:
-                    Console.WriteLine("Eligio la opcion 4");
                     break;
                 case 5:
-                    Console.WriteLine("Eligio la opcion 5");
                     TripSearch(networkHelper, socket, user);
                     break;
                 case 6:
-                    Console.WriteLine("Eligio la opcion 6");
                     break;
                 case 7:
-                    Console.WriteLine("Eligio la opcion 7");
                     break;
                 case 8:
-                    Console.WriteLine("Eligio la opcion 8");
                     break;
                 case 9:
-                    Console.WriteLine("Eligio la opcion 9");
                     break;
                 default: break;
             }
