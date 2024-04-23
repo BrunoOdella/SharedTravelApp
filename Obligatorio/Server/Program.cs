@@ -182,9 +182,10 @@ namespace Server
                     TripSearch(networkHelper, socket, user);
                     break;
                 case 6:
+                    ViewTripInfo(networkHelper, socket, user);
                     break;
                 case 7:
-                    ViewTripInfo(networkHelper, socket, user);
+                    
                     break;
                 case 8:
                     break;
@@ -222,11 +223,83 @@ namespace Server
                     Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
                     SendMessageToClient(AllTripInfo(selectedTrip), networkHelper);
 
-                    //aca le preguntas si desea descargar la imagen del auto
                     string download = ReceiveMessageFromClient(networkHelper);
                     if (download == "si") 
                     {
                         SendStreamToClient(networkHelper, selectedTrip.Photo);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Selección de viaje inválida.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Enviar mensaje al cliente sobre la falta de viajes disponibles
+                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                string nextOption = ReceiveMessageFromClient(networkHelper);
+                GoToOption(nextOption, networkHelper, socket, user);
+            }
+        }
+
+        private static void JoinTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            string origin = ReceiveMessageFromClient(networkHelper);
+            string destination = ReceiveMessageFromClient(networkHelper);
+
+            List<Trip> tripsToOriginAndDestination;
+            try
+            {
+                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
+
+                string tripCount = tripsToOriginAndDestination.Count.ToString();
+                SendMessageToClient(tripCount, networkHelper);
+
+                for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
+                {
+                    Trip trip = tripsToOriginAndDestination[i];
+                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                    SendMessageToClient(tripString, networkHelper);
+                }
+
+                string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
+
+                if (selectedTripIndex >= 0 && selectedTripIndex < tripsToOriginAndDestination.Count)
+                {
+                    Trip selectedTrip = tripsToOriginAndDestination[selectedTripIndex];
+                    Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
+
+                    try
+                    {
+                        Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
+                        //MANEJAR LOS CASOS DE QUE:
+                        //YA ESTA UNIDO A ESE TRIP
+                        //ES EL OWNER DE ESE TRIP
+
+                        //este if  (que checkea lo de available seats) lo podria sacar porque ya lo chequeo en el respositorio
+                        if (tripToJoin.AvailableSeats > 0)
+                        {
+                            tripToJoin.AvailableSeats--;
+
+                            tripToJoin._passengers.Add(user._id);
+
+                            ITripRepo.Update(tripToJoin);
+
+                            Console.WriteLine("Se ha unido correctamente al viaje.");
+
+                            string nextOption = ReceiveMessageFromClient(networkHelper);
+                            GoToOption(nextOption, networkHelper, socket, user);
+                        }
+                        else
+                        {
+                            Console.WriteLine("No hay asientos disponibles en este viaje.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error al unirse al viaje: " + ex.Message);
                     }
                 }
                 else
@@ -337,78 +410,7 @@ namespace Server
             return authenticatedUser != null;
         }
 
-        private static void JoinTrip(NetworkHelper networkHelper, Socket socket, User user)
-        {
-            string origin = ReceiveMessageFromClient(networkHelper);
-            string destination = ReceiveMessageFromClient(networkHelper);
-
-            List<Trip> tripsToOriginAndDestination;
-            try
-            {
-                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
-
-                string tripCount = tripsToOriginAndDestination.Count.ToString();
-                SendMessageToClient(tripCount, networkHelper);
-
-                for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
-                {
-                    Trip trip = tripsToOriginAndDestination[i];
-                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClient(tripString, networkHelper);
-                }
-
-                string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
-                int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
-
-                if (selectedTripIndex >= 0 && selectedTripIndex < tripsToOriginAndDestination.Count)
-                {
-                    Trip selectedTrip = tripsToOriginAndDestination[selectedTripIndex];
-                    Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
-
-                    try
-                    {
-                        Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
-                        //MANEJAR LOS CASOS DE QUE:
-                        //YA ESTA UNIDO A ESE TRIP
-                        //ES EL OWNER DE ESE TRIP
-
-                        //este if  (que checkea lo de available seats) lo podria sacar porque ya lo chequeo en el respositorio
-                        if (tripToJoin.AvailableSeats > 0)
-                        {
-                            tripToJoin.AvailableSeats--;
-
-                            tripToJoin._passengers.Add(user._id);
-
-                            ITripRepo.Update(tripToJoin);
-
-                            Console.WriteLine("Se ha unido correctamente al viaje.");
-
-                            string nextOption = ReceiveMessageFromClient(networkHelper);
-                            GoToOption(nextOption, networkHelper, socket, user);
-                        }
-                        else
-                        {
-                            Console.WriteLine("No hay asientos disponibles en este viaje.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Error al unirse al viaje: " + ex.Message);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Selección de viaje inválida.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Enviar mensaje al cliente sobre la falta de viajes disponibles
-                SendMessageToClient("ERROR" + ex.Message, networkHelper);
-                string nextOption = ReceiveMessageFromClient(networkHelper);
-                GoToOption(nextOption, networkHelper, socket, user);
-            }
-        }
+        
 
         
         private static void PublishTrip(NetworkHelper networkHelper, Socket socket, User user)
@@ -453,11 +455,10 @@ namespace Server
             switch (opt)
             {
                 case 1:
-                    Console.WriteLine("Eligio la opcion 1");
                     ViewAllTrips(networkHelper, socket, user);
                     break;
                 case 2:
-                    ViewTripsOriginDestination(networkHelper, socket, user);
+                    ViewTripsFiltered(networkHelper, socket, user);
                     break;
                 default: break;
             }
@@ -479,7 +480,7 @@ namespace Server
             }
         }
 
-        private static void ViewTripsOriginDestination(NetworkHelper networkHelper, Socket socket, User user)
+        private static void ViewTripsFiltered(NetworkHelper networkHelper, Socket socket, User user)
         {
             string origin = ReceiveMessageFromClient(networkHelper);
             string destination = ReceiveMessageFromClient(networkHelper);
@@ -501,7 +502,6 @@ namespace Server
             }
             catch (Exception ex)
             {
-                // Enviar mensaje al cliente sobre la falta de viajes disponibles
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 string nextOption = ReceiveMessageFromClient(networkHelper);
                 GoToOption(nextOption, networkHelper, socket, user);
@@ -510,8 +510,7 @@ namespace Server
 
         private static string SerializeTrip(Trip trip)
         {
-            // Concatenar los atributos del objeto con un delimitador
-            return $"Origen:{trip.Origin} -> Destino:{trip.Destination},Asientos Disponibles:{trip.AvailableSeats}, Fecha y hora :{trip.Departure} ";
+            return $"Origen:{trip.Origin} -> Destino: {trip.Destination}, Fecha y hora de salida:{trip.Departure}";
         }
 
 

@@ -128,7 +128,7 @@ namespace Client
                 case 5:
                     TripSearch(networkHelper);
                     break;
-                case 7:
+                case 6:
                     ViewTripInfo(networkHelper);
                     break;
                 case 9:
@@ -265,7 +265,6 @@ namespace Client
                     string tripInfo = ReceiveMessageFromServer(networkHelper);
                     Console.Write(tripInfo);
 
-                    //le pregunto si desea descargar la imagen del auto
                     Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
                     string resp = Console.ReadLine().Trim();
                     SendMessageToServer(resp, networkHelper);
@@ -276,9 +275,6 @@ namespace Client
                        string path = Console.ReadLine().Trim();
                        ReceiveStreamFromServer(networkHelper, path);
                     }
-
-
-
                 }
                 else
                 {
@@ -584,7 +580,7 @@ namespace Client
         {
             Console.WriteLine("Desea:");
             Console.WriteLine("1. Ver la lista de todos los viajes");
-            Console.WriteLine("2. Ver la lista de viajes ingrsando el origen y destino deseados");
+            Console.WriteLine("2. Ver la lista de viajes filtrados por origen y destino");
 
             string res = Console.ReadLine().Trim();
             SendMessageToServer(res, networkHelper);
