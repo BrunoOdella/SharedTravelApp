@@ -8,5 +8,16 @@
         public static string Request = "REQ";
         public static string Response = "RES";
 
+        public static int fileNameLengthSize = 4;
+        public static int fileSizeLength = 8; // long
+        public static int MaxPartSize = 32768;
+
+        public static long numberOfParts(long fileLength)
+        {
+            long numberOfParts = fileLength / MaxPartSize;
+            if (numberOfParts * MaxPartSize != fileLength)
+                numberOfParts++;
+            return numberOfParts;
+        }
     }
 }
