@@ -458,7 +458,10 @@ namespace Server
                     ViewAllTrips(networkHelper, socket, user);
                     break;
                 case 2:
-                    ViewTripsFiltered(networkHelper, socket, user);
+                    ViewTripsFilteredByOriginAndDestination(networkHelper, socket, user);
+                    break;
+                case 3:
+                    ViewAllTripsFilteredPetFriendly(networkHelper, socket, user);
                     break;
                 default: break;
             }
@@ -480,7 +483,7 @@ namespace Server
             }
         }
 
-        private static void ViewTripsFiltered(NetworkHelper networkHelper, Socket socket, User user)
+        private static void ViewTripsFilteredByOriginAndDestination(NetworkHelper networkHelper, Socket socket, User user)
         {
             string origin = ReceiveMessageFromClient(networkHelper);
             string destination = ReceiveMessageFromClient(networkHelper);
@@ -496,6 +499,38 @@ namespace Server
                 for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
                 {
                     Trip trip = tripsToOriginAndDestination[i];
+                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                    SendMessageToClient(tripString, networkHelper);
+                }
+            }
+            catch (Exception ex)
+            {
+                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                string nextOption = ReceiveMessageFromClient(networkHelper);
+                GoToOption(nextOption, networkHelper, socket, user);
+            }
+        }
+
+        private static void ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            string option = ReceiveMessageFromClient(networkHelper);
+            bool petFriendly = false;
+            if(option == "SI")
+            {
+                petFriendly = true;
+            }
+
+            List<Trip> trips;
+            try
+            {
+                trips = ITripRepo.GetTripsFilteredByPetFriendly(petFriendly);
+
+                string tripCount = trips.Count.ToString();
+                SendMessageToClient(tripCount, networkHelper);
+
+                for (int i = 0; i < trips.Count; i++)
+                {
+                    Trip trip = trips[i];
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
                     SendMessageToClient(tripString, networkHelper);
                 }

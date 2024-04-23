@@ -117,5 +117,27 @@ namespace Server.DataAcces.Repositories
             return tripsByOriginDestination;
         }
 
+        public List<Trip> GetTripsFilteredByPetFriendly(bool petFriendly)
+        {
+            TripContext context = TripContext.GetAccessReadTrip();
+            List<Trip> trips = new List<Trip>();
+
+            foreach (var trip in context.TripList)
+            {
+                if (trip.Value.Pet.Equals(petFriendly))
+                {
+                    trips.Add(trip.Value);
+                }
+            }
+
+            if (trips.Count == 0)
+            {
+                throw new Exception("No hay viajes disponibles para el filtro indicado");
+            }
+
+            TripContext.ReturnReadAccessTrip();
+            return trips;
+        }
+
     }
 }
