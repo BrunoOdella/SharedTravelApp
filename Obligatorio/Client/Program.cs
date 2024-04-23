@@ -6,6 +6,7 @@ using Common.Interfaces;
 using Common;
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
+using System.IO;
 
 namespace Client
 {
@@ -127,6 +128,9 @@ namespace Client
                 case 5:
                     TripSearch(networkHelper);
                     break;
+                case 6:
+                    ViewTripInfo(networkHelper);
+                    break;
                 case 9:
                     break;
                 default:
@@ -135,6 +139,7 @@ namespace Client
             }
         }
 
+        
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
         {
@@ -173,13 +178,166 @@ namespace Client
             bool isPetFriendly = PromptForBoolean("¿Es el viaje amigable con mascotas? (si/no):");
             SendMessageToServer(isPetFriendly.ToString(), networkHelper);
 
-            string photo = Console.ReadLine().Trim();
-            SendMessageToServer(photo, networkHelper);
+            Console.WriteLine("Escriba la ruta de la foto del coche");
+            SendStreamToServer(networkHelper);
 
 
             string response = ReceiveMessageFromServer(networkHelper);
             Console.WriteLine(response);
         }
+
+
+        private static string ReceiveStreamFromServer(NetworkHelper networkHelper, string path)
+        {
+            byte[] fileNameLengthInBytes = networkHelper.Receive(Protocol.fileNameLengthSize);
+            int fileNameLength = BitConverter.ToInt32(fileNameLengthInBytes);
+
+            byte[] fileNameInBytes = networkHelper.Receive(fileNameLength);
+            string fileName = Encoding.UTF8.GetString(fileNameInBytes);
+
+            byte[] fileLengthInBytes = networkHelper.Receive(Protocol.fileSizeLength);
+            long fileLength = BitConverter.ToInt64(fileLengthInBytes);
+
+            long numberOfParts = Protocol.numberOfParts(fileLength);
+
+            int currentPart = 1;
+            int offset = 0;
+
+            //string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            //string relativePath = "ReceivedFiles";
+            string downloadPath = path;
+
+            if (!Directory.Exists(downloadPath))
+            {
+                Directory.CreateDirectory(downloadPath);
+            }
+
+            string savePath = Path.Combine(downloadPath, fileName);
+
+            FileStreamHelper fs = new FileStreamHelper();
+            while (offset < fileLength)
+            {
+                bool isLastPart = (currentPart == numberOfParts);
+                int numberOfBytesToReceive = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
+                Console.WriteLine($"Recibiendo parte #{currentPart}, de {numberOfBytesToReceive} bytes");
+
+                byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
+                 
+                fs.Write(savePath, buffer);
+
+                currentPart++;
+                offset += numberOfBytesToReceive;
+            }
+
+            Console.WriteLine($"Archivo recibido completamente y guardado en {savePath}, tamaño total {fileLength} bytes");
+
+            return savePath;
+        }
+
+
+        private static void ViewTripInfo(NetworkHelper networkHelper)
+        {
+
+            string response = ReceiveMessageFromServer(networkHelper);
+
+            if (response.StartsWith("ERROR"))
+            {
+                Console.WriteLine(response.Substring(5));
+                Console.WriteLine();
+                ShowMainMenu(networkHelper);
+            }
+            else
+            {
+                int tripCount = int.Parse(response);
+
+                if (tripCount > 0)
+                {
+                    for (int i = 0; i < tripCount; i++)
+                    {
+                        string trip = ReceiveMessageFromServer(networkHelper);
+                        Console.WriteLine(trip);
+                    }
+
+                    Console.WriteLine("Ingrese el numero de viaje del que quiere recibir toda la informacion:");
+                    string selectedTripNumberStr = Console.ReadLine().Trim();
+                    SendMessageToServer(selectedTripNumberStr, networkHelper);
+
+                    string tripInfo = ReceiveMessageFromServer(networkHelper);
+                    Console.Write(tripInfo);
+
+                    Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
+                    string resp = Console.ReadLine().Trim();
+                    SendMessageToServer(resp, networkHelper);
+
+                    if(resp == "si")
+                    {
+                       Console.WriteLine("Ingrese el path en el cual desea guardar la imagen");
+                       string path = Console.ReadLine().Trim();
+                       ReceiveStreamFromServer(networkHelper, path);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No hay viajes disponibles");
+                }
+                ShowMainMenu(networkHelper);
+            }
+        }
+
+
+        private static void SendStreamToServer(NetworkHelper networkHelper)
+        {
+            string filePath = "";
+            bool fileExists = false;
+
+            while (!fileExists)
+            {
+                Console.WriteLine("Ingrese la ruta del archivo a enviar:");
+                filePath = Console.ReadLine();
+
+                if (File.Exists(filePath))
+                {
+                    fileExists = true;
+                }
+                else
+                {
+                    Console.WriteLine("Error: El archivo no existe. Por favor, ingrese una ruta válida.");
+                }
+            }
+
+            FileInfo fileInfo = new FileInfo(filePath);
+            string fileName = fileInfo.Name;
+            byte[] fileNameInBytes = Encoding.UTF8.GetBytes(fileName);
+            int fileNameLength = fileNameInBytes.Length;
+            byte[] fileNameLengthInBytes = BitConverter.GetBytes(fileNameLength);
+            networkHelper.Send(fileNameLengthInBytes);
+
+            networkHelper.Send(fileNameInBytes);
+
+            long fileLength = fileInfo.Length;
+            byte[] fileLengthInBytes = BitConverter.GetBytes(fileLength);
+            networkHelper.Send(fileLengthInBytes);
+
+            long numberOfParts = Protocol.numberOfParts(fileLength);
+            int currentPart = 1;
+            int offset = 0;
+
+            FileStreamHelper fs = new FileStreamHelper();
+            while (offset < fileLength)
+            {
+                bool isLastPart = (currentPart == numberOfParts);
+                int numberOfBytesToSend = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
+                Console.WriteLine($"Enviando parte #{currentPart}, de {numberOfBytesToSend} bytes");
+
+                byte[] bytesReadFromDisk = fs.Read(filePath, offset, numberOfBytesToSend);
+                networkHelper.Send(bytesReadFromDisk);
+                currentPart++;
+                offset += numberOfBytesToSend;
+            }
+            Console.WriteLine($"Terminé de enviar archivo {filePath}, de tamaño {fileLength} bytes");
+        }
+
+
 
         private static string PromptForNonEmptyString(string prompt)
         {
@@ -218,6 +376,8 @@ namespace Client
             }
             return inputDate;
         }
+
+
 
 
         private static int PromptForInt(string prompt)
@@ -263,7 +423,9 @@ namespace Client
         {
             //obtener los viajes del user actual que no esten vencidos
             Console.WriteLine("Listado de viajes publicados:");
+
             string hasTrips = ReceiveMessageFromServer(networkHelper);
+
             if (hasTrips == "EMPTY")
             {
                 Console.WriteLine("No hay viajes publicados para fechas futuras.");
@@ -286,8 +448,13 @@ namespace Client
             do
             {
                 response = Console.ReadLine().Trim();
-            } while (VerifyResponseModifyTrip(count, response, ref wich) || response.Trim().ToLower() == "salir");
-            
+                Int32.TryParse(response, out wich);
+                bool a = (response.Trim().Length == 0 || wich < 0 || wich > count + 1);
+                bool b = response.Trim().ToLower() == "salir";
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count + 1) || response.Trim().ToLower() == "salir");
+
+            //response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
+
             if (response.Trim().ToLower() == "salir")
                 return;
             //
@@ -349,14 +516,18 @@ namespace Client
             modificar = PromptForBoolean("¿Modificar la imagen del veiculo? (SI/NO)");
             if (modificar)
             {
-                //("Nueva imagen del veiculo:") -> PROMPT
-                //SendMessageToServer(, networkHelper);
+                SendMessageToServer(modificar.ToString(), networkHelper); //avisarle al server que va recibir una foto
+                SendStreamToServer(networkHelper);
             }
-            else SendMessageToServer("EMPTY", networkHelper);
+            else
+            {
+                SendMessageToServer(modificar.ToString(), networkHelper);
+                SendMessageToServer("EMPTY", networkHelper);
+            }
 
             //Modificacion
             //RECIBIR UN MODIFICADO O ERROR
-
+            Console.WriteLine(ReceiveMessageFromServer(networkHelper));
             //FIN TOTAL
         }
 
@@ -409,7 +580,7 @@ namespace Client
         {
             Console.WriteLine("Desea:");
             Console.WriteLine("1. Ver la lista de todos los viajes");
-            Console.WriteLine("2. Ver la lista de viajes ingrsando el origen y destino deseados");
+            Console.WriteLine("2. Ver la lista de viajes filtrados por origen y destino");
 
             string res = Console.ReadLine().Trim();
             SendMessageToServer(res, networkHelper);
@@ -502,7 +673,7 @@ namespace Client
 
         private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
         {
-            return response.Trim().Length == 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
+            return response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
         }
     }
 }
