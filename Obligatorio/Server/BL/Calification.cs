@@ -33,5 +33,10 @@ namespace Server.BL
             _calificationId = id;
         }
 
+        public Guid GetTrip()
+        {
+            return _tripId;
+        }
+
     }
 } 

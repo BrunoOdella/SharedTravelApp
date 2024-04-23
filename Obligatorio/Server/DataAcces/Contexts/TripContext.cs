@@ -26,6 +26,19 @@ namespace DataAcces
             }
         }
 
+        private static string CarsFilePath
+        {
+            get
+            {
+                string currentDirectory = Directory.GetCurrentDirectory();
+                DirectoryInfo parentDirectory = Directory.GetParent(currentDirectory);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                string aux = Path.Combine(parentDirectory.FullName, "Data");
+                return Path.Combine(aux, "Autos");
+            }
+        }
+
         public static TripContext GetAccessReadTrip()
         {
             _serviceQueueTrip.WaitOne();     //espera de turno
@@ -58,25 +71,56 @@ namespace DataAcces
                 string json = r.ReadToEnd();
                 source = JsonSerializer.Deserialize<List<TripTransfer>>(json);
             }
-
+            int count = 1;
+            bool scd = false;
             foreach (var elem in source)
             {
+                //C:\Users\user\OneDrive - Nublit\Documentos\ORT\prog de redes\Obli\M6A_Ingenieria_242739_231665_256680\Obligatorio\Server\Data\Autos\auto - copia (1).jpg
+                //C:\Users\user\OneDrive - Nublit\Documentos\ORT\prog de redes\Obli\M6A_Ingenieria_242739_231665_256680\Obligatorio\Server\Data\Autos\Koopa - copia (1).jpg
+                //Path.Combine(parentDirectory.FullName, "Autos");
+                string wich;
+                if (!scd)
+                {
+                    wich = $"auto - copia ({count}).jpg";
+                    scd = true;
+                }
+                else
+                {
+                    wich = $"Koopa - copia ({count}).jpg";
+                    scd = false;
+                    count++;
+                }
+                string sourceFile = Path.Combine(CarsFilePath, wich); //Archivo de los datos de prueba
+
+                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                string relativePath = "ReceivedFiles";
+                string saveDirectory = Path.Combine(basePath, relativePath);
+
+                if (!Directory.Exists(saveDirectory))
+                {
+                    Directory.CreateDirectory(saveDirectory);
+                }
+
+                string savePath = Path.Combine(saveDirectory, wich); //Direccion de donde guardar la imagen una vez creado el Trip
+
+                File.Copy(sourceFile, savePath, true); //Copio el archivo de prueba a la pocision donde debe guardarse
+
                 Trip actual = new Trip()
                 {
-                    Origin = elem.origen,
-                    Destination = elem.destino,
-                    Departure = new DateTime(elem.anio, elem.mes, elem.dia, elem.hora, 0, 0),
-                    AvailableSeats = elem.asientosDisponibles,
-                    TotalSeats = elem.asientosDisponibles,
-                    PricePerPassanger = elem.precio,
-                    Pet = elem.pet,
+                    Origin = elem.Origen,
+                    Destination = elem.Destino,
+                    Departure = new DateTime(elem.Anio, elem.Mes, elem.Dia, elem.Hora, 0, 0),
+                    AvailableSeats = elem.AsientosDisponibles,
+                    TotalSeats = elem.AsientosTotales,
+                    PricePerPassanger = elem.Precio,
+                    Pet = elem.Mascota,
                     Photo = elem.photo
                 };
-                Guid actualGuid = new Guid(elem._id);
+                Guid actualGuid = new Guid(elem.TripID);
                 actual.SetGuid(actualGuid);
-                actual.SetOwner(new Guid(elem._owner));
+                actual.SetOwner(new Guid(elem.OwnerID));
                 List<Guid> passangers = new List<Guid>();
-                foreach (var pass in elem._passengers)
+                foreach (var pass in elem.Pasageros)
                 {
                     passangers.Add(new Guid(pass));
                     context.UserList[new Guid(pass)].Trips.Add(actualGuid);
@@ -113,19 +157,19 @@ namespace DataAcces
 
     internal class TripTransfer
     {
-        public string _id { get; set; }
-        public string _owner { get; set; }
-        public string origen { get; set; }
-        public string destino { get; set; }
-        public int anio { get; set; }
-        public int mes { get; set; }
-        public int dia { get; set; }
-        public int hora { get; set; }
-        public int asientosDisponibles { get; set; }
-        public int asientosTotales { get; set; }
-        public float precio { get; set; }
-        public bool pet { get; set; }
+        public string TripID { get; set; }
+        public string OwnerID { get; set; }
+        public string Origen { get; set; }
+        public string Destino { get; set; }
+        public int Anio { get; set; }
+        public int Mes { get; set; }
+        public int Dia { get; set; }
+        public int Hora { get; set; }
+        public int AsientosDisponibles { get; set; }
+        public int AsientosTotales { get; set; }
+        public float Precio { get; set; }
+        public bool Mascota { get; set; }
         public string photo { get; set; }
-        public string[] _passengers { get; set; }
+        public string[] Pasageros { get; set; }
     }
 }
