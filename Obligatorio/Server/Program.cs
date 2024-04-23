@@ -184,6 +184,7 @@ namespace Server
                 case 6:
                     break;
                 case 7:
+                    ViewTripInfo(networkHelper, socket, user);
                     break;
                 case 8:
                     break;
@@ -194,7 +195,53 @@ namespace Server
 
         }
 
-        
+        private static void ViewTripInfo(NetworkHelper networkHelper, Socket socket, User user)
+        {
+
+            List<Trip> trips;
+            try
+            {
+                trips = ITripRepo.GetAll();
+
+                string tripCount = trips.Count.ToString();
+                SendMessageToClient(tripCount, networkHelper);
+
+                for (int i = 0; i < trips.Count; i++)
+                {
+                    Trip trip = trips[i];
+                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                    SendMessageToClient(tripString, networkHelper);
+                }
+
+                string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
+
+                if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
+                {
+                    Trip selectedTrip = trips[selectedTripIndex];
+                    Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
+                    SendMessageToClient(AllTripInfo(selectedTrip), networkHelper);
+
+                    //aca le preguntas si desea descargar la imagen del auto
+                    string download = ReceiveMessageFromClient(networkHelper);
+                    if (download == "si") 
+                    {
+                        SendStreamToClient(networkHelper, selectedTrip.Photo);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Selección de viaje inválida.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Enviar mensaje al cliente sobre la falta de viajes disponibles
+                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                string nextOption = ReceiveMessageFromClient(networkHelper);
+                GoToOption(nextOption, networkHelper, socket, user);
+            }
+        }
 
         private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
@@ -564,6 +611,15 @@ namespace Server
             }
             Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
 
+        }
+        private static string AllTripInfo(Trip trip)
+        {
+            return $"Origen:{trip.Origin} -> Destino:{trip.Destination}" +
+                $",Asientos Disponibles:{trip.AvailableSeats}" +
+                $", Fecha y hora de salida:{trip.Departure}" +
+                $", Cantidad de ascientos disponibles {trip.AvailableSeats}" +
+                $", Precio {trip.PricePerPassanger} " +
+                $", Se permiten mascotas: {trip.Pet} ";
         }
     }
 }

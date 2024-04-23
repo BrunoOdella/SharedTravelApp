@@ -6,6 +6,7 @@ using Common.Interfaces;
 using Common;
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
+using System.IO;
 
 namespace Client
 {
@@ -127,6 +128,9 @@ namespace Client
                 case 5:
                     TripSearch(networkHelper);
                     break;
+                case 7:
+                    ViewTripInfo(networkHelper);
+                    break;
                 case 9:
                     break;
                 default:
@@ -135,6 +139,7 @@ namespace Client
             }
         }
 
+        
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
         {
@@ -182,7 +187,7 @@ namespace Client
         }
 
 
-        private static string ReceiveStreamFromServer(NetworkHelper networkHelper)
+        private static string ReceiveStreamFromServer(NetworkHelper networkHelper, string path)
         {
             byte[] fileNameLengthInBytes = networkHelper.Receive(Protocol.fileNameLengthSize);
             int fileNameLength = BitConverter.ToInt32(fileNameLengthInBytes);
@@ -198,16 +203,16 @@ namespace Client
             int currentPart = 1;
             int offset = 0;
 
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            string relativePath = "ReceivedFiles";
-            string saveDirectory = Path.Combine(basePath, relativePath);
+            //string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            //string relativePath = "ReceivedFiles";
+            string downloadPath = path;
 
-            if (!Directory.Exists(saveDirectory))
+            if (!Directory.Exists(downloadPath))
             {
-                Directory.CreateDirectory(saveDirectory);
+                Directory.CreateDirectory(downloadPath);
             }
 
-            string savePath = Path.Combine(saveDirectory, fileName);
+            string savePath = Path.Combine(downloadPath, fileName);
 
             FileStreamHelper fs = new FileStreamHelper();
             while (offset < fileLength)
@@ -217,7 +222,7 @@ namespace Client
                 Console.WriteLine($"Recibiendo parte #{currentPart}, de {numberOfBytesToReceive} bytes");
 
                 byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
-
+                 
                 fs.Write(savePath, buffer);
 
                 currentPart++;
@@ -230,7 +235,58 @@ namespace Client
         }
 
 
+        private static void ViewTripInfo(NetworkHelper networkHelper)
+        {
 
+            string response = ReceiveMessageFromServer(networkHelper);
+
+            if (response.StartsWith("ERROR"))
+            {
+                Console.WriteLine(response.Substring(5));
+                Console.WriteLine();
+                ShowMainMenu(networkHelper);
+            }
+            else
+            {
+                int tripCount = int.Parse(response);
+
+                if (tripCount > 0)
+                {
+                    for (int i = 0; i < tripCount; i++)
+                    {
+                        string trip = ReceiveMessageFromServer(networkHelper);
+                        Console.WriteLine(trip);
+                    }
+
+                    Console.WriteLine("Ingrese el numero de viaje del que quiere recibir toda la informacion:");
+                    string selectedTripNumberStr = Console.ReadLine().Trim();
+                    SendMessageToServer(selectedTripNumberStr, networkHelper);
+
+                    string tripInfo = ReceiveMessageFromServer(networkHelper);
+                    Console.Write(tripInfo);
+
+                    //le pregunto si desea descargar la imagen del auto
+                    Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
+                    string resp = Console.ReadLine().Trim();
+                    SendMessageToServer(resp, networkHelper);
+
+                    if(resp == "si")
+                    {
+                       Console.WriteLine("Ingrese el path en el cual desea guardar la imagen");
+                       string path = Console.ReadLine().Trim();
+                       ReceiveStreamFromServer(networkHelper, path);
+                    }
+
+
+
+                }
+                else
+                {
+                    Console.WriteLine("No hay viajes disponibles");
+                }
+                ShowMainMenu(networkHelper);
+            }
+        }
 
 
         private static void SendStreamToServer(NetworkHelper networkHelper)
