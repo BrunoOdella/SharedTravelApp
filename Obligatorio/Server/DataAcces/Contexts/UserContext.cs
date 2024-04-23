@@ -81,12 +81,12 @@ namespace DataAcces
             {
                 User actual = new User()
                 {
-                    Name = elem.nombre,
+                    Name = elem.Nombre,
                     Trips = new List<Guid>()
                 };
-                Guid actualGuid = new Guid(elem._id);
+                Guid actualGuid = new Guid(elem.Id);
                 actual.SetGuid(actualGuid);
-                actual.SetPassword(elem._password);
+                actual.SetPassword(elem.Contrasenia);
 
                 _userInstance.UserList.Add(actualGuid, actual);
             }
@@ -101,8 +101,8 @@ namespace DataAcces
 
     internal class UserTransfer
     {
-        public string nombre { get; set; }
-        public string _id { get; set; }
-        public string _password { get; set; }
+        public string Nombre { get; set; }
+        public string Id { get; set; }
+        public string Contrasenia { get; set; }
     }
 }

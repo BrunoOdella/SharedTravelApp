@@ -69,7 +69,7 @@ namespace DataAcces
             _calificationSemaphore.Release();
         }
 
-        public static void LoadCalificationsFromTxt()
+        public static void LoadCalificationsFromTxt(UserContext userContenxt, TripContext tripContext)
         {
             List<CalificationTransfer> source = new List<CalificationTransfer>();
             using (StreamReader r = new StreamReader(CalificationsFilePath))
@@ -80,10 +80,13 @@ namespace DataAcces
 
             foreach (var elem in source)
             {
-                Guid guidActual = new Guid(elem._id);
-                Calification actual = new Calification(new Guid(elem._passenger), new Guid(elem._trip), elem.calification, elem.Comment);
+                Guid guidActual = new Guid(elem.CalificationID);
+                Guid trip = new Guid(elem.TripID);
+                Calification actual = new Calification(new Guid(elem.PasageroID), trip, elem.Calificacion, elem.Comentario);
                 actual.SetGuid(guidActual);
                 _calificationInstance.CalificationList.Add(guidActual, actual);
+                Guid ownerGuid = tripContext.TripList[trip].GetOwner();
+                userContenxt.UserList[ownerGuid].AddScore(elem.Calificacion);
             }
         }
 
@@ -97,10 +100,10 @@ namespace DataAcces
 
     internal class CalificationTransfer
     {
-        public string _id { get; set; }
-        public string _passenger { get; set; }
-        public string _trip { get; set; }
-        public float calification { get; set; }
-        public string Comment { get; set; }
+        public string CalificationID { get; set; }
+        public string PasageroID { get; set; }
+        public string TripID { get; set; }
+        public float Calificacion { get; set; }
+        public string Comentario { get; set; }
     }
 }

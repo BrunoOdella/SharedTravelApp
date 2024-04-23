@@ -64,6 +64,7 @@ namespace Server
         {
             TripContext context = TripContext.CreateInsance();
             context.LoadTripsFromTxt(userContenxt);
+            loadCalification(userContenxt, context);
         }
 
         private static void load()
@@ -73,13 +74,12 @@ namespace Server
             UserContext.LoadUsersFromTxt();
             //
             loadTrips(context);
-            loadCalification();
         }
 
-        private static void loadCalification()
+        private static void loadCalification(UserContext userContenxt, TripContext tripContext)
         {
             CalificationContext context = CalificationContext.CreateInsance();
-            CalificationContext.LoadCalificationsFromTxt(); 
+            CalificationContext.LoadCalificationsFromTxt(userContenxt, tripContext); 
         }
         private static string ReceiveMessageFromClient(NetworkHelper networkHelper)
         {
