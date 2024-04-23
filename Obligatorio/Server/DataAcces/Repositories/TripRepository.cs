@@ -92,5 +92,30 @@ namespace Server.DataAcces.Repositories
 
             return all;
         }
+
+        public List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination)
+        {
+            TripContext context = TripContext.GetAccessReadTrip();
+            List<Trip> tripsByOriginDestination = new List<Trip>();
+
+            foreach (var trip in context.TripList)
+            {
+                if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase) 
+                    && trip.Value.Origin.Equals(origin, StringComparison.OrdinalIgnoreCase)
+                    && trip.Value.AvailableSeats>0)
+                {
+                    tripsByOriginDestination.Add(trip.Value);
+                }
+            }
+
+            if (tripsByOriginDestination.Count == 0)
+            {
+                throw new Exception("No hay viajes disponibles para el origen y destino especificado.");
+            }
+
+            TripContext.ReturnReadAccessTrip();
+            return tripsByOriginDestination;
+        }
+
     }
 }

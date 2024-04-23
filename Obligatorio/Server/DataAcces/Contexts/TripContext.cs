@@ -26,6 +26,19 @@ namespace DataAcces
             }
         }
 
+        private static string CarsFilePath
+        {
+            get
+            {
+                string currentDirectory = Directory.GetCurrentDirectory();
+                DirectoryInfo parentDirectory = Directory.GetParent(currentDirectory);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                string aux = Path.Combine(parentDirectory.FullName, "Data");
+                return Path.Combine(aux, "Autos");
+            }
+        }
+
         public static TripContext GetAccessReadTrip()
         {
             _serviceQueueTrip.WaitOne();     //espera de turno
@@ -58,9 +71,40 @@ namespace DataAcces
                 string json = r.ReadToEnd();
                 source = JsonSerializer.Deserialize<List<TripTransfer>>(json);
             }
-
+            int count = 1;
+            bool scd = false;
             foreach (var elem in source)
             {
+                //C:\Users\user\OneDrive - Nublit\Documentos\ORT\prog de redes\Obli\M6A_Ingenieria_242739_231665_256680\Obligatorio\Server\Data\Autos\auto - copia (1).jpg
+                //C:\Users\user\OneDrive - Nublit\Documentos\ORT\prog de redes\Obli\M6A_Ingenieria_242739_231665_256680\Obligatorio\Server\Data\Autos\Koopa - copia (1).jpg
+                //Path.Combine(parentDirectory.FullName, "Autos");
+                string wich;
+                if (!scd)
+                {
+                    wich = $"auto - copia ({count}).jpg";
+                    scd = true;
+                }
+                else
+                {
+                    wich = $"Koopa - copia ({count}).jpg";
+                    scd = false;
+                    count++;
+                }
+                string sourceFile = Path.Combine(CarsFilePath, wich); //Archivo de los datos de prueba
+
+                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                string relativePath = "ReceivedFiles";
+                string saveDirectory = Path.Combine(basePath, relativePath);
+
+                if (!Directory.Exists(saveDirectory))
+                {
+                    Directory.CreateDirectory(saveDirectory);
+                }
+
+                string savePath = Path.Combine(saveDirectory, wich); //Direccion de donde guardar la imagen una vez creado el Trip
+
+                File.Copy(sourceFile, savePath, true); //Copio el archivo de prueba a la pocision donde debe guardarse
+
                 Trip actual = new Trip()
                 {
                     Origin = elem.Origen,

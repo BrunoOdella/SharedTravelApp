@@ -8,4 +8,6 @@ public interface ITripRepository
     Trip Get(Guid id);
     void Update(Trip trip);
     List<Trip> GetAll();
+
+    List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination);
 }
