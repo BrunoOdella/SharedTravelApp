@@ -22,6 +22,7 @@ namespace Server.BL
             this._tripId = tripId;
             this.Score = score;
             this.Comment = comment;
+            this._calificationId = new Guid();
         }
 
         public Guid GetGuid()

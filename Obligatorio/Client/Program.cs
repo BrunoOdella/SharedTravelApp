@@ -131,6 +131,9 @@ namespace Client
                 case 6:
                     ViewTripInfo(networkHelper);
                     break;
+                case 7:
+                    RateDriver(networkHelper);
+                    break;
                 case 9:
                     break;
                 default:
@@ -139,7 +142,49 @@ namespace Client
             }
         }
 
-        
+        private static void RateDriver(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Seleccione que conductor calificar:");
+
+            string hasTrips = ReceiveMessageFromServer(networkHelper);
+
+            if (hasTrips == "EMPTY")
+            {
+                Console.WriteLine("No se han realizado viajes.");
+                return;
+            }
+            
+            int count = Int32.Parse(hasTrips);
+            for (int i = 0; i < count; i++)
+            {
+                string current= ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(current);
+            }
+
+            Console.WriteLine("¿A que conductor de que viaje desea calificar?\n    (Para volver escriba SALIR)");
+            string response = "";
+            int wich = -1;
+            do
+            {
+                response = Console.ReadLine().Trim();
+                Int32.TryParse(response, out wich);
+                bool a = response.Trim().ToLower() == "salir";
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir"); //dejar igual en todos los lugares
+
+            if (response.Trim().ToLower() == "salir")
+                return;
+
+            SendMessageToServer($"{response}", networkHelper);
+
+            float score = PromptForFloat("Introduzca el puntaje (0.0 - 10.0):");
+            SendMessageToServer(score.ToString(), networkHelper);
+
+            string comment = PromptForNonEmptyString("Introduzca un comentario:");
+            SendMessageToServer(comment, networkHelper);
+
+            Console.WriteLine(ReceiveMessageFromServer(networkHelper));
+        }
+
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
         {
@@ -338,7 +383,6 @@ namespace Client
         }
 
 
-
         private static string PromptForNonEmptyString(string prompt)
         {
             string input;
@@ -376,8 +420,6 @@ namespace Client
             }
             return inputDate;
         }
-
-
 
 
         private static int PromptForInt(string prompt)
