@@ -63,20 +63,20 @@ namespace DataAcces
             {
                 Trip actual = new Trip()
                 {
-                    Origin = elem.origen,
-                    Destination = elem.destino,
-                    Departure = new DateTime(elem.anio, elem.mes, elem.dia, elem.hora, 0, 0),
-                    AvailableSeats = elem.asientosDisponibles,
-                    TotalSeats = elem.asientosDisponibles,
-                    PricePerPassanger = elem.precio,
-                    Pet = elem.pet,
+                    Origin = elem.Origen,
+                    Destination = elem.Destino,
+                    Departure = new DateTime(elem.Anio, elem.Mes, elem.Dia, elem.Hora, 0, 0),
+                    AvailableSeats = elem.AsientosDisponibles,
+                    TotalSeats = elem.AsientosTotales,
+                    PricePerPassanger = elem.Precio,
+                    Pet = elem.Mascota,
                     Photo = elem.photo
                 };
-                Guid actualGuid = new Guid(elem._id);
+                Guid actualGuid = new Guid(elem.TripID);
                 actual.SetGuid(actualGuid);
-                actual.SetOwner(new Guid(elem._owner));
+                actual.SetOwner(new Guid(elem.OwnerID));
                 List<Guid> passangers = new List<Guid>();
-                foreach (var pass in elem._passengers)
+                foreach (var pass in elem.Pasageros)
                 {
                     passangers.Add(new Guid(pass));
                     context.UserList[new Guid(pass)].Trips.Add(actualGuid);
@@ -113,19 +113,19 @@ namespace DataAcces
 
     internal class TripTransfer
     {
-        public string _id { get; set; }
-        public string _owner { get; set; }
-        public string origen { get; set; }
-        public string destino { get; set; }
-        public int anio { get; set; }
-        public int mes { get; set; }
-        public int dia { get; set; }
-        public int hora { get; set; }
-        public int asientosDisponibles { get; set; }
-        public int asientosTotales { get; set; }
-        public float precio { get; set; }
-        public bool pet { get; set; }
+        public string TripID { get; set; }
+        public string OwnerID { get; set; }
+        public string Origen { get; set; }
+        public string Destino { get; set; }
+        public int Anio { get; set; }
+        public int Mes { get; set; }
+        public int Dia { get; set; }
+        public int Hora { get; set; }
+        public int AsientosDisponibles { get; set; }
+        public int AsientosTotales { get; set; }
+        public float Precio { get; set; }
+        public bool Mascota { get; set; }
         public string photo { get; set; }
-        public string[] _passengers { get; set; }
+        public string[] Pasageros { get; set; }
     }
 }

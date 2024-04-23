@@ -6,6 +6,8 @@ namespace Server.BL
     {
         private Guid _id;
         public string _password;
+        private float _score = 0;
+        private int _scoreCount = 0;
 
         public string Name { get; set; }
         public List<Guid> Trips;
@@ -34,6 +36,17 @@ namespace Server.BL
         public void SetPassword(string password)
         {
             _password = password;
+        }
+
+        public void AddScore(float score)
+        {
+            _score += score;
+            _scoreCount++;
+        }
+
+        public float GetScore()
+        {
+            return _score == 0 ? 0 : _score / _scoreCount;
         }
     }
 }
