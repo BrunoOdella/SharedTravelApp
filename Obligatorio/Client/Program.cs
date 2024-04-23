@@ -581,6 +581,7 @@ namespace Client
             Console.WriteLine("Desea:");
             Console.WriteLine("1. Ver la lista de todos los viajes");
             Console.WriteLine("2. Ver la lista de viajes filtrados por origen y destino");
+            Console.WriteLine("3. Ver la lista de viajes filtrados por si son pet friendly o no");
 
             string res = Console.ReadLine().Trim();
             SendMessageToServer(res, networkHelper);
@@ -593,13 +594,54 @@ namespace Client
                 case 2:
                     ViewTripsOriginDestination(networkHelper);
                     break;
+                case 3:
+                    ViewAllTripsFilteredPetFriendly(networkHelper);
+                    break;
                 default:
                     Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
                     break;
             }
         }
 
-        
+        private static void ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Ingrese 'SI' si desea ver los viajes pet friendly o ingrese 'NO' si desea ver los viajes que no son pet friendly: ");
+            string option = Console.ReadLine().Trim();
+
+            SendMessageToServer(option, networkHelper);
+
+            string response = ReceiveMessageFromServer(networkHelper);
+
+            if (response.StartsWith("ERROR"))
+            {
+                Console.WriteLine(response.Substring(5));
+                Console.WriteLine();
+
+            }
+            else
+            {
+                Console.WriteLine();
+                int tripCount = int.Parse(response);
+
+                if (tripCount > 0)
+                {
+                    for (int i = 0; i < tripCount; i++)
+                    {
+                        string trip = ReceiveMessageFromServer(networkHelper);
+                        Console.WriteLine(trip);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No hay viajes disponibles para el filtro ingresado");
+
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+            ShowMainMenu(networkHelper);
+        }
+
         private static void ViewAllTrips(NetworkHelper networkHelper)
         {
             string response = ReceiveMessageFromServer(networkHelper);
