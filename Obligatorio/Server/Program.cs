@@ -244,8 +244,9 @@ namespace Server
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Console.WriteLine("Error al calificar un conductor: " + e.Message);
+                SendMessageToClient("Error al calificar un conductor.", networkHelper);
+
             }
         }
 
