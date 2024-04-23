@@ -20,7 +20,7 @@ namespace Server.BL
         public void AddTrip(Guid id)
         {
             this.Trips.Add(id);
-        }
+        } 
 
 
         public Guid GetGuid()
