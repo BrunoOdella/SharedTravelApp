@@ -2,6 +2,7 @@
 using Server.BL;
 using Server.BL.Repositories;
 using Server.BL.BLException;
+using System.Collections.Generic;
 
 namespace Server.DataAcces.Repositories
 {
@@ -91,6 +92,19 @@ namespace Server.DataAcces.Repositories
             TripContext.ReturnReadAccessTrip();
 
             return all;
+        }
+
+        public List<Trip> GetAll(Guid userGuid)
+        {
+            List<Trip> all = GetAll();
+            List < Trip > response = new List<Trip>();
+            foreach (var trip in all)
+            {
+                if(trip._passengers.Contains(userGuid))
+                    response.Add(trip);
+            }
+
+            return response;
         }
 
         public List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination)

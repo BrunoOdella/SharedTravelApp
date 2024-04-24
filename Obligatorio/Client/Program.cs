@@ -441,7 +441,6 @@ namespace Client
         }
 
 
-
         private static string PromptForNonEmptyString(string prompt)
         {
             string input;
@@ -479,8 +478,6 @@ namespace Client
             }
             return inputDate;
         }
-
-
 
 
         private static int PromptForInt(string prompt)

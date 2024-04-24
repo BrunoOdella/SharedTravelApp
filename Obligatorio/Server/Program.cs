@@ -10,6 +10,7 @@ using Server.BL;
 using Microsoft.VisualBasic.FileIO;
 using Server.DataAcces.Repositories;
 using Server.BL.Repositories;
+using System.Collections.Generic;
 
 namespace Server
 {
@@ -18,6 +19,10 @@ namespace Server
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static readonly IUserRepository userRepository = new UserRepository();
         static readonly ITripRepository ITripRepo = new TripRepository();
+        static readonly IUserRepository IUserRepo = new UserRepository();
+        static readonly ICalificationRepository ICalificationRepo = new CalificationRepository();
+
+
 
 
         static void Main(string[] args)
@@ -172,7 +177,6 @@ namespace Server
                 case 2:
                     JoinTrip(networkHelper, socket, user);
                     break;
-
                 case 3:
                     ModifyTrip(networkHelper, socket, user);
                     break;
@@ -187,7 +191,7 @@ namespace Server
                     ViewTripInfo(networkHelper, socket, user);
                     break;
                 case 7:
-                    
+                    RateDriver(networkHelper, socket, user);
                     break;
                 case 8:
                     break;
@@ -196,6 +200,56 @@ namespace Server
                 default: break;
             }
 
+        }
+
+        private static void RateDriver(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            try
+            {
+                List<Trip> trips = ITripRepo.GetAll(user._id);
+                List<User> users = new List<User>();
+                foreach (Trip trip in trips)
+                {
+                    var actual = IUserRepo.Get(trip._owner);
+                    users.Add(actual);
+                }
+
+                if (users.Count == 0)
+                {
+                    SendMessageToClient("EMPTY", networkHelper);
+                    return;
+                }
+                SendMessageToClient($"{users.Count}", networkHelper);
+                int count = 1;
+                for (int i = 0; i < trips.Count && i < users.Count; i++)
+                {
+                    var actualUser = users[i];
+                    var actualTrip = trips[i];
+                    SendMessageToClient($"{count} | {actualUser.Name}, Origen del viaje: {actualTrip.Origin}" +
+                                        $", Destino del viaje {actualTrip.Destination}, Fecha del viaje " +
+                                        $"{actualTrip.Departure}", networkHelper);
+                    count++;
+                }
+
+                int selected = int.Parse(ReceiveMessageFromClient(networkHelper));
+
+                float score = float.Parse(ReceiveMessageFromClient(networkHelper));
+
+                string comment = ReceiveMessageFromClient(networkHelper);
+
+                ICalificationRepo.Add(new Calification(users[selected - 1].GetGuid(), trips[selected - 1].GetGuid(), score, comment));
+
+                var ActualOwner= users[selected - 1];
+                ActualOwner.AddScore(score);
+                IUserRepo.Update(ActualOwner);
+                SendMessageToClient($"Calificacion cargada", networkHelper);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error al calificar un conductor: " + e.Message);
+                SendMessageToClient("Error al calificar un conductor.", networkHelper);
+
+            }
         }
 
         private static void ViewTripInfo(NetworkHelper networkHelper, Socket socket, User user)
