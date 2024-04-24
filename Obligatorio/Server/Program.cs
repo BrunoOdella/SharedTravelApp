@@ -221,7 +221,7 @@ namespace Server
                 {
                     Trip selectedTrip = trips[selectedTripIndex];
                     Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
-                    SendMessageToClient(AllTripInfo(selectedTrip), networkHelper);
+                    SendAllTripInfo(networkHelper, selectedTrip);
 
                     string download = ReceiveMessageFromClient(networkHelper);
                     if (download == "si") 
@@ -646,14 +646,14 @@ namespace Server
             Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
 
         }
-        private static string AllTripInfo(Trip trip)
+        private static void SendAllTripInfo(NetworkHelper networkHelper, Trip trip)
         {
-            return $"Origen:{trip.Origin} -> Destino:{trip.Destination}" +
-                $",Asientos Disponibles:{trip.AvailableSeats}" +
-                $", Fecha y hora de salida:{trip.Departure}" +
-                $", Cantidad de ascientos disponibles {trip.AvailableSeats}" +
-                $", Precio {trip.PricePerPassanger} " +
-                $", Se permiten mascotas: {trip.Pet} ";
+            SendMessageToClient(trip.Origin, networkHelper);
+            SendMessageToClient(trip.Destination, networkHelper);
+            SendMessageToClient(trip.Departure.ToString(), networkHelper);
+            SendMessageToClient(trip.AvailableSeats.ToString(), networkHelper);
+            SendMessageToClient(trip.PricePerPassanger.ToString(), networkHelper);
+            SendMessageToClient(trip.Pet.ToString(), networkHelper);
         }
     }
 }

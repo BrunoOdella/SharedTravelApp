@@ -262,8 +262,7 @@ namespace Client
                     string selectedTripNumberStr = Console.ReadLine().Trim();
                     SendMessageToServer(selectedTripNumberStr, networkHelper);
 
-                    string tripInfo = ReceiveMessageFromServer(networkHelper);
-                    Console.Write(tripInfo);
+                    RecevieAllTripInfo(networkHelper);
 
                     Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
                     string resp = Console.ReadLine().Trim();
@@ -710,7 +709,29 @@ namespace Client
             ShowMainMenu(networkHelper);
         }
 
+        private static void RecevieAllTripInfo(NetworkHelper networkHelper)
+        {
+            string origin= ReceiveMessageFromServer(networkHelper);
+            string destination = ReceiveMessageFromServer(networkHelper);
+            string departure = ReceiveMessageFromServer(networkHelper);
+            string availableSeats = ReceiveMessageFromServer( networkHelper);
+            string pricePerPassanger = ReceiveMessageFromServer(networkHelper);
+            string pet = ReceiveMessageFromServer(networkHelper);
 
+            Console.WriteLine("Origen: " + origin);
+            Console.WriteLine("Destino: " + destination);
+            Console.WriteLine("Fecha y hora de salida: "+ departure);
+            Console.WriteLine("Cantidad de ascientos disponibles: " + availableSeats);
+            Console.WriteLine("Precio del pasaje por persona: $" + pricePerPassanger);
+            if(pet == "true")
+            {
+                Console.WriteLine("Es pet friendly");
+            }
+            else
+            {
+                Console.WriteLine("No es pet friendly");
+            }
+        }
 
 
         private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
