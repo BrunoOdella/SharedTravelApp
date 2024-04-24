@@ -542,17 +542,17 @@ namespace Client
             SendMessageToServer(origin, networkHelper);
             SendMessageToServer(destination, networkHelper);
 
-            string response = ReceiveMessageFromServer(networkHelper);
+            string tripCountString = ReceiveMessageFromServer(networkHelper);
 
-            if (response.StartsWith("ERROR"))
+            if (tripCountString.StartsWith("ERROR"))
             {
-                Console.WriteLine(response.Substring(5)); 
+                Console.WriteLine(tripCountString.Substring(5)); 
                 Console.WriteLine();
-                ShowMainMenu(networkHelper);
+                
             }
             else
             {
-                int tripCount = int.Parse(response);
+                int tripCount = int.Parse(tripCountString);
 
                 if (tripCount > 0)
                 {
@@ -565,16 +565,17 @@ namespace Client
                     Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
                     string selectedTripNumberStr = Console.ReadLine().Trim();
                     SendMessageToServer(selectedTripNumberStr, networkHelper);
-
-                    Console.WriteLine("Se ha unido correctamente al viaje");
-                    ShowMainMenu(networkHelper);
+                    
                 }
                 else
                 {
                     Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
-                    ShowMainMenu(networkHelper);
+                    
                 }
             }
+            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine(response);
+            ShowMainMenu(networkHelper);
         }
          private static void TripSearch (NetworkHelper networkHelper)
         {

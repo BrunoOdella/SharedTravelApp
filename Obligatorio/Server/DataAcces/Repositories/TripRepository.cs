@@ -139,5 +139,27 @@ namespace Server.DataAcces.Repositories
             return trips;
         }
 
+        public bool isJoined(Guid tripId, Guid userId)
+        {
+            var trip = Get(tripId);
+            if (trip == null)
+            {
+                throw new Exception("Trip not found.");
+            }
+            return trip._passengers.Contains(userId);
+        }
+
+        public bool isOwner(Guid tripId, Guid userId)
+        {
+            var trip = Get(tripId);
+            if (trip == null)
+            {
+                throw new Exception("Trip not found.");
+            }
+            return trip.GetOwner() == userId;
+        }
+
+
+
     }
 }

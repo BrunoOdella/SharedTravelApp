@@ -10,6 +10,7 @@ using Server.BL;
 using Microsoft.VisualBasic.FileIO;
 using Server.DataAcces.Repositories;
 using Server.BL.Repositories;
+using System.Security;
 
 namespace Server
 {
@@ -247,6 +248,7 @@ namespace Server
         {
             string origin = ReceiveMessageFromClient(networkHelper);
             string destination = ReceiveMessageFromClient(networkHelper);
+            string response = "";
 
             List<Trip> tripsToOriginAndDestination;
             try
@@ -274,12 +276,18 @@ namespace Server
                     try
                     {
                         Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
-                        //MANEJAR LOS CASOS DE QUE:
-                        //YA ESTA UNIDO A ESE TRIP
-                        //ES EL OWNER DE ESE TRIP
+                        
+                        if(ITripRepo.isJoined(tripToJoin._id, user._id))
+                        {
+                            response = "Usted ya forma parte de este viaje";
+                        }
+                        
+                        if (ITripRepo.isOwner(tripToJoin._id, user._id))
+                        {
+                            response = "Usted es el dueño de este viaje, no es posible unirlo";
+                        }
 
-                        //este if  (que checkea lo de available seats) lo podria sacar porque ya lo chequeo en el respositorio
-                        if (tripToJoin.AvailableSeats > 0)
+                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
                         {
                             tripToJoin.AvailableSeats--;
 
@@ -287,25 +295,24 @@ namespace Server
 
                             ITripRepo.Update(tripToJoin);
 
-                            Console.WriteLine("Se ha unido correctamente al viaje.");
+                           response = "Se ha unido correctamente al viaje.";
 
-                            string nextOption = ReceiveMessageFromClient(networkHelper);
-                            GoToOption(nextOption, networkHelper, socket, user);
-                        }
-                        else
-                        {
-                            Console.WriteLine("No hay asientos disponibles en este viaje.");
+                            
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Error al unirse al viaje: " + ex.Message);
+                        response="Error al unirse al viaje: " + ex.Message;
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Selección de viaje inválida.");
+                    response = "Seleccion de viaje invalida";
                 }
+                SendMessageToClient(response, networkHelper);
+                string nextOption = ReceiveMessageFromClient(networkHelper);
+                GoToOption(nextOption, networkHelper, socket, user);
+                
             }
             catch (Exception ex)
             {
