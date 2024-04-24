@@ -131,6 +131,10 @@ namespace Client
                 case 6:
                     ViewTripInfo(networkHelper);
                     break;
+                case 4:
+                    SendMessageToServer("4", networkHelper);
+                    WithdrawFromTrip(networkHelper);
+                    break;
                 case 9:
                     break;
                 default:
@@ -139,7 +143,45 @@ namespace Client
             }
         }
 
-        
+        private static void WithdrawFromTrip(NetworkHelper networkHelper)
+        {
+            string TripCount = ReceiveMessageFromServer(networkHelper);
+
+            if (TripCount == "EMPTY")
+            {
+                Console.WriteLine("No hay viajes futuros.");
+                return;
+            }
+
+            int count = Int32.Parse(TripCount);
+            for (int i = 0; i < count; i++)
+            {
+                string currentTrip = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(currentTrip);
+            }
+
+            Console.WriteLine("¿De que viaje desea darse de baja?\n    (Para volver escriba SALIR)");
+            string response = "";
+            int wich = -1;
+            do
+            {
+                response = Console.ReadLine().Trim();
+                Int32.TryParse(response, out wich);
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) || response.Trim().ToLower() == "salir");
+
+            if (response.Trim().ToLower() == "salir")
+                return;
+            //
+            //envio que viaje quiero
+            SendMessageToServer($"{response}", networkHelper);
+
+            string ServerResponse = ReceiveMessageFromServer(networkHelper);
+
+            if (ServerResponse == "OK")
+            {
+                Console.WriteLine("Se a dado de baja del viaje.");
+            }
+        }
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
         {

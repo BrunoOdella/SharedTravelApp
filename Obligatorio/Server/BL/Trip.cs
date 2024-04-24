@@ -1,4 +1,6 @@
-﻿namespace Server.BL;
+﻿using System.Linq;
+
+namespace Server.BL;
 
 public class Trip
 {
@@ -57,6 +59,18 @@ public class Trip
     public void SetPassangers(List<Guid> passangers)
     {
         _passengers = passangers;
+    }
+
+    public bool PassangerInTrip(Guid idPassanger)
+    {
+        if(_passengers.Contains(idPassanger))
+            return true;
+        return false;
+    }
+
+    public void Withdraw(Guid idPassanger)
+    {
+        _passengers.Remove(idPassanger);
     }
 
     public Guid GetOwner()
