@@ -335,6 +335,7 @@ namespace Server
                     SendMessageToClient("EMPY", networkHelper);
                     return;
                 }
+
                 SendMessageToClient($"{UserInTrips.Count}", networkHelper);
                 int count = 1;
                 foreach (Trip trip in UserInTrips)
@@ -437,7 +438,8 @@ namespace Server
                 }
 
                 SendMessageToClient($"Viaje actualizado", networkHelper);
-
+                
+                ITripRepo.Update(selectedTrip);
             }
             catch (Exception ex)
             {

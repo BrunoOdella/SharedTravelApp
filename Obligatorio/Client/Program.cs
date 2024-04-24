@@ -98,48 +98,51 @@ namespace Client
 
         private static void ShowMainMenu(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
-            Console.WriteLine("¿Qué desea hacer?");
-            Console.WriteLine("1-Publicar viaje");
-            Console.WriteLine("2-Unirse a un viaje");
-            Console.WriteLine("3-Modificar un viaje");
-            Console.WriteLine("4-Baja de un viaje");
-            Console.WriteLine("5-Buscar un viaje");
-            Console.WriteLine("6-Consultar la información de un viaje especifico");
-            Console.WriteLine("7-Calificar a un conductor");
-            Console.WriteLine("8-Ver calificación de un conductor");
-            Console.WriteLine("9-Cerrar Sesión");
-            Console.Write("Seleccione una opción: ");
-
-            string res = Console.ReadLine().Trim();
-            SendMessageToServer(res, networkHelper);
-
-            switch (int.Parse(res))
+            bool logout = false;
+            while (!logout)
             {
-                case 1:
-                    PublishTrip(networkHelper);
-                    break;
-                case 2:
-                    JoinTrip(networkHelper);
-                    break;
-                case 3:
-                    ModifyTrip(networkHelper);
-                    break;
-                case 5:
-                    TripSearch(networkHelper);
-                    break;
-                case 6:
-                    ViewTripInfo(networkHelper);
-                    break;
-                case 4:
-                    SendMessageToServer("4", networkHelper);
-                    WithdrawFromTrip(networkHelper);
-                    break;
-                case 9:
-                    break;
-                default:
-                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
-                    break;
+                Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
+                Console.WriteLine("¿Qué desea hacer?");
+                Console.WriteLine("1-Publicar viaje");
+                Console.WriteLine("2-Unirse a un viaje");
+                Console.WriteLine("3-Modificar un viaje");
+                Console.WriteLine("4-Baja de un viaje");
+                Console.WriteLine("5-Buscar un viaje");
+                Console.WriteLine("6-Consultar la información de un viaje especifico");
+                Console.WriteLine("7-Calificar a un conductor");
+                Console.WriteLine("8-Ver calificación de un conductor");
+                Console.WriteLine("9-Cerrar Sesión");
+                Console.Write("Seleccione una opción: ");
+
+                string res = Console.ReadLine().Trim();
+                SendMessageToServer(res, networkHelper);
+
+                switch (int.Parse(res))
+                {
+                    case 1:
+                        PublishTrip(networkHelper);
+                        break;
+                    case 2:
+                        JoinTrip(networkHelper);
+                        break;
+                    case 3:
+                        ModifyTrip(networkHelper);
+                        break;
+                    case 5:
+                        TripSearch(networkHelper);
+                        break;
+                    case 6:
+                        ViewTripInfo(networkHelper);
+                        break;
+                    case 4:
+                        WithdrawFromTrip(networkHelper);
+                        break;
+                    case 9:
+                        break;
+                    default:
+                        Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
+                        break;
+                }
             }
         }
 
@@ -173,7 +176,7 @@ namespace Client
                 return;
             //
             //envio que viaje quiero
-            SendMessageToServer($"{response}", networkHelper);
+            SendMessageToServer($"{wich}", networkHelper);
 
             string ServerResponse = ReceiveMessageFromServer(networkHelper);
 
