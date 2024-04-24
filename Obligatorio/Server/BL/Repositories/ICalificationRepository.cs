@@ -8,4 +8,6 @@ public interface ICalificationRepository
     void Delete(Guid id);
     Calification Get(Guid id);
     List<Calification> GetAll();
+
+    List<Calification> GetCalificationsByTripId(Guid tripId);
 }

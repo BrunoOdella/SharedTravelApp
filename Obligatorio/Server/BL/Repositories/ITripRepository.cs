@@ -11,4 +11,5 @@ public interface ITripRepository
 
     List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination);
     List<Trip> GetTripsFilteredByPetFriendly(bool petFriendly);
+    List<Trip> GetTripsByOwner(Guid ownerId);
 }

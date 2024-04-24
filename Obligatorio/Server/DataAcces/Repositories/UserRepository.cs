@@ -74,4 +74,20 @@ public class UserRepository : IUserRepository
         }
         UserContext.ReturnWriteAccessUser();
     }
+
+    public User GetUserByUsername(string username)
+    {
+        UserContext context = UserContext.GetAccessReadUser();
+        User user = context.UserList.Values.FirstOrDefault(u => u.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
+        UserContext.ReturnReadAccessUser();
+
+        if (user != null)
+        {
+            return user;
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

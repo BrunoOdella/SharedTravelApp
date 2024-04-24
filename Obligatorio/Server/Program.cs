@@ -18,6 +18,7 @@ namespace Server
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static readonly IUserRepository userRepository = new UserRepository();
         static readonly ITripRepository ITripRepo = new TripRepository();
+        static readonly ICalificationRepository calificationRepository = new CalificationRepository();
 
 
         static void Main(string[] args)
@@ -188,6 +189,7 @@ namespace Server
                     
                     break;
                 case 8:
+                    ViewDriverRatings(networkHelper,socket,user);
                     break;
                 case 9:
                     break;
@@ -655,5 +657,88 @@ namespace Server
             SendMessageToClient(trip.PricePerPassanger.ToString(), networkHelper);
             SendMessageToClient(trip.Pet.ToString(), networkHelper);
         }
+
+
+        public static void ViewDriverRatings(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            SendUsernamesToClient(networkHelper);
+            string username = ReceiveMessageFromClient(networkHelper);
+            User foundUser = userRepository.GetUserByUsername(username);
+
+            if (foundUser == null)
+            {
+                SendMessageToClient("Error: Usuario no encontrado.", networkHelper);
+                return;
+            }
+
+            List<Calification> califications = GetDriverCalifications(foundUser.GetGuid());
+            string response = califications.Count > 0 ? FormatCalifications(califications)
+                                                      : "Este conductor no tiene calificaciones disponibles.";
+            SendMessageToClient(response, networkHelper);
+        }
+
+
+
+        public static void SendUsernamesToClient(NetworkHelper networkHelper)
+        {
+            List<User> users = userRepository.GetAll();
+            StringBuilder usernames = new StringBuilder();
+            foreach (var user in users)
+            {
+                usernames.AppendLine(user.Name);
+            }
+            SendMessageToClient(usernames.ToString(), networkHelper);
+        }
+
+        public static void ProcessUserSelection(NetworkHelper networkHelper)
+        {
+            string selectedUsername = ReceiveMessageFromClient(networkHelper);
+            User user = userRepository.GetUserByUsername(selectedUsername);
+
+            if (user == null)
+            {
+                SendMessageToClient("Error: El usuario no existe.", networkHelper);
+                return;
+            }
+
+            List<Calification> califications = GetDriverCalifications(user._id);
+            if (califications.Count == 0)
+            {
+                SendMessageToClient("El usuario no tiene calificaciones disponibles.", networkHelper);
+            }
+            else
+            {
+                string response = FormatCalifications(califications);
+                SendMessageToClient(response, networkHelper);
+            }
+        }
+
+        private static List<Calification> GetDriverCalifications(Guid driverId)
+        {
+            List<Trip> driverTrips = ITripRepo.GetTripsByOwner(driverId);
+            List<Calification> driverCalifications = new List<Calification>();
+
+            foreach (var trip in driverTrips)
+            {
+                driverCalifications.AddRange(calificationRepository.GetCalificationsByTripId(trip._id));
+            }
+
+            return driverCalifications;
+        }
+
+
+
+
+        public static string FormatCalifications(List<Calification> califications)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var calification in califications)
+            {
+                sb.AppendLine($"Trip ID: {calification.GetTrip()}, Score: {calification.Score}, Comment: {calification.Comment}");
+            }
+            return sb.ToString();
+        }
+
+
     }
 }
