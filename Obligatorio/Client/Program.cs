@@ -270,21 +270,20 @@ namespace Client
 
                     if(resp == "si")
                     {
-                       Console.WriteLine("Ingrese el path en el cual desea guardar la imagen");
-                       string path = Console.ReadLine().Trim();
-                       bool fileExists = false;
-                       while (!fileExists)
+                       string path = "";
+                       bool pathExists = false;
+                       while (!pathExists)
                        {
-                            Console.WriteLine("Ingrese la ruta del archivo a enviar:");
-                            path = Console.ReadLine();
+                            Console.WriteLine("Ingrese la ruta del directorio en el cual desea descargar la imagen:");
+                            path = Console.ReadLine().Trim();
 
-                            if (File.Exists(path))
+                            if (Directory.Exists(path))
                             {
-                                fileExists = true;
+                                pathExists = true;
                             }
                             else
                             {
-                                Console.WriteLine("Error: El archivo no existe. Por favor, ingrese una ruta válida.");
+                                Console.WriteLine("Error: El directorio no existe. Por favor, ingrese una ruta válida.");
                             }
                        }
                        ReceiveStreamFromServer(networkHelper, path);
