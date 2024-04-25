@@ -114,7 +114,12 @@ namespace Client
                 Console.WriteLine("9-Cerrar Sesión");
                 Console.Write("Seleccione una opción: ");
 
-                string res = Console.ReadLine().Trim();
+                string res = "";
+                do
+                {
+                    res = Console.ReadLine().Trim();
+                } while (res.Length == 0 || int.Parse(res) < 0 || int.Parse(res) > 9);
+
                 SendMessageToServer(res, networkHelper);
 
                 switch (int.Parse(res))
@@ -141,6 +146,7 @@ namespace Client
                         RateDriver(networkHelper);
                         break;
                     case 9:
+                        logout = true;
                         break;
                     default:
                         Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
@@ -173,7 +179,7 @@ namespace Client
             {
                 response = Console.ReadLine().Trim();
                 Int32.TryParse(response, out wich);
-            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) || response.Trim().ToLower() == "salir");
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir");
 
             if (response.Trim().ToLower() == "salir")
                 return;
@@ -334,7 +340,6 @@ namespace Client
             {
                 Console.WriteLine(response.Substring(5));
                 Console.WriteLine();
-                ShowMainMenu(networkHelper);
             }
             else
             {
@@ -383,7 +388,6 @@ namespace Client
                 {
                     Console.WriteLine("No hay viajes disponibles");
                 }
-                ShowMainMenu(networkHelper);
             }
         }
 
@@ -529,6 +533,7 @@ namespace Client
             if (hasTrips == "EMPTY")
             {
                 Console.WriteLine("No hay viajes publicados para fechas futuras.");
+                return;
             }
             Console.WriteLine(hasTrips); //verificacion - borrar luego
             //recivo el contador de viajes y muestro uno por uno
@@ -549,11 +554,8 @@ namespace Client
             {
                 response = Console.ReadLine().Trim();
                 Int32.TryParse(response, out wich);
-                bool a = (response.Trim().Length == 0 || wich < 0 || wich > count + 1);
-                bool b = response.Trim().ToLower() == "salir";
-            } while ((response.Trim().Length == 0 || wich < 0 || wich > count + 1) || response.Trim().ToLower() == "salir");
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir");
 
-            //response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
 
             if (response.Trim().ToLower() == "salir")
                 return;
@@ -622,7 +624,6 @@ namespace Client
             else
             {
                 SendMessageToServer(modificar.ToString(), networkHelper);
-                SendMessageToServer("EMPTY", networkHelper);
             }
 
             //Modificacion
@@ -648,7 +649,6 @@ namespace Client
             {
                 Console.WriteLine(response.Substring(5)); 
                 Console.WriteLine();
-                ShowMainMenu(networkHelper);
             }
             else
             {
@@ -667,12 +667,10 @@ namespace Client
                     SendMessageToServer(selectedTripNumberStr, networkHelper);
 
                     Console.WriteLine("Se ha unido correctamente al viaje");
-                    ShowMainMenu(networkHelper);
                 }
                 else
                 {
                     Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
-                    ShowMainMenu(networkHelper);
                 }
             }
         }
@@ -739,7 +737,6 @@ namespace Client
                 Console.WriteLine();
                 Console.WriteLine();
             }
-            ShowMainMenu(networkHelper);
         }
 
         private static void ViewAllTrips(NetworkHelper networkHelper)
@@ -757,14 +754,11 @@ namespace Client
                 }
                 Console.WriteLine();
                 Console.WriteLine();
-                
             }
             else
             {
                 Console.WriteLine("No hay viajes disponibles");
-                
             }
-            ShowMainMenu(networkHelper);
         }
 
         private static void ViewTripsOriginDestination(NetworkHelper networkHelper)
@@ -807,7 +801,6 @@ namespace Client
                 Console.WriteLine();
                 Console.WriteLine();
             }
-            ShowMainMenu(networkHelper);
         }
 
         private static void RecevieAllTripInfo(NetworkHelper networkHelper)

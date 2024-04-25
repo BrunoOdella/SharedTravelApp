@@ -20,7 +20,6 @@ public class Trip
     public Trip()
     {
         this._id = Guid.NewGuid(); //generar un numero acorde a algo
-        this._owner = Guid.NewGuid();//generar un numero acorde a algo
         this._passengers = new List<Guid>();
     }
 

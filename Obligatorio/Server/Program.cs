@@ -146,9 +146,8 @@ namespace Server
 
                         user = userRepository.Get(userId);
                         SendMessageToClient(response, networkHelper);
-                        string option = ReceiveMessageFromClient(networkHelper);
 
-                        GoToOption(option,networkHelper, clientSocket, user);
+                        GoToOption(networkHelper, clientSocket, user);
                         
                     }
 
@@ -166,39 +165,46 @@ namespace Server
             }
         }
 
-        private static void GoToOption(string option,NetworkHelper networkHelper,Socket socket, User user)
+        private static void GoToOption(NetworkHelper networkHelper,Socket socket, User user)
         {
-            int opt = Int32.Parse(option);
-            switch (opt)
+            bool salir = false;
+            while (!salir)
             {
-                case 1:
-                    PublishTrip(networkHelper, socket, user);
-                    break;
-                case 2:
-                    JoinTrip(networkHelper, socket, user);
-                    break;
-                case 3:
-                    ModifyTrip(networkHelper, socket, user);
-                    break;
-                case 4:
-                    Console.WriteLine("Eligio la opcion 4");
-                    WithdrawFromTrip(networkHelper, socket, user);
-                    break;
-                case 5:
-                    TripSearch(networkHelper, socket, user);
-                    break;
-                case 6:
-                    ViewTripInfo(networkHelper, socket, user);
-                    break;
-                case 7:
-                    RateDriver(networkHelper, socket, user);
-                    break;
-                case 8:
-                    break;
-                case 9:
-                    break;
-                default: break;
+                string option = ReceiveMessageFromClient(networkHelper);
+                int opt = Int32.Parse(option);
+                switch (opt)
+                {
+                    case 1:
+                        PublishTrip(networkHelper, socket, user);
+                        break;
+                    case 2:
+                        JoinTrip(networkHelper, socket, user);
+                        break;
+                    case 3:
+                        ModifyTrip(networkHelper, socket, user);
+                        break;
+                    case 4:
+                        WithdrawFromTrip(networkHelper, socket, user);
+                        break;
+                    case 5:
+                        TripSearch(networkHelper, socket, user);
+                        break;
+                    case 6:
+                        ViewTripInfo(networkHelper, socket, user);
+                        break;
+                    case 7:
+                        RateDriver(networkHelper, socket, user);
+                        break;
+                    case 8:
+                        break;
+                    case 9:
+                        salir = true;
+                        break;
+                    default: 
+                        break;
+                }
             }
+            
 
         }
 
@@ -295,7 +301,6 @@ namespace Server
                 // Enviar mensaje al cliente sobre la falta de viajes disponibles
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 string nextOption = ReceiveMessageFromClient(networkHelper);
-                GoToOption(nextOption, networkHelper, socket, user);
             }
         }
 
@@ -346,7 +351,6 @@ namespace Server
                             Console.WriteLine("Se ha unido correctamente al viaje.");
 
                             string nextOption = ReceiveMessageFromClient(networkHelper);
-                            GoToOption(nextOption, networkHelper, socket, user);
                         }
                         else
                         {
@@ -368,7 +372,6 @@ namespace Server
                 // Enviar mensaje al cliente sobre la falta de viajes disponibles
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 string nextOption = ReceiveMessageFromClient(networkHelper);
-                GoToOption(nextOption, networkHelper, socket, user);
             }
         }
 
@@ -425,7 +428,12 @@ namespace Server
                 int count = 1;
                 foreach(var trip in trips)
                 {
-                    if(trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
+                    var a = trip.GetOwner();
+                    if (a.Equals(new Guid("db636cb6-1189-4c0f-9fe8-08b3b682dc32")))
+                    {
+                        var b = user.GetGuid();
+                    }
+                    if (trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
                     {
                         map.Add(count++, trip.GetGuid());
                     }
@@ -467,10 +475,11 @@ namespace Server
                     selectedTrip.Destination = newDestination;
                 }
 
-                string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
-                if (newPricePerSeat != "EMPTY")
+                DateTime newDepartureTime;
+                string aux = ReceiveMessageFromClient(networkHelper);
+                if (aux != "EMPTY")
                 {
-                    selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
+                    selectedTrip.Departure = DateTime.Parse(aux);
                 }
 
                 string newPet = ReceiveMessageFromClient(networkHelper);
@@ -479,10 +488,10 @@ namespace Server
                     selectedTrip.Pet = bool.Parse(newPet);
                 }
 
-                DateTime newDepartureTime;
-                if (DateTime.TryParse(ReceiveMessageFromClient(networkHelper), out newDepartureTime))
+                string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
+                if (newPricePerSeat != "EMPTY")
                 {
-                    selectedTrip.Departure = newDepartureTime;
+                    selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
                 }
 
                 string newPhoto;
@@ -532,13 +541,14 @@ namespace Server
                     Destination = destination,
                     Departure = departure,
                     TotalSeats = totalSeats,
+                    AvailableSeats = totalSeats,
                     PricePerPassanger = pricePerPassanger,
                     Pet = pet,
                     Photo = photo,
                 };
 
-                TripRepository tripRepository = new TripRepository();
-                tripRepository.Add(newTrip);
+                newTrip.SetOwner(user.GetGuid());
+                ITripRepo.Add(newTrip);
 
                 SendMessageToClient("Viaje publicado con éxito.", networkHelper);
             }
@@ -608,7 +618,6 @@ namespace Server
             {
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 string nextOption = ReceiveMessageFromClient(networkHelper);
-                GoToOption(nextOption, networkHelper, socket, user);
             }
         }
 
@@ -640,7 +649,6 @@ namespace Server
             {
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 string nextOption = ReceiveMessageFromClient(networkHelper);
-                GoToOption(nextOption, networkHelper, socket, user);
             }
         }
 
