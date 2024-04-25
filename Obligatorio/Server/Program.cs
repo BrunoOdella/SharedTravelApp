@@ -279,25 +279,32 @@ namespace Server
             try
             {
                 trips = TripSearch(networkHelper, socket, user);
+                int amountOfTrips = trips.Count;
+                SendMessageToClient(amountOfTrips.ToString(), networkHelper);
 
-                string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
-                int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
-
-                if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
+                if (amountOfTrips > 0)
                 {
-                    Trip selectedTrip = trips[selectedTripIndex];
-                    SendAllTripInfo(networkHelper, selectedTrip);
+                    string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
-                    string download = ReceiveMessageFromClient(networkHelper);
-                    if (download == "si") 
+                    if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                     {
-                        SendStreamToClient(networkHelper, selectedTrip.Photo);
-                    } 
+                        Trip selectedTrip = trips[selectedTripIndex];
+                        SendAllTripInfo(networkHelper, selectedTrip);
+
+                        string download = ReceiveMessageFromClient(networkHelper);
+                        if (download == "si")
+                        {
+                            SendStreamToClient(networkHelper, selectedTrip.Photo);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Selección de viaje inválida.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Selección de viaje inválida.");
-                }
+
+                
             }
             catch (Exception ex)
             {
@@ -312,64 +319,71 @@ namespace Server
             string response = "";
 
             List<Trip> trips= TripSearch(networkHelper,socket,user);
-            try
+            SendMessageToClient(trips.Count.ToString(), networkHelper);
+            //le mando la cant dfe trips al cliente asi sabe si decirle al user que elija uno
+            if (trips.Count > 0)
             {
-
-                string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
-                int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
-
-                if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
+                try
                 {
-                    Trip selectedTrip = trips[selectedTripIndex];
-                    Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
 
-                    try
+                    string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
+
+                    if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                     {
-                        Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
-                        
-                        if(ITripRepo.isJoined(tripToJoin._id, user._id))
+                        Trip selectedTrip = trips[selectedTripIndex];
+                        Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
+
+                        try
                         {
-                            response = "Usted ya forma parte de este viaje, no es posible unirlo";
+                            Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
+
+                            if (ITripRepo.isJoined(tripToJoin._id, user._id))
+                            {
+                                response = "Usted ya forma parte de este viaje, no es posible unirlo";
+                            }
+
+                            if (ITripRepo.isOwner(tripToJoin._id, user._id))
+                            {
+                                response = "Usted es el dueño de este viaje, no es posible unirlo";
+                            }
+
+
+
+                            if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
+                            {
+                                tripToJoin.AvailableSeats--;
+
+                                tripToJoin._passengers.Add(user._id);
+
+                                ITripRepo.Update(tripToJoin);
+
+                                response = "Se ha unido correctamente al viaje.";
+
+
+                            }
                         }
-                        
-                        if (ITripRepo.isOwner(tripToJoin._id, user._id))
+                        catch (Exception ex)
                         {
-                            response = "Usted es el dueño de este viaje, no es posible unirlo";
-                        }
-
-                        
-
-                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
-                        {
-                            tripToJoin.AvailableSeats--;
-
-                            tripToJoin._passengers.Add(user._id);
-
-                            ITripRepo.Update(tripToJoin);
-
-                           response = "Se ha unido correctamente al viaje.";
-
-                            
+                            response = "Error al unirse al viaje: " + ex.Message;
+                            SendMessageToClient(response, networkHelper);
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        response="Error al unirse al viaje: " + ex.Message;
-                        SendMessageToClient(response, networkHelper);
+                        response = "Seleccion de viaje invalida";
                     }
+                    SendMessageToClient(response, networkHelper);
+
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    response = "Seleccion de viaje invalida";
+                    SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 }
-                SendMessageToClient(response, networkHelper);
-                
-                
             }
-            catch (Exception ex)
-            {
-                SendMessageToClient("ERROR" + ex.Message, networkHelper);
-            }
+            
+            
         }
 
         private static void WithdrawFromTrip(NetworkHelper networkHelper, Socket socket, User user)
