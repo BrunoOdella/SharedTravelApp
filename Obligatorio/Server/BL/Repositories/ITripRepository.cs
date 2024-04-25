@@ -8,6 +8,11 @@ public interface ITripRepository
     Trip Get(Guid id);
     void Update(Trip trip);
     List<Trip> GetAll();
+    List<Trip> GetAll(Guid userGuid);
+
 
     List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination);
+    List<Trip> GetTripsFilteredByPetFriendly(bool petFriendly);
+    bool isJoined(Guid tripId, Guid userId);
+    bool isOwner(Guid tripId, Guid userId);
 }

@@ -22,6 +22,7 @@ namespace Server.BL
             this._tripId = tripId;
             this.Score = score;
             this.Comment = comment;
+            this._calificationId = new Guid();
         }
 
         public Guid GetGuid()
@@ -31,6 +32,11 @@ namespace Server.BL
 
         public void SetGuid(Guid id) {
             _calificationId = id;
+        }
+
+        public Guid GetTrip()
+        {
+            return _tripId;
         }
 
     }

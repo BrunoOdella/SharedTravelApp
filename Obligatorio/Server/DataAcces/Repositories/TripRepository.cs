@@ -2,6 +2,7 @@
 using Server.BL;
 using Server.BL.Repositories;
 using Server.BL.BLException;
+using System.Collections.Generic;
 
 namespace Server.DataAcces.Repositories
 {
@@ -93,6 +94,19 @@ namespace Server.DataAcces.Repositories
             return all;
         }
 
+        public List<Trip> GetAll(Guid userGuid)
+        {
+            List<Trip> all = GetAll();
+            List < Trip > response = new List<Trip>();
+            foreach (var trip in all)
+            {
+                if(trip._passengers.Contains(userGuid))
+                    response.Add(trip);
+            }
+
+            return response;
+        }
+
         public List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination)
         {
             TripContext context = TripContext.GetAccessReadTrip();
@@ -101,8 +115,7 @@ namespace Server.DataAcces.Repositories
             foreach (var trip in context.TripList)
             {
                 if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase) 
-                    && trip.Value.Origin.Equals(origin, StringComparison.OrdinalIgnoreCase)
-                    && trip.Value.AvailableSeats>0)
+                    && trip.Value.Origin.Equals(origin, StringComparison.OrdinalIgnoreCase))
                 {
                     tripsByOriginDestination.Add(trip.Value);
                 }
@@ -116,6 +129,52 @@ namespace Server.DataAcces.Repositories
             TripContext.ReturnReadAccessTrip();
             return tripsByOriginDestination;
         }
+
+        public List<Trip> GetTripsFilteredByPetFriendly(bool petFriendly)
+        {
+            TripContext context = TripContext.GetAccessReadTrip();
+            List<Trip> trips = new List<Trip>();
+
+            foreach (var trip in context.TripList)
+            {
+                if (trip.Value.Pet.Equals(petFriendly))
+                {
+                    trips.Add(trip.Value);
+                }
+            }
+
+            if (trips.Count == 0)
+            {
+                throw new Exception("No hay viajes disponibles para el filtro indicado");
+            }
+
+            TripContext.ReturnReadAccessTrip();
+            return trips;
+        }
+
+       
+
+        public bool isJoined(Guid tripId, Guid userId)
+        {
+            var trip = Get(tripId);
+            if (trip == null)
+            {
+                throw new Exception("Trip not found.");
+            }
+            return trip._passengers.Contains(userId);
+        }
+
+        public bool isOwner(Guid tripId, Guid userId)
+        {
+            var trip = Get(tripId);
+            if (trip == null)
+            {
+                throw new Exception("Trip not found.");
+            }
+            return trip.GetOwner() == userId;
+        }
+
+
 
     }
 }

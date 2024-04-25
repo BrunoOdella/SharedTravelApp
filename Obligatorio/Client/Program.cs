@@ -98,48 +98,144 @@ namespace Client
 
         private static void ShowMainMenu(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
-            Console.WriteLine("¿Qué desea hacer?");
-            Console.WriteLine("1-Publicar viaje");
-            Console.WriteLine("2-Unirse a un viaje");
-            Console.WriteLine("3-Modificar un viaje");
-            Console.WriteLine("4-Baja de un viaje");
-            Console.WriteLine("5-Buscar un viaje");
-            Console.WriteLine("6-Consultar la información de un viaje especifico");
-            Console.WriteLine("7-Calificar a un conductor");
-            Console.WriteLine("8-Ver calificación de un conductor");
-            Console.WriteLine("9-Cerrar Sesión");
-            Console.Write("Seleccione una opción: ");
-
-            string res = Console.ReadLine().Trim();
-            SendMessageToServer(res, networkHelper);
-
-            switch (int.Parse(res))
+            bool logout = false;
+            while (!logout)
             {
-                case 1:
-                    PublishTrip(networkHelper);
-                    break;
-                case 2:
-                    JoinTrip(networkHelper);
-                    break;
-                case 3:
-                    ModifyTrip(networkHelper);
-                    break;
-                case 5:
-                    TripSearch(networkHelper);
-                    break;
-                case 6:
-                    ViewTripInfo(networkHelper);
-                    break;
-                case 9:
-                    break;
-                default:
-                    Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
-                    break;
+                Console.WriteLine("Bienvenido al sistema de gestión de Triportunity!");
+                Console.WriteLine("¿Qué desea hacer?");
+                Console.WriteLine("1-Publicar viaje");
+                Console.WriteLine("2-Unirse a un viaje");
+                Console.WriteLine("3-Modificar un viaje");
+                Console.WriteLine("4-Baja de un viaje");
+                Console.WriteLine("5-Buscar un viaje");
+                Console.WriteLine("6-Consultar la información de un viaje especifico");
+                Console.WriteLine("7-Calificar a un conductor");
+                Console.WriteLine("8-Ver calificación de un conductor");
+                Console.WriteLine("9-Cerrar Sesión");
+                Console.Write("Seleccione una opción: ");
+
+                string res = "";
+                do
+                {
+                    res = Console.ReadLine().Trim();
+                } while (res.Length == 0 || int.Parse(res) < 0 || int.Parse(res) > 9);
+
+                SendMessageToServer(res, networkHelper);
+
+                switch (int.Parse(res))
+                {
+                    case 1:
+                        PublishTrip(networkHelper);
+                        break;
+                    case 2:
+                        JoinTrip(networkHelper);
+                        break;
+                    case 3:
+                        ModifyTrip(networkHelper);
+                        break;
+                    case 4:
+                        WithdrawFromTrip(networkHelper);
+                        break;
+                    case 5:
+                        TripSearch(networkHelper);
+                        break;
+                    case 6:
+                        ViewTripInfo(networkHelper);
+                        break;
+                    case 7:
+                        RateDriver(networkHelper);
+                        break;
+                    case 9:
+                        logout = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
+                        break;
+                }
             }
         }
 
-        
+        private static void WithdrawFromTrip(NetworkHelper networkHelper)
+        {
+            string TripCount = ReceiveMessageFromServer(networkHelper);
+
+            if (TripCount == "EMPTY")
+            {
+                Console.WriteLine("No hay viajes futuros.");
+                return;
+            }
+
+            int count = Int32.Parse(TripCount);
+            for (int i = 0; i < count; i++)
+            {
+                string currentTrip = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(currentTrip);
+            }
+
+            Console.WriteLine("¿De que viaje desea darse de baja?\n    (Para volver escriba SALIR)");
+            string response = "";
+            int wich = -1;
+            do
+            {
+                response = Console.ReadLine().Trim();
+                Int32.TryParse(response, out wich);
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir");
+
+            if (response.Trim().ToLower() == "salir")
+                return;
+            //
+            //envio que viaje quiero
+            SendMessageToServer($"{wich}", networkHelper);
+
+            string ServerResponse = ReceiveMessageFromServer(networkHelper);
+
+            if (ServerResponse == "OK")
+            {
+                Console.WriteLine("Se a dado de baja del viaje.");
+            }
+        }
+        private static void RateDriver(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Seleccione que conductor calificar:");
+
+            string hasTrips = ReceiveMessageFromServer(networkHelper);
+
+            if (hasTrips == "EMPTY")
+            {
+                Console.WriteLine("No se han realizado viajes.");
+                return;
+            }
+
+            int count = Int32.Parse(hasTrips);
+            for (int i = 0; i < count; i++)
+            {
+                string current = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(current);
+            }
+
+            Console.WriteLine("¿A que conductor de que viaje desea calificar?\n    (Para volver escriba SALIR)");
+            string response = "";
+            int wich = -1;
+            do
+            {
+                response = Console.ReadLine().Trim();
+                Int32.TryParse(response, out wich);
+                bool a = response.Trim().ToLower() == "salir";
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir"); //dejar igual en todos los lugares
+
+            if (response.Trim().ToLower() == "salir")
+                return;
+
+            SendMessageToServer($"{response}", networkHelper);
+
+            float score = PromptForFloat("Introduzca el puntaje (0.0 - 10.0):");
+            SendMessageToServer(score.ToString(), networkHelper);
+
+            string comment = PromptForNonEmptyString("Introduzca un comentario:");
+            SendMessageToServer(comment, networkHelper);
+
+            Console.WriteLine(ReceiveMessageFromServer(networkHelper));
+        }
 
         private static string ReceiveMessageFromServer(NetworkHelper networkHelper)
         {
@@ -203,8 +299,6 @@ namespace Client
             int currentPart = 1;
             int offset = 0;
 
-            //string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            //string relativePath = "ReceivedFiles";
             string downloadPath = path;
 
             if (!Directory.Exists(downloadPath))
@@ -244,7 +338,6 @@ namespace Client
             {
                 Console.WriteLine(response.Substring(5));
                 Console.WriteLine();
-                ShowMainMenu(networkHelper);
             }
             else
             {
@@ -270,8 +363,22 @@ namespace Client
 
                     if(resp == "si")
                     {
-                       Console.WriteLine("Ingrese el path en el cual desea guardar la imagen");
-                       string path = Console.ReadLine().Trim();
+                       string path = "";
+                       bool pathExists = false;
+                       while (!pathExists)
+                       {
+                            Console.WriteLine("Ingrese la ruta del directorio en el cual desea descargar la imagen:");
+                            path = Console.ReadLine().Trim();
+
+                            if (Directory.Exists(path))
+                            {
+                                pathExists = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error: El directorio no existe. Por favor, ingrese una ruta válida.");
+                            }
+                       }
                        ReceiveStreamFromServer(networkHelper, path);
                     }
                 }
@@ -279,7 +386,6 @@ namespace Client
                 {
                     Console.WriteLine("No hay viajes disponibles");
                 }
-                ShowMainMenu(networkHelper);
             }
         }
 
@@ -292,7 +398,7 @@ namespace Client
             while (!fileExists)
             {
                 Console.WriteLine("Ingrese la ruta del archivo a enviar:");
-                filePath = Console.ReadLine();
+                filePath = Console.ReadLine().Trim();
 
                 if (File.Exists(filePath))
                 {
@@ -337,7 +443,6 @@ namespace Client
         }
 
 
-
         private static string PromptForNonEmptyString(string prompt)
         {
             string input;
@@ -375,8 +480,6 @@ namespace Client
             }
             return inputDate;
         }
-
-
 
 
         private static int PromptForInt(string prompt)
@@ -428,6 +531,7 @@ namespace Client
             if (hasTrips == "EMPTY")
             {
                 Console.WriteLine("No hay viajes publicados para fechas futuras.");
+                return;
             }
             Console.WriteLine(hasTrips); //verificacion - borrar luego
             //recivo el contador de viajes y muestro uno por uno
@@ -448,11 +552,8 @@ namespace Client
             {
                 response = Console.ReadLine().Trim();
                 Int32.TryParse(response, out wich);
-                bool a = (response.Trim().Length == 0 || wich < 0 || wich > count + 1);
-                bool b = response.Trim().ToLower() == "salir";
-            } while ((response.Trim().Length == 0 || wich < 0 || wich > count + 1) || response.Trim().ToLower() == "salir");
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir");
 
-            //response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
 
             if (response.Trim().ToLower() == "salir")
                 return;
@@ -521,7 +622,6 @@ namespace Client
             else
             {
                 SendMessageToServer(modificar.ToString(), networkHelper);
-                SendMessageToServer("EMPTY", networkHelper);
             }
 
             //Modificacion
@@ -541,17 +641,17 @@ namespace Client
             SendMessageToServer(origin, networkHelper);
             SendMessageToServer(destination, networkHelper);
 
-            string response = ReceiveMessageFromServer(networkHelper);
+            string tripCountString = ReceiveMessageFromServer(networkHelper);
 
-            if (response.StartsWith("ERROR"))
+            if (tripCountString.StartsWith("ERROR"))
             {
-                Console.WriteLine(response.Substring(5)); 
+                Console.WriteLine(tripCountString.Substring(5)); 
                 Console.WriteLine();
-                ShowMainMenu(networkHelper);
+                
             }
             else
             {
-                int tripCount = int.Parse(response);
+                int tripCount = int.Parse(tripCountString);
 
                 if (tripCount > 0)
                 {
@@ -564,22 +664,24 @@ namespace Client
                     Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
                     string selectedTripNumberStr = Console.ReadLine().Trim();
                     SendMessageToServer(selectedTripNumberStr, networkHelper);
-
-                    Console.WriteLine("Se ha unido correctamente al viaje");
-                    ShowMainMenu(networkHelper);
+                    
                 }
                 else
                 {
                     Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
-                    ShowMainMenu(networkHelper);
+                    
                 }
             }
+            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine(response);
+            ShowMainMenu(networkHelper);
         }
          private static void TripSearch (NetworkHelper networkHelper)
         {
             Console.WriteLine("Desea:");
             Console.WriteLine("1. Ver la lista de todos los viajes");
             Console.WriteLine("2. Ver la lista de viajes filtrados por origen y destino");
+            Console.WriteLine("3. Ver la lista de viajes filtrados por si son pet friendly o no");
 
             string res = Console.ReadLine().Trim();
             SendMessageToServer(res, networkHelper);
@@ -592,13 +694,53 @@ namespace Client
                 case 2:
                     ViewTripsOriginDestination(networkHelper);
                     break;
+                case 3:
+                    ViewAllTripsFilteredPetFriendly(networkHelper);
+                    break;
                 default:
                     Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
                     break;
             }
         }
 
-        
+        private static void ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Ingrese 'SI' si desea ver los viajes pet friendly o ingrese 'NO' si desea ver los viajes que no son pet friendly: ");
+            string option = Console.ReadLine().Trim();
+
+            SendMessageToServer(option, networkHelper);
+
+            string response = ReceiveMessageFromServer(networkHelper);
+
+            if (response.StartsWith("ERROR"))
+            {
+                Console.WriteLine(response.Substring(5));
+                Console.WriteLine();
+
+            }
+            else
+            {
+                Console.WriteLine();
+                int tripCount = int.Parse(response);
+
+                if (tripCount > 0)
+                {
+                    for (int i = 0; i < tripCount; i++)
+                    {
+                        string trip = ReceiveMessageFromServer(networkHelper);
+                        Console.WriteLine(trip);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No hay viajes disponibles para el filtro ingresado");
+
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+        }
+
         private static void ViewAllTrips(NetworkHelper networkHelper)
         {
             string response = ReceiveMessageFromServer(networkHelper);
@@ -614,22 +756,19 @@ namespace Client
                 }
                 Console.WriteLine();
                 Console.WriteLine();
-                
             }
             else
             {
                 Console.WriteLine("No hay viajes disponibles");
-                
             }
-            ShowMainMenu(networkHelper);
         }
 
         private static void ViewTripsOriginDestination(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Ingrese el origen del viaje al que se quiere unir:");
+            Console.WriteLine("Ingrese el origen del viaje:");
             string origin = Console.ReadLine().Trim();
 
-            Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
+            Console.WriteLine("Ingrese el destino del viaje:");
             string destination = Console.ReadLine().Trim();
 
             SendMessageToServer(origin, networkHelper);
@@ -664,7 +803,6 @@ namespace Client
                 Console.WriteLine();
                 Console.WriteLine();
             }
-            ShowMainMenu(networkHelper);
         }
 
         private static void RecevieAllTripInfo(NetworkHelper networkHelper)
@@ -679,7 +817,7 @@ namespace Client
             Console.WriteLine("Origen: " + origin);
             Console.WriteLine("Destino: " + destination);
             Console.WriteLine("Fecha y hora de salida: "+ departure);
-            Console.WriteLine("Cantidad de ascientos disponibles: " + availableSeats);
+            Console.WriteLine("Cantidad de asientos disponibles: " + availableSeats);
             Console.WriteLine("Precio del pasaje por persona: $" + pricePerPassanger);
             if(pet == "true")
             {
