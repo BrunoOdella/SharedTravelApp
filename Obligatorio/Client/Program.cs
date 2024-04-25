@@ -422,7 +422,7 @@ namespace Client
                 Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
                 string resp = Console.ReadLine().Trim();
 
-                while (resp != "si" || resp!="no")
+                while (resp.ToLower() != "si" && resp.ToLower() != "no")
                 {
                     Console.WriteLine("Ingrese nuevamente la respuesta:");
                     resp = Console.ReadLine().Trim();
@@ -462,7 +462,7 @@ namespace Client
 
             while (!fileExists)
             {
-                Console.WriteLine("Ingrese la ruta del archivo a enviar:");
+                Console.WriteLine("Ingrese la ruta del archivo a enviar (sin comillas por favor):");
                 filePath = Console.ReadLine().Trim();
 
                 if (File.Exists(filePath))
@@ -497,7 +497,6 @@ namespace Client
             {
                 bool isLastPart = (currentPart == numberOfParts);
                 int numberOfBytesToSend = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
-                Console.WriteLine($"Enviando parte #{currentPart}, de {numberOfBytesToSend} bytes");
 
                 byte[] bytesReadFromDisk = fs.Read(filePath, offset, numberOfBytesToSend);
                 networkHelper.Send(bytesReadFromDisk);
@@ -796,7 +795,7 @@ namespace Client
             Console.WriteLine("Ingrese 'SI' si desea ver los viajes pet friendly o ingrese 'NO' si desea ver los viajes que no son pet friendly: ");
             string resp = Console.ReadLine().Trim();
 
-            while (resp != "SI" || resp != "NO")
+            while (resp.ToLower() != "si" && resp.ToLower() != "no")
             {
                 Console.WriteLine("Ingrese nuevamente la respuesta:");
                 resp = Console.ReadLine().Trim();
