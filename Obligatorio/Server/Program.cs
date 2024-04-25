@@ -194,6 +194,9 @@ namespace Server
                         ViewDriverRatings(networkHelper, socket, user);
                         break;
                     case 9:
+                        DeleteTrip(networkHelper, socket, user);
+                        break;
+                    case 10:
                         salir = true;
                         break;
                     default: 
@@ -203,6 +206,55 @@ namespace Server
             
 
         }
+
+        private static void DeleteTrip(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            try
+            {
+                List<Trip> trips = ITripRepo.GetTripsByOwner(user.GetGuid());
+                List<Trip> ActualsTrips = new List<Trip>();
+
+                foreach (Trip trip in trips)
+                {
+                    if (trip.Departure > DateTime.Now)
+                        ActualsTrips.Add(trip);
+                }
+
+                if (ActualsTrips.Count == 0)
+                {
+                    SendMessageToClient("0", networkHelper);
+                    return;
+                }
+
+                SendMessageToClient($"{ActualsTrips.Count}", networkHelper);
+
+
+                int count = 1;
+                foreach (var trip in ActualsTrips)
+                {
+                    SendMessageToClient($"{count} | Origen: {trip.Origin}, Destino: {trip.Destination}, Fecha de salida: {trip.Departure}", networkHelper);
+                    count++;
+                }
+
+                string selected = ReceiveMessageFromClient(networkHelper);
+                if (selected == "salir")
+                    return;
+
+                int pos = int.Parse(selected) - 1;
+
+                ITripRepo.Remove(ActualsTrips[pos]);
+
+                SendMessageToClient("Se elimino el viaje", networkHelper);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error al eliminar un viaje: " + e.Message);
+                SendMessageToClient("Error al eliminar un viaje.", networkHelper);
+            }
+            
+
+        }
+
 
         public static void ViewDriverRatings(NetworkHelper networkHelper, Socket socket, User user)
         {
@@ -251,7 +303,11 @@ namespace Server
                     count++;
                 }
 
-                int selected = int.Parse(ReceiveMessageFromClient(networkHelper));
+                string response = ReceiveMessageFromClient(networkHelper);
+                if(response == "salir")
+                    return;
+
+                int selected = int.Parse(response);
 
                 float score = float.Parse(ReceiveMessageFromClient(networkHelper));
 
@@ -421,6 +477,8 @@ namespace Server
                 }
 
                 string selected = ReceiveMessageFromClient(networkHelper);
+                if(selected == "salir")
+                    return;
 
                 int pos = int.Parse(selected) - 1;
 
