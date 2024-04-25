@@ -359,7 +359,7 @@ namespace Client
                 Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
                 string resp = Console.ReadLine().Trim();
 
-                while (resp != "si" || resp!="no")
+                while (resp.ToLower() != "si" && resp.ToLower() != "no")
                 {
                     Console.WriteLine("Ingrese nuevamente la respuesta:");
                     resp = Console.ReadLine().Trim();
@@ -727,7 +727,7 @@ namespace Client
             Console.WriteLine("Ingrese 'SI' si desea ver los viajes pet friendly o ingrese 'NO' si desea ver los viajes que no son pet friendly: ");
             string resp = Console.ReadLine().Trim();
 
-            while (resp != "SI" || resp != "NO")
+            while (resp.ToLower() != "si" && resp.ToLower() != "no")
             {
                 Console.WriteLine("Ingrese nuevamente la respuesta:");
                 resp = Console.ReadLine().Trim();
