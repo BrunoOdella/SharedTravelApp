@@ -330,6 +330,10 @@ namespace Server
                 {
 
                     string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    if (selectedTripIndexStr == "exit")
+                    {
+                        return;
+                    }
                     int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
                     if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)

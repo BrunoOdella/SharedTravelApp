@@ -641,9 +641,15 @@ namespace Client
             if (amountOfTrips != "0")
             {
                 Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
+                Console.WriteLine("Si desea salir ingrese 'salir'");
                 string response = Console.ReadLine().Trim();
                 int selectedTripNumber;
 
+                if (response.ToLower() == "salir")
+                {
+                    SendMessageToServer("exit", networkHelper);
+                    return;
+                }
                 while (!int.TryParse(response, out selectedTripNumber) || selectedTripNumber < 1 || selectedTripNumber > Convert.ToInt32(amountOfTrips))
                 {
                     Console.WriteLine("Ingrese nuevamente el número de viaje:");
