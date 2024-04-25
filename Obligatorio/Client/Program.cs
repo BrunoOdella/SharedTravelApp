@@ -318,7 +318,6 @@ namespace Client
             {
                 bool isLastPart = (currentPart == numberOfParts);
                 int numberOfBytesToReceive = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
-                Console.WriteLine($"Recibiendo parte #{currentPart}, de {numberOfBytesToReceive} bytes");
 
                 byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
 
