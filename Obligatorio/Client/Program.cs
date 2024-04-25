@@ -642,14 +642,14 @@ namespace Client
             SendMessageToServer(destination, networkHelper);
 
             string tripCountString = ReceiveMessageFromServer(networkHelper);
-
+            
             if (tripCountString.StartsWith("ERROR"))
             {
                 Console.WriteLine(tripCountString.Substring(5)); 
                 Console.WriteLine();
                 
             }
-            else
+            if(!tripCountString.StartsWith("ERROR"))
             {
                 int tripCount = int.Parse(tripCountString);
 
@@ -671,10 +671,10 @@ namespace Client
                     Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
                     
                 }
+                string response = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(response);
             }
-            string response = ReceiveMessageFromServer(networkHelper);
-            Console.WriteLine(response);
-            ShowMainMenu(networkHelper);
+            
         }
          private static void TripSearch (NetworkHelper networkHelper)
         {

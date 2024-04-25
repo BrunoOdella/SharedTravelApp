@@ -305,7 +305,7 @@ namespace Server
             List<Trip> tripsToOriginAndDestination;
             try
             {
-                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
+                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestinationAvailableToJoin(origin, destination);
 
                 string tripCount = tripsToOriginAndDestination.Count.ToString();
                 SendMessageToClient(tripCount, networkHelper);
@@ -339,12 +339,9 @@ namespace Server
                             response = "Usted es el dueño de este viaje, no es posible unirlo";
                         }
 
-                        if (tripToJoin.AvailableSeats == 0)
-                        {
-                            response = "El viaje no tiene asientos disponibles";
-                        }
+                        
 
-                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id) && tripToJoin.AvailableSeats > 0)
+                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
                         {
                             tripToJoin.AvailableSeats--;
 
@@ -360,6 +357,7 @@ namespace Server
                     catch (Exception ex)
                     {
                         response="Error al unirse al viaje: " + ex.Message;
+                        SendMessageToClient(response, networkHelper);
                     }
                 }
                 else

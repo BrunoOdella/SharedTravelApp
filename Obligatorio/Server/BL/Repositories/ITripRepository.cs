@@ -10,7 +10,7 @@ public interface ITripRepository
     List<Trip> GetAll();
     List<Trip> GetAll(Guid userGuid);
 
-
+    List<Trip> GetAllTripsToOriginAndDestinationAvailableToJoin(string origin, string destination);
     List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination);
     List<Trip> GetTripsFilteredByPetFriendly(bool petFriendly);
     bool isJoined(Guid tripId, Guid userId);
