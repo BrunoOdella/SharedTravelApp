@@ -145,6 +145,9 @@ namespace Client
                     case 7:
                         RateDriver(networkHelper);
                         break;
+                    case 8:
+                        ViewDriverRatings(networkHelper);
+                        break;
                     case 9:
                         logout = true;
                         break;
@@ -153,6 +156,21 @@ namespace Client
                         break;
                 }
             }
+        }
+
+        private static void ViewDriverRatings(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Usuarios disponibles en el sistema:");
+            string userNames = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine(userNames);
+
+            Console.WriteLine("Ingrese el nombre del usuario para ver sus calificaciones:");
+            string selectedUsername = Console.ReadLine();
+            SendMessageToServer(selectedUsername, networkHelper);
+
+            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine("Calificaciones recibidas del servidor:");
+            Console.WriteLine(response);
         }
 
         private static void WithdrawFromTrip(NetworkHelper networkHelper)
