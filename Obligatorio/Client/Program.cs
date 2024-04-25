@@ -306,7 +306,7 @@ namespace Client
             string relativePath = "ReceivedFiles";
             string saveDirectory = Path.Combine(path, relativePath);
 
-            if (!Directory.Exists(path))
+            if (!Directory.Exists(saveDirectory))
             {
                 Directory.CreateDirectory(saveDirectory);
             }
