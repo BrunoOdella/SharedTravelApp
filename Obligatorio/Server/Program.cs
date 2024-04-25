@@ -833,7 +833,8 @@ namespace Server
             StringBuilder sb = new StringBuilder();
             foreach (var calification in califications)
             {
-                sb.AppendLine($"Trip ID: {calification.GetTrip()}, Score: {calification.Score}, Comment: {calification.Comment}");
+                var trip = ITripRepo.Get(calification.GetTrip());
+                sb.AppendLine($"Origen del viaje: {trip.Origin}, Destino del viaje: {trip.Destination}, Score: {calification.Score}, Comment: {calification.Comment}");
             }
             return sb.ToString();
         }
