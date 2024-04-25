@@ -359,6 +359,12 @@ namespace Client
 
                 Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
                 string resp = Console.ReadLine().Trim();
+
+                while (resp != "si" || resp!="no")
+                {
+                    Console.WriteLine("Ingrese nuevamente la respuesta:");
+                    resp = Console.ReadLine().Trim();
+                }
                 SendMessageToServer(resp, networkHelper);
 
                 if (resp == "si")
@@ -660,9 +666,16 @@ namespace Client
             Console.WriteLine("1. Ver la lista de todos los viajes");
             Console.WriteLine("2. Ver la lista de viajes filtrados por origen y destino");
             Console.WriteLine("3. Ver la lista de viajes filtrados por si son pet friendly o no");
-            Console.WriteLine("4. Ver la lista de viajes futuros");
+            Console.WriteLine("4. Ver la lista de futuros viajes");
 
             string res = Console.ReadLine().Trim();
+            int selectedOpt;
+
+            while (!int.TryParse(res, out selectedOpt) || selectedOpt < 0 || selectedOpt > 4)
+            {
+                Console.WriteLine("Ingrese nuevamente la opcion:");
+                res = Console.ReadLine().Trim();
+            }
             SendMessageToServer(res, networkHelper);
 
             switch (int.Parse(res))
@@ -710,9 +723,15 @@ namespace Client
         private static void ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper)
         {
             Console.WriteLine("Ingrese 'SI' si desea ver los viajes pet friendly o ingrese 'NO' si desea ver los viajes que no son pet friendly: ");
-            string option = Console.ReadLine().Trim();
+            string resp = Console.ReadLine().Trim();
 
-            SendMessageToServer(option, networkHelper);
+            while (resp != "SI" || resp != "NO")
+            {
+                Console.WriteLine("Ingrese nuevamente la respuesta:");
+                resp = Console.ReadLine().Trim();
+            }
+
+            SendMessageToServer(resp, networkHelper);
 
             string response = ReceiveMessageFromServer(networkHelper);
 
