@@ -74,5 +74,19 @@ public class CalificationRepository : ICalificationRepository
         CalificationContext.ReturnWriteAccessCalification();
     }
 
-    
+    public List<Calification> GetCalificationsByTripId(Guid tripId)
+    {
+        CalificationContext context = CalificationContext.GetAccessReadCalification();
+        List<Calification> califications = new List<Calification>();
+        foreach (var calificationEntry in context.CalificationList)
+        {
+            if (calificationEntry.Value.GetTrip() == tripId)
+            {
+                califications.Add(calificationEntry.Value);
+            }
+        }
+        CalificationContext.ReturnReadAccessCalification();
+        return califications;
+    }
+
 }

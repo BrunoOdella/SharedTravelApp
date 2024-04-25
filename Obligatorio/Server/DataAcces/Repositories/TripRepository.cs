@@ -176,5 +176,21 @@ namespace Server.DataAcces.Repositories
 
 
 
+        public List<Trip> GetTripsByOwner(Guid ownerId)
+        {
+            TripContext context = TripContext.GetAccessReadTrip();
+            List<Trip> ownedTrips = new List<Trip>();
+            foreach (var tripEntry in context.TripList)
+            {
+                if (tripEntry.Value.GetOwner() == ownerId)
+                {
+                    ownedTrips.Add(tripEntry.Value);
+                }
+            }
+            TripContext.ReturnReadAccessTrip();
+            return ownedTrips;
+        }
+
+
     }
 }
