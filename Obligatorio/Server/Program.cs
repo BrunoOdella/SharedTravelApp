@@ -441,11 +441,6 @@ namespace Server
                 int count = 1;
                 foreach(var trip in trips)
                 {
-                    var a = trip.GetOwner();
-                    if (a.Equals(new Guid("db636cb6-1189-4c0f-9fe8-08b3b682dc32")))
-                    {
-                        var b = user.GetGuid();
-                    }
                     if (trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
                     {
                         map.Add(count++, trip.GetGuid());
@@ -454,6 +449,7 @@ namespace Server
                 if(map.Count == 0) 
                 {
                     SendMessageToClient("EMPTY", networkHelper);
+                    return;
                 }
                 else
                 {
@@ -861,7 +857,8 @@ namespace Server
             StringBuilder sb = new StringBuilder();
             foreach (var calification in califications)
             {
-                sb.AppendLine($"Trip ID: {calification.GetTrip()}, Score: {calification.Score}, Comment: {calification.Comment}");
+                var trip = ITripRepo.Get(calification.GetTrip());
+                sb.AppendLine($"Origen del viaje: {trip.Origin}, Destino del viaje: {trip.Destination}, Score: {calification.Score}, Comment: {calification.Comment}");
             }
             return sb.ToString();
         }
