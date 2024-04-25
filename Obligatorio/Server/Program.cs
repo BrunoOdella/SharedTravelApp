@@ -288,31 +288,19 @@ namespace Server
 
         private static void JoinTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
-            string origin = ReceiveMessageFromClient(networkHelper);
-            string destination = ReceiveMessageFromClient(networkHelper);
+            
             string response = "";
 
-            List<Trip> tripsToOriginAndDestination;
+            List<Trip> trips= TripSearch(networkHelper,socket,user);
             try
             {
-                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestinationAvailableToJoin(origin, destination);
-
-                string tripCount = tripsToOriginAndDestination.Count.ToString();
-                SendMessageToClient(tripCount, networkHelper);
-
-                for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
-                {
-                    Trip trip = tripsToOriginAndDestination[i];
-                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClient(tripString, networkHelper);
-                }
 
                 string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
                 int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
-                if (selectedTripIndex >= 0 && selectedTripIndex < tripsToOriginAndDestination.Count)
+                if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                 {
-                    Trip selectedTrip = tripsToOriginAndDestination[selectedTripIndex];
+                    Trip selectedTrip = trips[selectedTripIndex];
                     Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
 
                     try
