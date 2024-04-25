@@ -81,6 +81,10 @@ namespace Client
                         Console.WriteLine("Successfully logged in. \n");
                         loggedIn = true;
 
+                        Console.Title = username.ToUpper();
+
+                        Console.Clear();
+
                         ShowMainMenu(networkHelper);
                     }
                     else if (response == "ERROR")
@@ -111,7 +115,8 @@ namespace Client
                 Console.WriteLine("6-Consultar la información de un viaje especifico");
                 Console.WriteLine("7-Calificar a un conductor");
                 Console.WriteLine("8-Ver calificación de un conductor");
-                Console.WriteLine("9-Cerrar Sesión");
+                Console.WriteLine("9-Eliminar viaje");
+                Console.WriteLine("10-Cerrar Sesión");
                 Console.Write("Seleccione una opción: ");
 
                 string res = "";
@@ -121,6 +126,7 @@ namespace Client
                 } while (res.Length == 0 || int.Parse(res) < 0 || int.Parse(res) > 9);
 
                 SendMessageToServer(res, networkHelper);
+                Console.Clear();
 
                 switch (int.Parse(res))
                 {
@@ -149,6 +155,9 @@ namespace Client
                         ViewDriverRatings(networkHelper);
                         break;
                     case 9:
+                        DeleteTrip(networkHelper);
+                        break;
+                    case 10:
                         logout = true;
                         break;
                     default:
@@ -156,6 +165,48 @@ namespace Client
                         break;
                 }
             }
+        }
+
+        private static void DeleteTrip(NetworkHelper networkHelper)
+        {
+            string TripCount = ReceiveMessageFromServer(networkHelper);
+
+            if (TripCount == "0")
+            {
+                Console.WriteLine("No hay viajes futuros.");
+                return;
+            }
+
+            int count = Int32.Parse(TripCount);
+
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine(ReceiveMessageFromServer(networkHelper));
+            }
+
+            Console.WriteLine("¿Que viaje desea dar de baja?\n    (Para volver escriba SALIR)");
+
+            string response = "";
+            int wich = -1;
+            do
+            {
+                response = Console.ReadLine().Trim();
+                Int32.TryParse(response, out wich);
+            } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir");
+
+            if (response.Trim().ToLower() == "salir")
+            {
+                SendMessageToServer($"{response.ToLower()}", networkHelper);
+                return;
+            }
+
+            SendMessageToServer($"{wich}", networkHelper);
+
+            string ServerResponse = ReceiveMessageFromServer(networkHelper);
+
+            Console.Clear();
+
+            Console.WriteLine(ServerResponse);
         }
 
 
@@ -186,7 +237,10 @@ namespace Client
             } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir");
 
             if (response.Trim().ToLower() == "salir")
+            {
+                SendMessageToServer($"{response.ToLower()}", networkHelper);
                 return;
+            }
             //
             //envio que viaje quiero
             SendMessageToServer($"{wich}", networkHelper);
@@ -195,6 +249,8 @@ namespace Client
 
             if (ServerResponse == "OK")
             {
+                Console.Clear();
+
                 Console.WriteLine("Se a dado de baja del viaje.");
             }
         }
@@ -228,7 +284,11 @@ namespace Client
             } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir"); //dejar igual en todos los lugares
 
             if (response.Trim().ToLower() == "salir")
+            {
+                SendMessageToServer($"{response.ToLower()}", networkHelper);
                 return;
+            }
+
 
             SendMessageToServer($"{response}", networkHelper);
 
@@ -281,6 +341,7 @@ namespace Client
             Console.WriteLine("Escriba la ruta de la foto del coche");
             SendStreamToServer(networkHelper);
 
+            Console.Clear();
 
             string response = ReceiveMessageFromServer(networkHelper);
             Console.WriteLine(response);
@@ -352,6 +413,8 @@ namespace Client
                     Console.WriteLine("Ingrese nuevamente el número de viaje:");
                     response = Console.ReadLine().Trim();
                 }
+
+                Console.Clear();
 
                 SendMessageToServer(response, networkHelper);
 
@@ -645,6 +708,8 @@ namespace Client
                 }
                 SendMessageToServer(response, networkHelper);
 
+                Console.Clear();
+
                 string resp = ReceiveMessageFromServer(networkHelper);
                 Console.WriteLine(resp);
             }
@@ -653,6 +718,8 @@ namespace Client
         }
          private static void TripSearch (NetworkHelper networkHelper)
         {
+            Console.Clear();
+
             Console.WriteLine("Desea:");
             Console.WriteLine("1. Ver la lista de todos los viajes");
             Console.WriteLine("2. Ver la lista de viajes filtrados por origen y destino");
@@ -660,6 +727,8 @@ namespace Client
 
             string res = Console.ReadLine().Trim();
             SendMessageToServer(res, networkHelper);
+            
+            Console.Clear();
 
             switch (int.Parse(res))
             {
@@ -686,6 +755,8 @@ namespace Client
             SendMessageToServer(option, networkHelper);
 
             string response = ReceiveMessageFromServer(networkHelper);
+
+            Console.Clear();
 
             if (response.StartsWith("ERROR"))
             {
@@ -720,6 +791,8 @@ namespace Client
         {
             string response = ReceiveMessageFromServer(networkHelper);
             int tripCount = int.Parse(response);
+
+            Console.Clear();
 
             Console.WriteLine();
             if (tripCount > 0)
@@ -761,6 +834,8 @@ namespace Client
             {
                 Console.WriteLine();
                 int tripCount = int.Parse(response);
+
+                Console.Clear();
 
                 if (tripCount > 0)
                 {
@@ -818,6 +893,8 @@ namespace Client
             Console.WriteLine("Ingrese el nombre del usuario para ver sus calificaciones:");
             string selectedUsername = Console.ReadLine();
             SendMessageToServer(selectedUsername, networkHelper);
+
+            Console.Clear();
 
             string response = ReceiveMessageFromServer(networkHelper);
             Console.WriteLine("Calificaciones recibidas del servidor:");
