@@ -70,6 +70,8 @@ public class Trip
     public void Withdraw(Guid idPassanger)
     {
         _passengers.Remove(idPassanger);
+        AvailableSeats++;
+
     }
 
     public Guid GetOwner()

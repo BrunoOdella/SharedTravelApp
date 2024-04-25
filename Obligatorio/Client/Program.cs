@@ -610,49 +610,16 @@ namespace Client
 
         private static void JoinTrip(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Ingrese el origen del viaje al que se quiere unir:");
-            string origin = Console.ReadLine().Trim();
-
-            Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
-            string destination = Console.ReadLine().Trim();
-
-            SendMessageToServer(origin, networkHelper);
-            SendMessageToServer(destination, networkHelper);
-
-            string tripCountString = ReceiveMessageFromServer(networkHelper);
-
-            if (tripCountString.StartsWith("ERROR"))
-            {
-                Console.WriteLine(tripCountString.Substring(5)); 
-                Console.WriteLine();
+            TripSearch(networkHelper);
+            Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
+            string selectedTripNumberStr = Console.ReadLine().Trim();
+            SendMessageToServer(selectedTripNumberStr, networkHelper);
+                    
                 
-            }
-            else
-            {
-                int tripCount = int.Parse(tripCountString);
-
-                if (tripCount > 0)
-                {
-                    for (int i = 0; i < tripCount; i++)
-                    {
-                        string trip = ReceiveMessageFromServer(networkHelper);
-                        Console.WriteLine(trip);
-                    }
-
-                    Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
-                    string selectedTripNumberStr = Console.ReadLine().Trim();
-                    SendMessageToServer(selectedTripNumberStr, networkHelper);
-                    
-                }
-                else
-                {
-                    Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
-                    
-                }
-            }
             string response = ReceiveMessageFromServer(networkHelper);
             Console.WriteLine(response);
-            ShowMainMenu(networkHelper);
+            
+            
         }
          private static void TripSearch (NetworkHelper networkHelper)
         {
