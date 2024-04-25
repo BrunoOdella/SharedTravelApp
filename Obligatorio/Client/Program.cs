@@ -299,8 +299,6 @@ namespace Client
             int currentPart = 1;
             int offset = 0;
 
-            //string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            //string relativePath = "ReceivedFiles";
             string downloadPath = path;
 
             if (!Directory.Exists(downloadPath))
@@ -400,7 +398,7 @@ namespace Client
             while (!fileExists)
             {
                 Console.WriteLine("Ingrese la ruta del archivo a enviar:");
-                filePath = Console.ReadLine();
+                filePath = Console.ReadLine().Trim();
 
                 if (File.Exists(filePath))
                 {
@@ -643,16 +641,17 @@ namespace Client
             SendMessageToServer(origin, networkHelper);
             SendMessageToServer(destination, networkHelper);
 
-            string response = ReceiveMessageFromServer(networkHelper);
+            string tripCountString = ReceiveMessageFromServer(networkHelper);
 
-            if (response.StartsWith("ERROR"))
+            if (tripCountString.StartsWith("ERROR"))
             {
-                Console.WriteLine(response.Substring(5)); 
+                Console.WriteLine(tripCountString.Substring(5)); 
                 Console.WriteLine();
+                
             }
             else
             {
-                int tripCount = int.Parse(response);
+                int tripCount = int.Parse(tripCountString);
 
                 if (tripCount > 0)
                 {
@@ -665,14 +664,17 @@ namespace Client
                     Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
                     string selectedTripNumberStr = Console.ReadLine().Trim();
                     SendMessageToServer(selectedTripNumberStr, networkHelper);
-
-                    Console.WriteLine("Se ha unido correctamente al viaje");
+                    
                 }
                 else
                 {
                     Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
+                    
                 }
             }
+            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine(response);
+            ShowMainMenu(networkHelper);
         }
          private static void TripSearch (NetworkHelper networkHelper)
         {
@@ -763,10 +765,10 @@ namespace Client
 
         private static void ViewTripsOriginDestination(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Ingrese el origen del viaje al que se quiere unir:");
+            Console.WriteLine("Ingrese el origen del viaje:");
             string origin = Console.ReadLine().Trim();
 
-            Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
+            Console.WriteLine("Ingrese el destino del viaje:");
             string destination = Console.ReadLine().Trim();
 
             SendMessageToServer(origin, networkHelper);
@@ -815,7 +817,7 @@ namespace Client
             Console.WriteLine("Origen: " + origin);
             Console.WriteLine("Destino: " + destination);
             Console.WriteLine("Fecha y hora de salida: "+ departure);
-            Console.WriteLine("Cantidad de ascientos disponibles: " + availableSeats);
+            Console.WriteLine("Cantidad de asientos disponibles: " + availableSeats);
             Console.WriteLine("Precio del pasaje por persona: $" + pricePerPassanger);
             if(pet == "true")
             {

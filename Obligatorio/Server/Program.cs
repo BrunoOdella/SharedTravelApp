@@ -10,6 +10,7 @@ using Server.BL;
 using Microsoft.VisualBasic.FileIO;
 using Server.DataAcces.Repositories;
 using Server.BL.Repositories;
+using System.Security;
 using System.Collections.Generic;
 
 namespace Server
@@ -116,14 +117,7 @@ namespace Server
                 while (!validUser)
                 {
                     string username = ReceiveMessageFromClient(networkHelper);
-                    /*
-                    if (username == "EXIT")
-                    {
-                        Console.WriteLine(ReceiveMessageFromClient(networkHelper));
-                        allSockets.Remove(socketClient);
-                        break;
-                    }
-                    */
+                    
                     string password = ReceiveMessageFromClient(networkHelper);
 
                     validUser = AuthenticateUser(username, password);
@@ -282,14 +276,13 @@ namespace Server
                 if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                 {
                     Trip selectedTrip = trips[selectedTripIndex];
-                    Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
                     SendAllTripInfo(networkHelper, selectedTrip);
 
                     string download = ReceiveMessageFromClient(networkHelper);
                     if (download == "si") 
                     {
                         SendStreamToClient(networkHelper, selectedTrip.Photo);
-                    }
+                    } 
                 }
                 else
                 {
@@ -307,6 +300,7 @@ namespace Server
         {
             string origin = ReceiveMessageFromClient(networkHelper);
             string destination = ReceiveMessageFromClient(networkHelper);
+            string response = "";
 
             List<Trip> tripsToOriginAndDestination;
             try
@@ -334,12 +328,23 @@ namespace Server
                     try
                     {
                         Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
-                        //MANEJAR LOS CASOS DE QUE:
-                        //YA ESTA UNIDO A ESE TRIP
-                        //ES EL OWNER DE ESE TRIP
+                        
+                        if(ITripRepo.isJoined(tripToJoin._id, user._id))
+                        {
+                            response = "Usted ya forma parte de este viaje, no es posible unirlo";
+                        }
+                        
+                        if (ITripRepo.isOwner(tripToJoin._id, user._id))
+                        {
+                            response = "Usted es el dueño de este viaje, no es posible unirlo";
+                        }
 
-                        //este if  (que checkea lo de available seats) lo podria sacar porque ya lo chequeo en el respositorio
-                        if (tripToJoin.AvailableSeats > 0)
+                        if (tripToJoin.AvailableSeats == 0)
+                        {
+                            response = "El viaje no tiene asientos disponibles";
+                        }
+
+                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id) && tripToJoin.AvailableSeats > 0)
                         {
                             tripToJoin.AvailableSeats--;
 
@@ -347,24 +352,23 @@ namespace Server
 
                             ITripRepo.Update(tripToJoin);
 
-                            Console.WriteLine("Se ha unido correctamente al viaje.");
+                           response = "Se ha unido correctamente al viaje.";
 
                             
-                        }
-                        else
-                        {
-                            Console.WriteLine("No hay asientos disponibles en este viaje.");
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Error al unirse al viaje: " + ex.Message);
+                        response="Error al unirse al viaje: " + ex.Message;
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Selección de viaje inválida.");
+                    response = "Seleccion de viaje invalida";
                 }
+                SendMessageToClient(response, networkHelper);
+                
+                
             }
             catch (Exception ex)
             {
@@ -410,7 +414,6 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al eliminar el pasajero del viaje: " + ex.Message);
                 SendMessageToClient("Error al eliminar el pasajero del viaje.", networkHelper);
             }
             
@@ -503,7 +506,6 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al modificar el viaje: " + ex.Message);
                 SendMessageToClient("Error al modificar el viaje.", networkHelper);
             }
         }
@@ -551,7 +553,6 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al publicar el viaje: " + ex.Message);
                 SendMessageToClient("Error al publicar el viaje.", networkHelper);
             }
         }
@@ -687,7 +688,6 @@ namespace Server
             {
                 bool isLastPart = (currentPart == numberOfParts);
                 int numberOfBytesToReceive = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
-                Console.WriteLine($"Recibiendo parte #{currentPart}, de {numberOfBytesToReceive} bytes");
 
                 byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
 
@@ -696,8 +696,6 @@ namespace Server
                 currentPart++;
                 offset += numberOfBytesToReceive;
             }
-
-            Console.WriteLine($"Archivo recibido completamente y guardado en {savePath}, tamaño total {fileLength} bytes");
 
             return savePath;
         }
@@ -741,7 +739,6 @@ namespace Server
                 {
                     numberOfBytesToSend = Protocol.MaxPartSize;
                 }
-                Console.WriteLine($"Enviando parte #{currentPart}, de {numberOfBytesToSend} bytes");
 
                 byte[] bytesReadFromDisk = fs.Read(filePath, offset, numberOfBytesToSend);
 
@@ -749,7 +746,6 @@ namespace Server
                 currentPart++;
                 offset += numberOfBytesToSend;
             }
-            Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
 
         }
         private static void SendAllTripInfo(NetworkHelper networkHelper, Trip trip)
