@@ -438,11 +438,6 @@ namespace Server
                 int count = 1;
                 foreach(var trip in trips)
                 {
-                    var a = trip.GetOwner();
-                    if (a.Equals(new Guid("db636cb6-1189-4c0f-9fe8-08b3b682dc32")))
-                    {
-                        var b = user.GetGuid();
-                    }
                     if (trip.GetOwner() == user.GetGuid() && trip.Departure > DateTime.Now)
                     {
                         map.Add(count++, trip.GetGuid());
@@ -451,6 +446,7 @@ namespace Server
                 if(map.Count == 0) 
                 {
                     SendMessageToClient("EMPTY", networkHelper);
+                    return;
                 }
                 else
                 {

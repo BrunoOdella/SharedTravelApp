@@ -551,17 +551,14 @@ namespace Client
                 Int32.TryParse(response, out wich);
             } while ((response.Trim().Length == 0 || wich < 0 || wich > count) && response.Trim().ToLower() != "salir");
 
-
             if (response.Trim().ToLower() == "salir")
             {
                 SendMessageToServer("null", networkHelper);
                 return;
             }
                 
-            //
             //envio que viaje quiero
             SendMessageToServer($"{response}", networkHelper);
-            //
             //Que quiero modificar
             Console.WriteLine(ReceiveMessageFromServer(networkHelper)); //viaje a modificar
 
@@ -807,13 +804,10 @@ namespace Client
             }
         }
 
-
         private static bool VerifyResponseModifyTrip(int count, string response, ref int wich)
         {
             return response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
         }
-
-
 
         private static void ViewDriverRatings(NetworkHelper networkHelper)
         {
@@ -829,8 +823,5 @@ namespace Client
             Console.WriteLine("Calificaciones recibidas del servidor:");
             Console.WriteLine(response);
         }
-
-
-
     }
 }
