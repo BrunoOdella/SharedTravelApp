@@ -398,7 +398,7 @@ namespace Client
             while (!fileExists)
             {
                 Console.WriteLine("Ingrese la ruta del archivo a enviar:");
-                filePath = Console.ReadLine();
+                filePath = Console.ReadLine().Trim();
 
                 if (File.Exists(filePath))
                 {
