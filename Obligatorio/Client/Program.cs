@@ -123,7 +123,7 @@ namespace Client
                 do
                 {
                     res = Console.ReadLine().Trim();
-                } while (res.Length == 0 || int.Parse(res) < 0 || int.Parse(res) > 9);
+                } while (res.Length == 0 || int.Parse(res) < 0 || int.Parse(res) > 10);
 
                 SendMessageToServer(res, networkHelper);
                 Console.Clear();
