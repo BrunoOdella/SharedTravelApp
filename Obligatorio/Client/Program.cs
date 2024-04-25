@@ -299,8 +299,6 @@ namespace Client
             int currentPart = 1;
             int offset = 0;
 
-            //string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            //string relativePath = "ReceivedFiles";
             string downloadPath = path;
 
             if (!Directory.Exists(downloadPath))
@@ -819,7 +817,7 @@ namespace Client
             Console.WriteLine("Origen: " + origin);
             Console.WriteLine("Destino: " + destination);
             Console.WriteLine("Fecha y hora de salida: "+ departure);
-            Console.WriteLine("Cantidad de ascientos disponibles: " + availableSeats);
+            Console.WriteLine("Cantidad de asientos disponibles: " + availableSeats);
             Console.WriteLine("Precio del pasaje por persona: $" + pricePerPassanger);
             if(pet == "true")
             {

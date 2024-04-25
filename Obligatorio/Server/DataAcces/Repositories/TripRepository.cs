@@ -115,8 +115,7 @@ namespace Server.DataAcces.Repositories
             foreach (var trip in context.TripList)
             {
                 if (trip.Value.Destination.Equals(destination, StringComparison.OrdinalIgnoreCase) 
-                    && trip.Value.Origin.Equals(origin, StringComparison.OrdinalIgnoreCase)
-                    && trip.Value.AvailableSeats>0)
+                    && trip.Value.Origin.Equals(origin, StringComparison.OrdinalIgnoreCase))
                 {
                     tripsByOriginDestination.Add(trip.Value);
                 }
@@ -152,6 +151,8 @@ namespace Server.DataAcces.Repositories
             TripContext.ReturnReadAccessTrip();
             return trips;
         }
+
+       
 
         public bool isJoined(Guid tripId, Guid userId)
         {
