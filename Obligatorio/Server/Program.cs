@@ -706,7 +706,7 @@ namespace Server
 
 
 
-        private static void SendStreamToClient(NetworkHelper networkHelper,string filePath)
+        private static void SendStreamToClient(NetworkHelper networkHelper, string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             string fileName = fileInfo.Name;
@@ -741,6 +741,7 @@ namespace Server
                 {
                     numberOfBytesToSend = Protocol.MaxPartSize;
                 }
+                Console.WriteLine($"Enviando parte #{currentPart}, de {numberOfBytesToSend} bytes");
 
                 byte[] bytesReadFromDisk = fs.Read(filePath, offset, numberOfBytesToSend);
 
@@ -748,6 +749,7 @@ namespace Server
                 currentPart++;
                 offset += numberOfBytesToSend;
             }
+            Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
 
         }
         public static void SendUsernamesToClient(NetworkHelper networkHelper)

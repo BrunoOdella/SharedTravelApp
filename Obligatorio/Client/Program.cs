@@ -303,14 +303,15 @@ namespace Client
             int currentPart = 1;
             int offset = 0;
 
-            string downloadPath = path;
+            string relativePath = "ReceivedFiles";
+            string saveDirectory = Path.Combine(path, relativePath);
 
-            if (!Directory.Exists(downloadPath))
+            if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(downloadPath);
+                Directory.CreateDirectory(saveDirectory);
             }
 
-            string savePath = Path.Combine(downloadPath, fileName);
+            string savePath = Path.Combine(saveDirectory, fileName);
 
             FileStreamHelper fs = new FileStreamHelper();
             while (offset < fileLength)
@@ -320,7 +321,7 @@ namespace Client
                 Console.WriteLine($"Recibiendo parte #{currentPart}, de {numberOfBytesToReceive} bytes");
 
                 byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
-                 
+
                 fs.Write(savePath, buffer);
 
                 currentPart++;
@@ -331,6 +332,7 @@ namespace Client
 
             return savePath;
         }
+
 
 
         private static void ViewTripInfo(NetworkHelper networkHelper)
