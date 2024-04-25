@@ -790,36 +790,6 @@ namespace Server
         }
 
 
-        public static void ViewDriverRatings(NetworkHelper networkHelper, Socket socket, User user)
-        {
-            SendUsernamesToClient(networkHelper);
-            string username = ReceiveMessageFromClient(networkHelper);
-            User foundUser = userRepository.GetUserByUsername(username);
-
-            if (foundUser == null)
-            {
-                SendMessageToClient("Error: Usuario no encontrado.", networkHelper);
-                return;
-            }
-
-            List<Calification> califications = GetDriverCalifications(foundUser.GetGuid());
-            string response = califications.Count > 0 ? FormatCalifications(califications)
-                                                      : "Este conductor no tiene calificaciones disponibles.";
-            SendMessageToClient(response, networkHelper);
-        }
-
-
-
-        public static void SendUsernamesToClient(NetworkHelper networkHelper)
-        {
-            List<User> users = userRepository.GetAll();
-            StringBuilder usernames = new StringBuilder();
-            foreach (var user in users)
-            {
-                usernames.AppendLine(user.Name);
-            }
-            SendMessageToClient(usernames.ToString(), networkHelper);
-        }
 
         public static void ProcessUserSelection(NetworkHelper networkHelper)
         {
