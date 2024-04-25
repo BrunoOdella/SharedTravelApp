@@ -300,7 +300,6 @@ namespace Server
             {
                 // Enviar mensaje al cliente sobre la falta de viajes disponibles
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
-                string nextOption = ReceiveMessageFromClient(networkHelper);
             }
         }
 
@@ -350,7 +349,7 @@ namespace Server
 
                             Console.WriteLine("Se ha unido correctamente al viaje.");
 
-                            string nextOption = ReceiveMessageFromClient(networkHelper);
+                            
                         }
                         else
                         {
@@ -369,9 +368,7 @@ namespace Server
             }
             catch (Exception ex)
             {
-                // Enviar mensaje al cliente sobre la falta de viajes disponibles
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
-                string nextOption = ReceiveMessageFromClient(networkHelper);
             }
         }
 
@@ -617,7 +614,7 @@ namespace Server
             catch (Exception ex)
             {
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
-                string nextOption = ReceiveMessageFromClient(networkHelper);
+                
             }
         }
 
@@ -625,7 +622,7 @@ namespace Server
         {
             string option = ReceiveMessageFromClient(networkHelper);
             bool petFriendly = false;
-            if(option == "SI")
+            if(option == "SI")  
             {
                 petFriendly = true;
             }
@@ -648,7 +645,7 @@ namespace Server
             catch (Exception ex)
             {
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
-                string nextOption = ReceiveMessageFromClient(networkHelper);
+                
             }
         }
 
