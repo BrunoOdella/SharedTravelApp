@@ -216,6 +216,20 @@ namespace Server.DataAcces.Repositories
             return ownedTrips;
         }
 
+        public List<Trip> FilterByDeparture(List<Trip> trips)
+        {
+            TripContext context = TripContext.GetAccessReadTrip();
+            List <Trip> newTripList = new List<Trip>();
+            foreach (var trip in trips)
+            {
+                if (trip.Departure > DateTime.Now)
+                {
+                    newTripList.Add(trip);
+                }
+            }
+            TripContext.ReturnReadAccessTrip();
+            return newTripList;
+        }
 
     }
 }

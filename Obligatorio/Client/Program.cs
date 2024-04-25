@@ -633,7 +633,7 @@ namespace Client
 
         private static void JoinTrip(NetworkHelper networkHelper)
         {
-            TripSearch(networkHelper);
+            ViewAllFutureTrips(networkHelper);
             string amountOfTrips= ReceiveMessageFromServer(networkHelper);
             if (amountOfTrips != "0")
             {
@@ -660,6 +660,7 @@ namespace Client
             Console.WriteLine("1. Ver la lista de todos los viajes");
             Console.WriteLine("2. Ver la lista de viajes filtrados por origen y destino");
             Console.WriteLine("3. Ver la lista de viajes filtrados por si son pet friendly o no");
+            Console.WriteLine("4. Ver la lista de viajes futuros");
 
             string res = Console.ReadLine().Trim();
             SendMessageToServer(res, networkHelper);
@@ -675,9 +676,34 @@ namespace Client
                 case 3:
                     ViewAllTripsFilteredPetFriendly(networkHelper);
                     break;
+                case 4:
+                    ViewAllFutureTrips(networkHelper);
+                    break;
                 default:
                     Console.WriteLine("Opción no válida. Por favor, intente de nuevo.");
                     break;
+            }
+        }
+
+        private static void ViewAllFutureTrips(NetworkHelper networkHelper)
+        {
+            string response = ReceiveMessageFromServer(networkHelper);
+            int tripCount = int.Parse(response);
+
+            Console.WriteLine();
+            if (tripCount > 0)
+            {
+                for (int i = 0; i < tripCount; i++)
+                {
+                    string trip = ReceiveMessageFromServer(networkHelper);
+                    Console.WriteLine(trip);
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine("No hay viajes disponibles");
             }
         }
 
