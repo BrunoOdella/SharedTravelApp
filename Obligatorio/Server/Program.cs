@@ -318,7 +318,10 @@ namespace Server
             
             string response = "";
 
-            List<Trip> trips= TripSearch(networkHelper,socket,user);
+            List<Trip> trips= ViewAllFutureTrips(networkHelper,socket,user);
+            //hacer una funcion que filtre
+            trips = ITripRepo.FilterByDeparture(trips);
+
             SendMessageToClient(trips.Count.ToString(), networkHelper);
             //le mando la cant dfe trips al cliente asi sabe si decirle al user que elija uno
             if (trips.Count > 0)
@@ -327,6 +330,10 @@ namespace Server
                 {
 
                     string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    if (selectedTripIndexStr == "exit")
+                    {
+                        return;
+                    }
                     int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
                     if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
@@ -582,6 +589,9 @@ namespace Server
                 case 3:
                     return ViewAllTripsFilteredPetFriendly(networkHelper, socket, user);
                     break;
+                case 4:
+                    return ViewAllFutureTrips(networkHelper, socket, user);
+                    break ;
                 default:
                     return new List<Trip>();
                     break;
@@ -664,6 +674,24 @@ namespace Server
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 return new List<Trip> { };
             }
+        }
+        private static List<Trip> ViewAllFutureTrips(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            List<Trip> allTrips;
+            List<Trip> trips;
+            allTrips = ITripRepo.GetAll();
+            trips = ITripRepo.FilterByDeparture(allTrips);
+
+            string tripCount = trips.Count.ToString();
+            SendMessageToClient(tripCount, networkHelper);
+
+            for (int i = 0; i < trips.Count; i++)
+            {
+                Trip trip = trips[i];
+                string tripString = $"{i + 1}: {SerializeTrip(trip)}";
+                SendMessageToClient(tripString, networkHelper);
+            }
+            return trips;
         }
 
         private static string SerializeTrip(Trip trip)
