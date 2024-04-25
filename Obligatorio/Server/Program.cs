@@ -278,17 +278,7 @@ namespace Server
             List<Trip> trips;
             try
             {
-                trips = ITripRepo.GetAll();
-
-                string tripCount = trips.Count.ToString();
-                SendMessageToClient(tripCount, networkHelper);
-
-                for (int i = 0; i < trips.Count; i++)
-                {
-                    Trip trip = trips[i];
-                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClient(tripString, networkHelper);
-                }
+                trips = TripSearch(networkHelper, socket, user);
 
                 string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
                 int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
@@ -318,31 +308,19 @@ namespace Server
 
         private static void JoinTrip(NetworkHelper networkHelper, Socket socket, User user)
         {
-            string origin = ReceiveMessageFromClient(networkHelper);
-            string destination = ReceiveMessageFromClient(networkHelper);
+            
             string response = "";
 
-            List<Trip> tripsToOriginAndDestination;
+            List<Trip> trips= TripSearch(networkHelper,socket,user);
             try
             {
-                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
-
-                string tripCount = tripsToOriginAndDestination.Count.ToString();
-                SendMessageToClient(tripCount, networkHelper);
-
-                for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
-                {
-                    Trip trip = tripsToOriginAndDestination[i];
-                    string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClient(tripString, networkHelper);
-                }
 
                 string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
                 int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
-                if (selectedTripIndex >= 0 && selectedTripIndex < tripsToOriginAndDestination.Count)
+                if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                 {
-                    Trip selectedTrip = tripsToOriginAndDestination[selectedTripIndex];
+                    Trip selectedTrip = trips[selectedTripIndex];
                     Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
 
                     try
@@ -359,12 +337,9 @@ namespace Server
                             response = "Usted es el dueño de este viaje, no es posible unirlo";
                         }
 
-                        if (tripToJoin.AvailableSeats == 0)
-                        {
-                            response = "El viaje no tiene asientos disponibles";
-                        }
+                        
 
-                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id) && tripToJoin.AvailableSeats > 0)
+                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
                         {
                             tripToJoin.AvailableSeats--;
 
@@ -380,6 +355,7 @@ namespace Server
                     catch (Exception ex)
                     {
                         response="Error al unirse al viaje: " + ex.Message;
+                        SendMessageToClient(response, networkHelper);
                     }
                 }
                 else
@@ -577,26 +553,28 @@ namespace Server
             }
         }
 
-        private static void TripSearch(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> TripSearch(NetworkHelper networkHelper, Socket socket, User user)
         {
             string option = ReceiveMessageFromClient(networkHelper);
             int opt = Int32.Parse(option);
             switch (opt)
             {
                 case 1:
-                    ViewAllTrips(networkHelper, socket, user);
+                    return ViewAllTrips(networkHelper, socket, user);
                     break;
                 case 2:
-                    ViewTripsFilteredByOriginAndDestination(networkHelper, socket, user);
+                    return ViewTripsFilteredByOriginAndDestination(networkHelper, socket, user);
                     break;
                 case 3:
-                    ViewAllTripsFilteredPetFriendly(networkHelper, socket, user);
+                    return ViewAllTripsFilteredPetFriendly(networkHelper, socket, user);
                     break;
-                default: break;
+                default:
+                    return new List<Trip>();
+                    break;
             }
         }
 
-        private static void ViewAllTrips(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> ViewAllTrips(NetworkHelper networkHelper, Socket socket, User user)
         {
             List<Trip> allTrips;
             allTrips = ITripRepo.GetAll();
@@ -610,9 +588,10 @@ namespace Server
                 string tripString = $"{i + 1}: {SerializeTrip(trip)}";
                 SendMessageToClient(tripString, networkHelper);
             }
+            return allTrips;   
         }
 
-        private static void ViewTripsFilteredByOriginAndDestination(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> ViewTripsFilteredByOriginAndDestination(NetworkHelper networkHelper, Socket socket, User user)
         {
             string origin = ReceiveMessageFromClient(networkHelper);
             string destination = ReceiveMessageFromClient(networkHelper);
@@ -631,15 +610,17 @@ namespace Server
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
                     SendMessageToClient(tripString, networkHelper);
                 }
+                return tripsToOriginAndDestination;
             }
             catch (Exception ex)
             {
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                return new List<Trip> { };
                 
             }
         }
 
-        private static void ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper, Socket socket, User user)
         {
             string option = ReceiveMessageFromClient(networkHelper);
             bool petFriendly = false;
@@ -662,11 +643,12 @@ namespace Server
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
                     SendMessageToClient(tripString, networkHelper);
                 }
+                return trips;
             }
             catch (Exception ex)
             {
                 SendMessageToClient("ERROR" + ex.Message, networkHelper);
-                
+                return new List<Trip> { };
             }
         }
 

@@ -335,62 +335,40 @@ namespace Client
 
         private static void ViewTripInfo(NetworkHelper networkHelper)
         {
+            TripSearch(networkHelper);
+            //string response = ReceiveMessageFromServer(networkHelper);
 
-            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine("Ingrese el numero de viaje del que quiere recibir toda la informacion:");
+            string selectedTripNumberStr = Console.ReadLine().Trim();
+            SendMessageToServer(selectedTripNumberStr, networkHelper);
 
-            if (response.StartsWith("ERROR"))
+            RecevieAllTripInfo(networkHelper);
+
+            Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
+            string resp = Console.ReadLine().Trim();
+            SendMessageToServer(resp, networkHelper);
+
+            if(resp == "si")
             {
-                Console.WriteLine(response.Substring(5));
-                Console.WriteLine();
-            }
-            else
-            {
-                int tripCount = int.Parse(response);
-
-                if (tripCount > 0)
+                string path = "";
+                bool pathExists = false;
+                while (!pathExists)
                 {
-                    for (int i = 0; i < tripCount; i++)
+                    Console.WriteLine("Ingrese la ruta del directorio en el cual desea descargar la imagen:");
+                    path = Console.ReadLine().Trim();
+
+                    if (Directory.Exists(path))
                     {
-                        string trip = ReceiveMessageFromServer(networkHelper);
-                        Console.WriteLine(trip);
+                        pathExists = true;
                     }
-
-                    Console.WriteLine("Ingrese el numero de viaje del que quiere recibir toda la informacion:");
-                    string selectedTripNumberStr = Console.ReadLine().Trim();
-                    SendMessageToServer(selectedTripNumberStr, networkHelper);
-
-                    RecevieAllTripInfo(networkHelper);
-
-                    Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
-                    string resp = Console.ReadLine().Trim();
-                    SendMessageToServer(resp, networkHelper);
-
-                    if(resp == "si")
+                    else
                     {
-                       string path = "";
-                       bool pathExists = false;
-                       while (!pathExists)
-                       {
-                            Console.WriteLine("Ingrese la ruta del directorio en el cual desea descargar la imagen:");
-                            path = Console.ReadLine().Trim();
-
-                            if (Directory.Exists(path))
-                            {
-                                pathExists = true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("Error: El directorio no existe. Por favor, ingrese una ruta válida.");
-                            }
-                       }
-                       ReceiveStreamFromServer(networkHelper, path);
+                        Console.WriteLine("Error: El directorio no existe. Por favor, ingrese una ruta válida.");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("No hay viajes disponibles");
-                }
+                ReceiveStreamFromServer(networkHelper, path);
             }
+  
         }
 
 
@@ -636,49 +614,16 @@ namespace Client
 
         private static void JoinTrip(NetworkHelper networkHelper)
         {
-            Console.WriteLine("Ingrese el origen del viaje al que se quiere unir:");
-            string origin = Console.ReadLine().Trim();
-
-            Console.WriteLine("Ingrese el destino del viaje al que se quiere unir:");
-            string destination = Console.ReadLine().Trim();
-
-            SendMessageToServer(origin, networkHelper);
-            SendMessageToServer(destination, networkHelper);
-
-            string tripCountString = ReceiveMessageFromServer(networkHelper);
-
-            if (tripCountString.StartsWith("ERROR"))
-            {
-                Console.WriteLine(tripCountString.Substring(5)); 
-                Console.WriteLine();
+            TripSearch(networkHelper);
+            Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
+            string selectedTripNumberStr = Console.ReadLine().Trim();
+            SendMessageToServer(selectedTripNumberStr, networkHelper);
+                    
                 
-            }
-            else
-            {
-                int tripCount = int.Parse(tripCountString);
-
-                if (tripCount > 0)
-                {
-                    for (int i = 0; i < tripCount; i++)
-                    {
-                        string trip = ReceiveMessageFromServer(networkHelper);
-                        Console.WriteLine(trip);
-                    }
-
-                    Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
-                    string selectedTripNumberStr = Console.ReadLine().Trim();
-                    SendMessageToServer(selectedTripNumberStr, networkHelper);
-                    
-                }
-                else
-                {
-                    Console.WriteLine("No hay viajes disponibles para el origen y destino especificado.");
-                    
-                }
-            }
             string response = ReceiveMessageFromServer(networkHelper);
             Console.WriteLine(response);
-            ShowMainMenu(networkHelper);
+            
+            
         }
          private static void TripSearch (NetworkHelper networkHelper)
         {

@@ -9,6 +9,8 @@ public interface ITripRepository
     void Update(Trip trip);
     List<Trip> GetAll();
     List<Trip> GetAll(Guid userGuid);
+
+    List<Trip> GetAllTripsToOriginAndDestinationAvailableToJoin(string origin, string destination);
     List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination);
     List<Trip> GetTripsFilteredByPetFriendly(bool petFriendly);
     List<Trip> GetTripsByOwner(Guid ownerId);
