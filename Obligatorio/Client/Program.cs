@@ -173,7 +173,9 @@ namespace Client
 
             if (TripCount == "0")
             {
+                Console.WriteLine();
                 Console.WriteLine("No hay viajes futuros.");
+                Console.WriteLine();
                 return;
             }
 
@@ -216,7 +218,9 @@ namespace Client
 
             if (TripCount == "EMPTY")
             {
+                Console.WriteLine();
                 Console.WriteLine("No hay viajes futuros.");
+                Console.WriteLine();
                 return;
             }
 
@@ -250,8 +254,9 @@ namespace Client
             if (ServerResponse == "OK")
             {
                 Console.Clear();
-
+                Console.WriteLine();
                 Console.WriteLine("Se a dado de baja del viaje.");
+                Console.WriteLine();
             }
         }
         private static void RateDriver(NetworkHelper networkHelper)
@@ -262,7 +267,9 @@ namespace Client
 
             if (hasTrips == "EMPTY")
             {
+                Console.WriteLine();
                 Console.WriteLine("No se han realizado viajes.");
+                Console.WriteLine();
                 return;
             }
 
@@ -387,8 +394,9 @@ namespace Client
                 currentPart++;
                 offset += numberOfBytesToReceive;
             }
-
+            Console.WriteLine();
             Console.WriteLine($"Archivo recibido completamente y guardado en {savePath}, tamaño total {fileLength} bytes");
+            Console.WriteLine();
 
             return savePath;
         }
@@ -594,7 +602,9 @@ namespace Client
 
             if (hasTrips == "EMPTY")
             {
+                Console.WriteLine();
                 Console.WriteLine("No hay viajes publicados para fechas futuras.");
+                Console.WriteLine();
                 return;
             }
             Console.WriteLine(hasTrips); //verificacion - borrar luego
@@ -786,7 +796,9 @@ namespace Client
             }
             else
             {
+                Console.WriteLine();
                 Console.WriteLine("No hay viajes disponibles");
+                Console.WriteLine();
             }
         }
 
