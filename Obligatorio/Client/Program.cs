@@ -540,7 +540,11 @@ namespace Client
 
 
             if (response.Trim().ToLower() == "salir")
+            {
+                SendMessageToServer("null", networkHelper);
                 return;
+            }
+                
             //
             //envio que viaje quiero
             SendMessageToServer($"{response}", networkHelper);

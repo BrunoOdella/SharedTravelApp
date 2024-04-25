@@ -386,7 +386,7 @@ namespace Server
 
                 if (!UserInTrips.Any())
                 {
-                    SendMessageToClient("EMPY", networkHelper);
+                    SendMessageToClient("EMPTY", networkHelper);
                     return;
                 }
 
@@ -449,56 +449,60 @@ namespace Server
                     }
                 }
                 string selected = ReceiveMessageFromClient(networkHelper);
-                var tripSelected = map[Int32.Parse(selected)];
-                var selectedTrip = ITripRepo.Get(tripSelected);
-                SendMessageToClient($"Viaje seleccionado\n" +
-                    $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
-                    $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper);
-
-                //recibir cada elemento del trip, si es EMPTY mantener el actual, sino cambiarlo por el recibido
-                //y previo hacer las comprobaciones adecuadas
-
-
-                string newOrigin = ReceiveMessageFromClient(networkHelper);
-                if (newOrigin != "EMPTY")
+                if (selected != "null")
                 {
-                    selectedTrip.Origin = newOrigin;
-                }
+                    var tripSelected = map[Int32.Parse(selected)];
+                    var selectedTrip = ITripRepo.Get(tripSelected);
+                    SendMessageToClient($"Viaje seleccionado\n" +
+                        $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
+                        $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper);
 
-                string newDestination = ReceiveMessageFromClient(networkHelper);
-                if (newDestination != "EMPTY")
-                {
-                    selectedTrip.Destination = newDestination;
-                }
+                    //recibir cada elemento del trip, si es EMPTY mantener el actual, sino cambiarlo por el recibido
+                    //y previo hacer las comprobaciones adecuadas
 
-                DateTime newDepartureTime;
-                string aux = ReceiveMessageFromClient(networkHelper);
-                if (aux != "EMPTY")
-                {
-                    selectedTrip.Departure = DateTime.Parse(aux);
-                }
 
-                string newPet = ReceiveMessageFromClient(networkHelper);
-                if (newPet != "EMPTY")
-                {
-                    selectedTrip.Pet = bool.Parse(newPet);
-                }
+                    string newOrigin = ReceiveMessageFromClient(networkHelper);
+                    if (newOrigin != "EMPTY")
+                    {
+                        selectedTrip.Origin = newOrigin;
+                    }
 
-                string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
-                if (newPricePerSeat != "EMPTY")
-                {
-                    selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
-                }
+                    string newDestination = ReceiveMessageFromClient(networkHelper);
+                    if (newDestination != "EMPTY")
+                    {
+                        selectedTrip.Destination = newDestination;
+                    }
 
-                string newPhoto;
-                if (bool.Parse(ReceiveMessageFromClient(networkHelper)))
-                {
-                    newPhoto = ReceiveStreamFromClient(networkHelper);
-                }
+                    DateTime newDepartureTime;
+                    string aux = ReceiveMessageFromClient(networkHelper);
+                    if (aux != "EMPTY")
+                    {
+                        selectedTrip.Departure = DateTime.Parse(aux);
+                    }
 
-                SendMessageToClient($"Viaje actualizado", networkHelper);
+                    string newPet = ReceiveMessageFromClient(networkHelper);
+                    if (newPet != "EMPTY")
+                    {
+                        selectedTrip.Pet = bool.Parse(newPet);
+                    }
+
+                    string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
+                    if (newPricePerSeat != "EMPTY")
+                    {
+                        selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
+                    }
+
+                    string newPhoto;
+                    if (bool.Parse(ReceiveMessageFromClient(networkHelper)))
+                    {
+                        newPhoto = ReceiveStreamFromClient(networkHelper);
+                    }
+
+                    SendMessageToClient($"Viaje actualizado", networkHelper);
+
+                    ITripRepo.Update(selectedTrip);
+                }
                 
-                ITripRepo.Update(selectedTrip);
             }
             catch (Exception ex)
             {
