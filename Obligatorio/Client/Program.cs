@@ -145,6 +145,9 @@ namespace Client
                     case 7:
                         RateDriver(networkHelper);
                         break;
+                    case 8:
+                        ViewDriverRatings(networkHelper);
+                        break;
                     case 9:
                         logout = true;
                         break;
@@ -154,6 +157,7 @@ namespace Client
                 }
             }
         }
+
 
         private static void WithdrawFromTrip(NetworkHelper networkHelper)
         {
@@ -299,14 +303,15 @@ namespace Client
             int currentPart = 1;
             int offset = 0;
 
-            string downloadPath = path;
+            string relativePath = "ReceivedFiles";
+            string saveDirectory = Path.Combine(path, relativePath);
 
-            if (!Directory.Exists(downloadPath))
+            if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(downloadPath);
+                Directory.CreateDirectory(saveDirectory);
             }
 
-            string savePath = Path.Combine(downloadPath, fileName);
+            string savePath = Path.Combine(saveDirectory, fileName);
 
             FileStreamHelper fs = new FileStreamHelper();
             while (offset < fileLength)
@@ -316,7 +321,7 @@ namespace Client
                 Console.WriteLine($"Recibiendo parte #{currentPart}, de {numberOfBytesToReceive} bytes");
 
                 byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
-                 
+
                 fs.Write(savePath, buffer);
 
                 currentPart++;
@@ -329,41 +334,55 @@ namespace Client
         }
 
 
+
         private static void ViewTripInfo(NetworkHelper networkHelper)
         {
             TripSearch(networkHelper);
             //string response = ReceiveMessageFromServer(networkHelper);
+            string amountOfTrips= ReceiveMessageFromServer(networkHelper);
+            int tripCount = Convert.ToInt16(amountOfTrips);
+            if (tripCount != 0) {
 
-            Console.WriteLine("Ingrese el numero de viaje del que quiere recibir toda la informacion:");
-            string selectedTripNumberStr = Console.ReadLine().Trim();
-            SendMessageToServer(selectedTripNumberStr, networkHelper);
+                Console.WriteLine("Ingrese el numero de viaje del que quiere recibir toda la informacion:");
+                string response = Console.ReadLine().Trim();
+                int selectedTripNumber;
 
-            RecevieAllTripInfo(networkHelper);
-
-            Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
-            string resp = Console.ReadLine().Trim();
-            SendMessageToServer(resp, networkHelper);
-
-            if(resp == "si")
-            {
-                string path = "";
-                bool pathExists = false;
-                while (!pathExists)
+                while (!int.TryParse(response, out selectedTripNumber) || selectedTripNumber < 1 || selectedTripNumber > tripCount)
                 {
-                    Console.WriteLine("Ingrese la ruta del directorio en el cual desea descargar la imagen:");
-                    path = Console.ReadLine().Trim();
-
-                    if (Directory.Exists(path))
-                    {
-                        pathExists = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error: El directorio no existe. Por favor, ingrese una ruta válida.");
-                    }
+                    Console.WriteLine("Ingrese nuevamente el número de viaje:");
+                    response = Console.ReadLine().Trim();
                 }
-                ReceiveStreamFromServer(networkHelper, path);
+
+                SendMessageToServer(response, networkHelper);
+
+                RecevieAllTripInfo(networkHelper);
+
+                Console.WriteLine("¿ Desea descargar la imagen del vehiculo? (si/no)");
+                string resp = Console.ReadLine().Trim();
+                SendMessageToServer(resp, networkHelper);
+
+                if (resp == "si")
+                {
+                    string path = "";
+                    bool pathExists = false;
+                    while (!pathExists)
+                    {
+                        Console.WriteLine("Ingrese la ruta del directorio en el cual desea descargar la imagen:");
+                        path = Console.ReadLine().Trim();
+
+                        if (Directory.Exists(path))
+                        {
+                            pathExists = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: El directorio no existe. Por favor, ingrese una ruta válida.");
+                        }
+                    }
+                    ReceiveStreamFromServer(networkHelper, path);
+                }
             }
+            
   
         }
 
@@ -534,7 +553,11 @@ namespace Client
 
 
             if (response.Trim().ToLower() == "salir")
+            {
+                SendMessageToServer("null", networkHelper);
                 return;
+            }
+                
             //
             //envio que viaje quiero
             SendMessageToServer($"{response}", networkHelper);
@@ -611,13 +634,23 @@ namespace Client
         private static void JoinTrip(NetworkHelper networkHelper)
         {
             TripSearch(networkHelper);
-            Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
-            string selectedTripNumberStr = Console.ReadLine().Trim();
-            SendMessageToServer(selectedTripNumberStr, networkHelper);
-                    
-                
-            string response = ReceiveMessageFromServer(networkHelper);
-            Console.WriteLine(response);
+            string amountOfTrips= ReceiveMessageFromServer(networkHelper);
+            if (amountOfTrips != "0")
+            {
+                Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
+                string response = Console.ReadLine().Trim();
+                int selectedTripNumber;
+
+                while (!int.TryParse(response, out selectedTripNumber) || selectedTripNumber < 1 || selectedTripNumber > Convert.ToInt32(amountOfTrips))
+                {
+                    Console.WriteLine("Ingrese nuevamente el número de viaje:");
+                    response = Console.ReadLine().Trim();
+                }
+                SendMessageToServer(response, networkHelper);
+
+                string resp = ReceiveMessageFromServer(networkHelper);
+                Console.WriteLine(resp);
+            }
             
             
         }
@@ -779,5 +812,25 @@ namespace Client
         {
             return response.Trim().Length != 0 && Int32.TryParse(response, out wich) && wich > 0 && wich < count + 1;
         }
+
+
+
+        private static void ViewDriverRatings(NetworkHelper networkHelper)
+        {
+            Console.WriteLine("Usuarios disponibles en el sistema:");
+            string userNames = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine(userNames);
+
+            Console.WriteLine("Ingrese el nombre del usuario para ver sus calificaciones:");
+            string selectedUsername = Console.ReadLine();
+            SendMessageToServer(selectedUsername, networkHelper);
+
+            string response = ReceiveMessageFromServer(networkHelper);
+            Console.WriteLine("Calificaciones recibidas del servidor:");
+            Console.WriteLine(response);
+        }
+
+
+
     }
 }

@@ -8,4 +8,5 @@ public interface IUserRepository
     void Delete(Guid id);
     User Get(Guid id);
     List<User> GetAll();
+    User GetUserByUsername(string username);
 }

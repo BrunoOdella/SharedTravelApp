@@ -114,7 +114,7 @@ namespace DataAcces
                     TotalSeats = elem.AsientosTotales,
                     PricePerPassanger = elem.Precio,
                     Pet = elem.Mascota,
-                    Photo = elem.photo
+                    Photo = savePath
                 };
                 Guid actualGuid = new Guid(elem.TripID);
                 actual.SetGuid(actualGuid);

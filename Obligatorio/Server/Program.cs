@@ -20,6 +20,7 @@ namespace Server
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static readonly IUserRepository userRepository = new UserRepository();
         static readonly ITripRepository ITripRepo = new TripRepository();
+        static readonly ICalificationRepository calificationRepository = new CalificationRepository();
         static readonly IUserRepository IUserRepo = new UserRepository();
         static readonly ICalificationRepository ICalificationRepo = new CalificationRepository();
 
@@ -190,6 +191,7 @@ namespace Server
                         RateDriver(networkHelper, socket, user);
                         break;
                     case 8:
+                        ViewDriverRatings(networkHelper, socket, user);
                         break;
                     case 9:
                         salir = true;
@@ -200,6 +202,24 @@ namespace Server
             }
             
 
+        }
+
+        public static void ViewDriverRatings(NetworkHelper networkHelper, Socket socket, User user)
+        {
+            SendUsernamesToClient(networkHelper);
+            string username = ReceiveMessageFromClient(networkHelper);
+            User foundUser = userRepository.GetUserByUsername(username);
+
+            if (foundUser == null)
+            {
+                SendMessageToClient("Error: Usuario no encontrado.", networkHelper);
+                return;
+            }
+
+            List<Calification> califications = GetDriverCalifications(foundUser.GetGuid());
+            string response = califications.Count > 0 ? FormatCalifications(califications)
+                : "Este conductor no tiene calificaciones disponibles.";
+            SendMessageToClient(response, networkHelper);
         }
 
         private static void RateDriver(NetworkHelper networkHelper, Socket socket, User user)
@@ -259,25 +279,32 @@ namespace Server
             try
             {
                 trips = TripSearch(networkHelper, socket, user);
+                int amountOfTrips = trips.Count;
+                SendMessageToClient(amountOfTrips.ToString(), networkHelper);
 
-                string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
-                int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
-
-                if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
+                if (amountOfTrips > 0)
                 {
-                    Trip selectedTrip = trips[selectedTripIndex];
-                    SendAllTripInfo(networkHelper, selectedTrip);
+                    string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
-                    string download = ReceiveMessageFromClient(networkHelper);
-                    if (download == "si") 
+                    if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                     {
-                        SendStreamToClient(networkHelper, selectedTrip.Photo);
-                    } 
+                        Trip selectedTrip = trips[selectedTripIndex];
+                        SendAllTripInfo(networkHelper, selectedTrip);
+
+                        string download = ReceiveMessageFromClient(networkHelper);
+                        if (download == "si")
+                        {
+                            SendStreamToClient(networkHelper, selectedTrip.Photo);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Selección de viaje inválida.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Selección de viaje inválida.");
-                }
+
+                
             }
             catch (Exception ex)
             {
@@ -292,64 +319,71 @@ namespace Server
             string response = "";
 
             List<Trip> trips= TripSearch(networkHelper,socket,user);
-            try
+            SendMessageToClient(trips.Count.ToString(), networkHelper);
+            //le mando la cant dfe trips al cliente asi sabe si decirle al user que elija uno
+            if (trips.Count > 0)
             {
-
-                string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
-                int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
-
-                if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
+                try
                 {
-                    Trip selectedTrip = trips[selectedTripIndex];
-                    Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
 
-                    try
+                    string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
+
+                    if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                     {
-                        Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
-                        
-                        if(ITripRepo.isJoined(tripToJoin._id, user._id))
+                        Trip selectedTrip = trips[selectedTripIndex];
+                        Console.WriteLine("El viaje seleccionado es: " + selectedTrip);
+
+                        try
                         {
-                            response = "Usted ya forma parte de este viaje, no es posible unirlo";
+                            Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
+
+                            if (ITripRepo.isJoined(tripToJoin._id, user._id))
+                            {
+                                response = "Usted ya forma parte de este viaje, no es posible unirlo";
+                            }
+
+                            if (ITripRepo.isOwner(tripToJoin._id, user._id))
+                            {
+                                response = "Usted es el dueño de este viaje, no es posible unirlo";
+                            }
+
+
+
+                            if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
+                            {
+                                tripToJoin.AvailableSeats--;
+
+                                tripToJoin._passengers.Add(user._id);
+
+                                ITripRepo.Update(tripToJoin);
+
+                                response = "Se ha unido correctamente al viaje.";
+
+
+                            }
                         }
-                        
-                        if (ITripRepo.isOwner(tripToJoin._id, user._id))
+                        catch (Exception ex)
                         {
-                            response = "Usted es el dueño de este viaje, no es posible unirlo";
-                        }
-
-                        
-
-                        if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
-                        {
-                            tripToJoin.AvailableSeats--;
-
-                            tripToJoin._passengers.Add(user._id);
-
-                            ITripRepo.Update(tripToJoin);
-
-                           response = "Se ha unido correctamente al viaje.";
-
-                            
+                            response = "Error al unirse al viaje: " + ex.Message;
+                            SendMessageToClient(response, networkHelper);
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        response="Error al unirse al viaje: " + ex.Message;
-                        SendMessageToClient(response, networkHelper);
+                        response = "Seleccion de viaje invalida";
                     }
+                    SendMessageToClient(response, networkHelper);
+
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    response = "Seleccion de viaje invalida";
+                    SendMessageToClient("ERROR" + ex.Message, networkHelper);
                 }
-                SendMessageToClient(response, networkHelper);
-                
-                
             }
-            catch (Exception ex)
-            {
-                SendMessageToClient("ERROR" + ex.Message, networkHelper);
-            }
+            
+            
         }
 
         private static void WithdrawFromTrip(NetworkHelper networkHelper, Socket socket, User user)
@@ -366,7 +400,7 @@ namespace Server
 
                 if (!UserInTrips.Any())
                 {
-                    SendMessageToClient("EMPY", networkHelper);
+                    SendMessageToClient("EMPTY", networkHelper);
                     return;
                 }
 
@@ -429,56 +463,60 @@ namespace Server
                     }
                 }
                 string selected = ReceiveMessageFromClient(networkHelper);
-                var tripSelected = map[Int32.Parse(selected)];
-                var selectedTrip = ITripRepo.Get(tripSelected);
-                SendMessageToClient($"Viaje seleccionado\n" +
-                    $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
-                    $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper);
-
-                //recibir cada elemento del trip, si es EMPTY mantener el actual, sino cambiarlo por el recibido
-                //y previo hacer las comprobaciones adecuadas
-
-
-                string newOrigin = ReceiveMessageFromClient(networkHelper);
-                if (newOrigin != "EMPTY")
+                if (selected != "null")
                 {
-                    selectedTrip.Origin = newOrigin;
-                }
+                    var tripSelected = map[Int32.Parse(selected)];
+                    var selectedTrip = ITripRepo.Get(tripSelected);
+                    SendMessageToClient($"Viaje seleccionado\n" +
+                        $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
+                        $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper);
 
-                string newDestination = ReceiveMessageFromClient(networkHelper);
-                if (newDestination != "EMPTY")
-                {
-                    selectedTrip.Destination = newDestination;
-                }
+                    //recibir cada elemento del trip, si es EMPTY mantener el actual, sino cambiarlo por el recibido
+                    //y previo hacer las comprobaciones adecuadas
 
-                DateTime newDepartureTime;
-                string aux = ReceiveMessageFromClient(networkHelper);
-                if (aux != "EMPTY")
-                {
-                    selectedTrip.Departure = DateTime.Parse(aux);
-                }
 
-                string newPet = ReceiveMessageFromClient(networkHelper);
-                if (newPet != "EMPTY")
-                {
-                    selectedTrip.Pet = bool.Parse(newPet);
-                }
+                    string newOrigin = ReceiveMessageFromClient(networkHelper);
+                    if (newOrigin != "EMPTY")
+                    {
+                        selectedTrip.Origin = newOrigin;
+                    }
 
-                string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
-                if (newPricePerSeat != "EMPTY")
-                {
-                    selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
-                }
+                    string newDestination = ReceiveMessageFromClient(networkHelper);
+                    if (newDestination != "EMPTY")
+                    {
+                        selectedTrip.Destination = newDestination;
+                    }
 
-                string newPhoto;
-                if (bool.Parse(ReceiveMessageFromClient(networkHelper)))
-                {
-                    newPhoto = ReceiveStreamFromClient(networkHelper);
-                }
+                    DateTime newDepartureTime;
+                    string aux = ReceiveMessageFromClient(networkHelper);
+                    if (aux != "EMPTY")
+                    {
+                        selectedTrip.Departure = DateTime.Parse(aux);
+                    }
 
-                SendMessageToClient($"Viaje actualizado", networkHelper);
+                    string newPet = ReceiveMessageFromClient(networkHelper);
+                    if (newPet != "EMPTY")
+                    {
+                        selectedTrip.Pet = bool.Parse(newPet);
+                    }
+
+                    string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
+                    if (newPricePerSeat != "EMPTY")
+                    {
+                        selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
+                    }
+
+                    string newPhoto;
+                    if (bool.Parse(ReceiveMessageFromClient(networkHelper)))
+                    {
+                        newPhoto = ReceiveStreamFromClient(networkHelper);
+                    }
+
+                    SendMessageToClient($"Viaje actualizado", networkHelper);
+
+                    ITripRepo.Update(selectedTrip);
+                }
                 
-                ITripRepo.Update(selectedTrip);
             }
             catch (Exception ex)
             {
@@ -686,7 +724,7 @@ namespace Server
 
 
 
-        private static void SendStreamToClient(NetworkHelper networkHelper,string filePath)
+        private static void SendStreamToClient(NetworkHelper networkHelper, string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             string fileName = fileInfo.Name;
@@ -721,6 +759,7 @@ namespace Server
                 {
                     numberOfBytesToSend = Protocol.MaxPartSize;
                 }
+                Console.WriteLine($"Enviando parte #{currentPart}, de {numberOfBytesToSend} bytes");
 
                 byte[] bytesReadFromDisk = fs.Read(filePath, offset, numberOfBytesToSend);
 
@@ -728,8 +767,20 @@ namespace Server
                 currentPart++;
                 offset += numberOfBytesToSend;
             }
+            Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
 
         }
+        public static void SendUsernamesToClient(NetworkHelper networkHelper)
+        {
+            List<User> users = userRepository.GetAll();
+            StringBuilder usernames = new StringBuilder();
+            foreach (var user in users)
+            {
+                usernames.AppendLine(user.Name);
+            }
+            SendMessageToClient(usernames.ToString(), networkHelper);
+        }
+
         private static void SendAllTripInfo(NetworkHelper networkHelper, Trip trip)
         {
             SendMessageToClient(trip.Origin, networkHelper);
@@ -739,5 +790,58 @@ namespace Server
             SendMessageToClient(trip.PricePerPassanger.ToString(), networkHelper);
             SendMessageToClient(trip.Pet.ToString(), networkHelper);
         }
+
+
+
+        public static void ProcessUserSelection(NetworkHelper networkHelper)
+        {
+            string selectedUsername = ReceiveMessageFromClient(networkHelper);
+            User user = userRepository.GetUserByUsername(selectedUsername);
+
+            if (user == null)
+            {
+                SendMessageToClient("Error: El usuario no existe.", networkHelper);
+                return;
+            }
+
+            List<Calification> califications = GetDriverCalifications(user._id);
+            if (califications.Count == 0)
+            {
+                SendMessageToClient("El usuario no tiene calificaciones disponibles.", networkHelper);
+            }
+            else
+            {
+                string response = FormatCalifications(califications);
+                SendMessageToClient(response, networkHelper);
+            }
+        }
+
+        private static List<Calification> GetDriverCalifications(Guid driverId)
+        {
+            List<Trip> driverTrips = ITripRepo.GetTripsByOwner(driverId);
+            List<Calification> driverCalifications = new List<Calification>();
+
+            foreach (var trip in driverTrips)
+            {
+                driverCalifications.AddRange(calificationRepository.GetCalificationsByTripId(trip._id));
+            }
+
+            return driverCalifications;
+        }
+
+
+
+
+        public static string FormatCalifications(List<Calification> califications)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var calification in califications)
+            {
+                sb.AppendLine($"Trip ID: {calification.GetTrip()}, Score: {calification.Score}, Comment: {calification.Comment}");
+            }
+            return sb.ToString();
+        }
+
+
     }
 }
