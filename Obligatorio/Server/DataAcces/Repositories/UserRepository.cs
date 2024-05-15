@@ -2,6 +2,7 @@
 using Server.BL;
 using Server.BL.BLException;
 using Server.BL.Repositories;
+using System.ComponentModel.Design.Serialization;
 
 namespace Server.DataAcces.Repositories;
 
@@ -9,7 +10,8 @@ public class UserRepository : IUserRepository
 {
     public void Add(User user)
     {
-        UserContext context = UserContext.GetAccessWriteUser();
+        Task<UserContext> contextTask = UserContext.GetAccessWriteUser();
+        UserContext context = contextTask.Result;
         context.UserList.Add(user.GetGuid(), user);
         UserContext.ReturnWriteAccessUser();
     }
@@ -21,7 +23,8 @@ public class UserRepository : IUserRepository
 
     public void Delete(User user)
     {
-        UserContext context = UserContext.GetAccessWriteUser();
+        Task<UserContext> contextTask = UserContext.GetAccessWriteUser();
+        UserContext context = contextTask.Result;
         Guid asociated = user.GetGuid();
         context.UserList.Remove(asociated);
         UserContext.ReturnWriteAccessUser();
@@ -29,7 +32,8 @@ public class UserRepository : IUserRepository
 
     public void Delete(Guid id)
     {
-        UserContext context = UserContext.GetAccessWriteUser();
+        Task<UserContext> contextTask = UserContext.GetAccessWriteUser();
+        UserContext context = contextTask.Result;
         context.UserList.Remove(id);
         UserContext.ReturnWriteAccessUser();
     }
@@ -37,7 +41,8 @@ public class UserRepository : IUserRepository
     public User Get(Guid id)
     {
         User? asociated = null;
-        UserContext context = UserContext.GetAccessReadUser();
+        Task<UserContext> contextTask = UserContext.GetAccessReadUser();
+        UserContext context = contextTask.Result;
         context.UserList.TryGetValue(id, out asociated);
         UserContext.ReturnReadAccessUser();
         if (asociated != null)
@@ -49,7 +54,8 @@ public class UserRepository : IUserRepository
 
     public List<User> GetAll()
     {
-        UserContext context = UserContext.GetAccessReadUser();
+        Task<UserContext> contextTask = UserContext.GetAccessReadUser();
+        UserContext context = contextTask.Result;
         List<User> all = new List<User>();
         foreach (var user in context.UserList)
         {
@@ -63,7 +69,8 @@ public class UserRepository : IUserRepository
     public void Update(User user)
     {
         Guid id = user.GetGuid();
-        UserContext context = UserContext.GetAccessWriteUser();
+        Task<UserContext> contextTask = UserContext.GetAccessWriteUser();
+        UserContext context = contextTask.Result;
         if (context.UserList.ContainsKey(id))
         {
             context.UserList[id] = user;
@@ -77,7 +84,8 @@ public class UserRepository : IUserRepository
 
     public User GetUserByUsername(string username)
     {
-        UserContext context = UserContext.GetAccessReadUser();
+        Task<UserContext> contextTask = UserContext.GetAccessReadUser();
+        UserContext context = contextTask.Result;
         User user = context.UserList.Values.FirstOrDefault(u => u.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
         UserContext.ReturnReadAccessUser();
 

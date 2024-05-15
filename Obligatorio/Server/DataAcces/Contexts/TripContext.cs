@@ -9,9 +9,9 @@ namespace DataAcces
         public Dictionary<Guid, Trip> TripList = new Dictionary<Guid, Trip>();
 
         private const string FileName = "Trips.json";
-        private static Semaphore _tripSemaphore = new Semaphore(1, 1);
-        private static Semaphore _mutexTrip = new Semaphore(1, 1);
-        private static Semaphore _serviceQueueTrip = new Semaphore(1, 1);
+        private static SemaphoreSlim _tripSemaphore = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _mutexTrip = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _serviceQueueTrip = new SemaphoreSlim(1, 1);
         private static int _readersTrip = 0;
 
         private static string TripsFilePath
@@ -39,13 +39,13 @@ namespace DataAcces
             }
         }
 
-        public static TripContext GetAccessReadTrip()
+        public static async Task<TripContext> GetAccessReadTrip()
         {
-            _serviceQueueTrip.WaitOne();     //espera de turno
-            _mutexTrip.WaitOne();            //acceso exclusivo al contador de lectores
+            await _serviceQueueTrip.WaitAsync();     //espera de turno
+            await _mutexTrip.WaitAsync();            //acceso exclusivo al contador de lectores
             _readersTrip++;
             if (_readersTrip == 1)          //si es el primero bloquea a los escritores
-                _tripSemaphore.WaitOne();
+                await _tripSemaphore.WaitAsync();
             _serviceQueueTrip.Release();     //libera para el siguiente esperando turno
             _mutexTrip.Release();            //libera acceso al contador
 
@@ -54,9 +54,9 @@ namespace DataAcces
             //fin seccion critica
         }
 
-        public static void ReturnReadAccessTrip()
+        public static async void ReturnReadAccessTrip()
         {
-            _mutexTrip.WaitOne();            //acceso exclusivo al contador de lectores
+            await _mutexTrip.WaitAsync();            //acceso exclusivo al contador de lectores
             _readersTrip--;
             if (_readersTrip == 0)        //si es el ultimo libera a los escritores
                 _tripSemaphore.Release();
@@ -132,10 +132,10 @@ namespace DataAcces
             }
         }
 
-        public static TripContext GetAccessWriteTrip()
+        public static async Task<TripContext> GetAccessWriteTrip()
         {
-            _serviceQueueTrip.WaitOne();
-            _tripSemaphore.WaitOne();
+            await _serviceQueueTrip.WaitAsync();
+            await _tripSemaphore.WaitAsync();
             _serviceQueueTrip.Release();
 
             //seccion critica
