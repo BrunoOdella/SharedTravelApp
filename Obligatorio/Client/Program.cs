@@ -16,28 +16,23 @@ namespace Client
         static void Main(string[] args)
         {
             IPEndPoint local = new IPEndPoint(
-                                        IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientIpConfigKey)),
-                                        int.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientPortConfigKey))
-                                );
-            IPEndPoint server = new IPEndPoint(
-                                        IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ServerIpConfigKey)),
-                                        int.Parse(SettingsMgr.ReadSetting(ClientConfig.SeverPortConfigKey))
-                                );
-
-            Socket soc = new Socket(
-                AddressFamily.InterNetwork,
-                SocketType.Stream,
-                ProtocolType.Tcp
+                IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientIpConfigKey)),
+                int.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientPortConfigKey))
             );
-            soc.Bind(local);
+            IPEndPoint server = new IPEndPoint(
+                IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ServerIpConfigKey)),
+                int.Parse(SettingsMgr.ReadSetting(ClientConfig.SeverPortConfigKey))
+            );
+
+            TcpClient client = new TcpClient();
+
             try
             {
-                
-                soc.Connect(server);
+                client.Client.Bind(local);
+                client.Connect(server);
                 Console.WriteLine("Cliente conectado con el servidor");
 
-
-                LogIn(soc);
+                LogIn(client);
             }
             catch (Exception ex)
             {
@@ -45,8 +40,7 @@ namespace Client
             }
             finally
             {
-                soc.Shutdown(SocketShutdown.Both);
-                soc.Close();
+                client.Close();
             }
         }
 
