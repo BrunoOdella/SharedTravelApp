@@ -29,33 +29,26 @@ namespace Server
 
         static void Main(string[] args)
         {
-            
             load();
 
             try
             {
                 var localEndPoint = new IPEndPoint(
-                                         IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
-                                         int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey))
-                                    );
-
-                Socket listenerSocket = new Socket(
-                    AddressFamily.InterNetwork,
-                    SocketType.Stream,
-                    ProtocolType.Tcp
+                    IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
+                    int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey))
                 );
 
-                listenerSocket.Bind(localEndPoint);
-                listenerSocket.Listen(10);
+                TcpListener listener = new TcpListener(localEndPoint);
+                listener.Start();
                 Console.WriteLine("Esperando clientes ...");
 
                 int clients = 1;
 
                 while (true)
                 {
-                    Socket clientSocket = listenerSocket.Accept(); // Bloqueante
+                    TcpClient client = listener.AcceptTcpClient(); // Bloqueante
                     int clientNumber = clients;
-                    Thread clientThread = new Thread(() => HandleClient(clientSocket, clientNumber));
+                    Thread clientThread = new Thread(() => HandleClient(client, clientNumber));
                     clientThread.Name = "Cliente #" + clientNumber;
                     clientThread.Start();
                     clients++;
@@ -66,6 +59,7 @@ namespace Server
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+
 
         private static void loadTrips(UserContext userContenxt)
         {
