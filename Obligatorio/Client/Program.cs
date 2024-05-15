@@ -44,9 +44,9 @@ namespace Client
             }
         }
 
-        private static void LogIn(Socket socketClient)
+        private static void LogIn(TcpClient client)
         {
-            NetworkHelper networkHelper = new NetworkHelper(socketClient);
+            NetworkHelper networkHelper = new NetworkHelper(client);
             bool loggedIn = false;
             while (!loggedIn)
             {
@@ -90,7 +90,6 @@ namespace Client
                 {
                     Console.WriteLine(" Error message: " + e.Message);
                 }
-
             }
         }
 
