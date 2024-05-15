@@ -15,14 +15,7 @@ namespace Common
 
         public void Send(byte[] data)
         {
-            int size = data.Length;
-            int offset = 0;
-            while (offset < size)
-            {
-                int bytesToSend = size - offset;
-                _stream.Write(data, offset, bytesToSend);
-                offset += bytesToSend;
-            }
+            _stream.Write(data, 0, data.Length);
         }
 
         public byte[] Receive(int dataLength)
