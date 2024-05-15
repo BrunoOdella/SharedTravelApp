@@ -4,10 +4,13 @@ namespace Common
 {
     public class NetworkHelper
     {
-        private Socket _socket;
-        public NetworkHelper(Socket socket)
+        private TcpClient _client;
+        private NetworkStream _stream;
+
+        public NetworkHelper(TcpClient client)
         {
-            this._socket = socket;
+            _client = client;
+            _stream = client.GetStream();
         }
 
         public void Send(byte[] data)
@@ -16,26 +19,25 @@ namespace Common
             int offset = 0;
             while (offset < size)
             {
-                int bytesEnviado = _socket.Send(data, offset, size - offset, SocketFlags.None);
-                offset += bytesEnviado;
+                int bytesToSend = size - offset;
+                _stream.Write(data, offset, bytesToSend);
+                offset += bytesToSend;
             }
-
         }
 
         public byte[] Receive(int dataLength)
         {
             byte[] buffer = new byte[dataLength];
-
             int offset = 0;
             int size = dataLength;
             while (offset < size)
             {
-                int bytesRecibidos = _socket.Receive(buffer, offset, size - offset, SocketFlags.None);
-                if (bytesRecibidos == 0)
+                int bytesReceived = _stream.Read(buffer, offset, size - offset);
+                if (bytesReceived == 0)
                 {
-                    throw new Exception();
+                    throw new Exception("Connection closed by remote host.");
                 }
-                offset += bytesRecibidos;
+                offset += bytesReceived;
             }
             return buffer;
         }
