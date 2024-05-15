@@ -99,10 +99,10 @@ namespace Server
             networkHelper.Send(responseBuffer);
         }
 
-        public static void HandleClient(Socket clientSocket, int clientNumber)
+        private static void HandleClient(TcpClient client, int clientNumber)
         {
             Console.WriteLine($"El cliente {clientNumber} se conectó");
-            NetworkHelper networkHelper = new NetworkHelper(clientSocket);
+            NetworkHelper networkHelper = new NetworkHelper(client);
 
             try
             {
@@ -112,7 +112,6 @@ namespace Server
                 while (!validUser)
                 {
                     string username = ReceiveMessageFromClient(networkHelper);
-                    
                     string password = ReceiveMessageFromClient(networkHelper);
 
                     validUser = AuthenticateUser(username, password);
@@ -125,22 +124,17 @@ namespace Server
                     }
                     else
                     {
-                        Console.WriteLine($"Logueado el usuario {clientNumber} con exito");
+                        Console.WriteLine($"Logueado el usuario {clientNumber} con éxito");
 
-                        //ver de arreglar esto (sacarlo para afuera en una funcion o algo)
                         var allUsers = userRepository.GetAll();
-
                         var authenticatedUser = allUsers.FirstOrDefault(u => u.Name == username && u._password == password);
                         Guid userId = authenticatedUser.GetGuid();
 
                         user = userRepository.Get(userId);
                         SendMessageToClient(response, networkHelper);
 
-                        GoToOption(networkHelper, clientSocket, user);
-                        
+                        GoToOption(networkHelper, client, user);
                     }
-
-
                 }
             }
             catch (Exception ex)
@@ -149,8 +143,7 @@ namespace Server
             }
             finally
             {
-                clientSocket.Shutdown(SocketShutdown.Both);
-                clientSocket.Close();
+                client.Close();
             }
         }
 
