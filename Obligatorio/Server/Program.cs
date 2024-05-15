@@ -192,7 +192,7 @@ namespace Server
             }
         }
 
-        private static void DeleteTrip(NetworkHelper networkHelper, Socket socket, User user)
+        private static void DeleteTrip(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -241,7 +241,7 @@ namespace Server
         }
 
 
-        public static void ViewDriverRatings(NetworkHelper networkHelper, Socket socket, User user)
+        public static void ViewDriverRatings(NetworkHelper networkHelper, TcpClient client, User user)
         {
             SendUsernamesToClient(networkHelper);
             string username = ReceiveMessageFromClient(networkHelper);
@@ -259,7 +259,7 @@ namespace Server
             SendMessageToClient(response, networkHelper);
         }
 
-        private static void RateDriver(NetworkHelper networkHelper, Socket socket, User user)
+        private static void RateDriver(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -313,13 +313,13 @@ namespace Server
             }
         }
 
-        private static void ViewTripInfo(NetworkHelper networkHelper, Socket socket, User user)
+        private static void ViewTripInfo(NetworkHelper networkHelper, TcpClient client, User user)
         {
 
             List<Trip> trips;
             try
             {
-                trips = TripSearch(networkHelper, socket, user);
+                trips = TripSearch(networkHelper, client, user);
                 int amountOfTrips = trips.Count;
                 SendMessageToClient(amountOfTrips.ToString(), networkHelper);
 
@@ -354,12 +354,12 @@ namespace Server
             }
         }
 
-        private static void JoinTrip(NetworkHelper networkHelper, Socket socket, User user)
+        private static void JoinTrip(NetworkHelper networkHelper, TcpClient client, User user)
         {
             
             string response = "";
 
-            List<Trip> trips= ViewAllFutureTrips(networkHelper,socket,user);
+            List<Trip> trips= ViewAllFutureTrips(networkHelper, client, user);
             //hacer una funcion que filtre
             trips = ITripRepo.FilterByDeparture(trips);
 
@@ -434,7 +434,7 @@ namespace Server
             
         }
 
-        private static void WithdrawFromTrip(NetworkHelper networkHelper, Socket socket, User user)
+        private static void WithdrawFromTrip(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -479,7 +479,7 @@ namespace Server
             
         }
 
-        private static void ModifyTrip(NetworkHelper networkHelper, Socket socket, User user)
+        private static void ModifyTrip(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -582,7 +582,7 @@ namespace Server
         
 
         
-        private static void PublishTrip(NetworkHelper networkHelper, Socket socket, User user)
+        private static void PublishTrip(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -617,23 +617,23 @@ namespace Server
             }
         }
 
-        private static List<Trip> TripSearch(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> TripSearch(NetworkHelper networkHelper, TcpClient client, User user)
         {
             string option = ReceiveMessageFromClient(networkHelper);
             int opt = Int32.Parse(option);
             switch (opt)
             {
                 case 1:
-                    return ViewAllTrips(networkHelper, socket, user);
+                    return ViewAllTrips(networkHelper, client, user);
                     break;
                 case 2:
-                    return ViewTripsFilteredByOriginAndDestination(networkHelper, socket, user);
+                    return ViewTripsFilteredByOriginAndDestination(networkHelper, client, user);
                     break;
                 case 3:
-                    return ViewAllTripsFilteredPetFriendly(networkHelper, socket, user);
+                    return ViewAllTripsFilteredPetFriendly(networkHelper, client, user);
                     break;
                 case 4:
-                    return ViewAllFutureTrips(networkHelper, socket, user);
+                    return ViewAllFutureTrips(networkHelper, client, user);
                     break ;
                 default:
                     return new List<Trip>();
@@ -641,7 +641,7 @@ namespace Server
             }
         }
 
-        private static List<Trip> ViewAllTrips(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> ViewAllTrips(NetworkHelper networkHelper, TcpClient client, User user)
         {
             List<Trip> allTrips;
             allTrips = ITripRepo.GetAll();
@@ -658,7 +658,7 @@ namespace Server
             return allTrips;   
         }
 
-        private static List<Trip> ViewTripsFilteredByOriginAndDestination(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> ViewTripsFilteredByOriginAndDestination(NetworkHelper networkHelper, TcpClient client, User user)
         {
             string origin = ReceiveMessageFromClient(networkHelper);
             string destination = ReceiveMessageFromClient(networkHelper);
@@ -687,7 +687,7 @@ namespace Server
             }
         }
 
-        private static List<Trip> ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper, TcpClient client, User user)
         {
             string option = ReceiveMessageFromClient(networkHelper);
             bool petFriendly = false;
@@ -718,7 +718,7 @@ namespace Server
                 return new List<Trip> { };
             }
         }
-        private static List<Trip> ViewAllFutureTrips(NetworkHelper networkHelper, Socket socket, User user)
+        private static List<Trip> ViewAllFutureTrips(NetworkHelper networkHelper, TcpClient client, User user)
         {
             List<Trip> allTrips;
             List<Trip> trips;
