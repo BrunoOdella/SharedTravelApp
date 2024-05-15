@@ -147,7 +147,7 @@ namespace Server
             }
         }
 
-        private static void GoToOption(NetworkHelper networkHelper,Socket socket, User user)
+        private static void GoToOption(NetworkHelper networkHelper, TcpClient client, User user)
         {
             bool salir = false;
             while (!salir)
@@ -157,41 +157,39 @@ namespace Server
                 switch (opt)
                 {
                     case 1:
-                        PublishTrip(networkHelper, socket, user);
+                        PublishTrip(networkHelper, client, user);
                         break;
                     case 2:
-                        JoinTrip(networkHelper, socket, user);
+                        JoinTrip(networkHelper, client, user);
                         break;
                     case 3:
-                        ModifyTrip(networkHelper, socket, user);
+                        ModifyTrip(networkHelper, client, user);
                         break;
                     case 4:
-                        WithdrawFromTrip(networkHelper, socket, user);
+                        WithdrawFromTrip(networkHelper, client, user);
                         break;
                     case 5:
-                        TripSearch(networkHelper, socket, user);
+                        TripSearch(networkHelper, client, user);
                         break;
                     case 6:
-                        ViewTripInfo(networkHelper, socket, user);
+                        ViewTripInfo(networkHelper, client, user);
                         break;
                     case 7:
-                        RateDriver(networkHelper, socket, user);
+                        RateDriver(networkHelper, client, user);
                         break;
                     case 8:
-                        ViewDriverRatings(networkHelper, socket, user);
+                        ViewDriverRatings(networkHelper, client, user);
                         break;
                     case 9:
-                        DeleteTrip(networkHelper, socket, user);
+                        DeleteTrip(networkHelper, client, user);
                         break;
                     case 10:
                         salir = true;
                         break;
-                    default: 
+                    default:
                         break;
                 }
             }
-            
-
         }
 
         private static void DeleteTrip(NetworkHelper networkHelper, Socket socket, User user)
