@@ -13,7 +13,7 @@ namespace Client
     internal class Program
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             IPEndPoint local = new IPEndPoint(
                 IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientIpConfigKey)),
@@ -29,10 +29,20 @@ namespace Client
             try
             {
                 client.Client.Bind(local);
-                client.Connect(server);
-                Console.WriteLine("Cliente conectado con el servidor");
-
-                LogIn(client);
+                await client.ConnectAsync(server);
+                var stream = client.GetStream();
+                var reader = new StreamReader(stream);
+                var serverMessage =  await reader.ReadLineAsync();
+                if (serverMessage == "El servidor no está aceptando nuevos clientes")
+                {
+                    Console.WriteLine("No se pudo conectar con el servidor");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("Cliente conectado con el servidor");
+                    LogIn(client);
+                }
             }
             catch (Exception ex)
             {

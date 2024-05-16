@@ -24,10 +24,11 @@ namespace Server
         static readonly IUserRepository IUserRepo = new UserRepository();
         static readonly ICalificationRepository ICalificationRepo = new CalificationRepository();
 
+        static bool acceptClients = true;
+        static List<Task> clientTasks = new List<Task>();
 
 
-
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             load();
 
@@ -42,17 +43,47 @@ namespace Server
                 listener.Start();
                 Console.WriteLine("Esperando clientes ...");
 
+                var consoleTask = Task.Run(() => HandleConsoleInput());
+
                 int clients = 1;
 
                 while (true)
                 {
-                    TcpClient client = listener.AcceptTcpClient(); // Bloqueante
-                    int clientNumber = clients;
-                    Thread clientThread = new Thread(() => HandleClient(client, clientNumber));
-                    clientThread.Name = "Cliente #" + clientNumber;
-                    clientThread.Start();
-                    clients++;
+                    if (acceptClients && listener.Pending())
+                    {
+                        // Aceptar el cliente y enviar un mensaje de bienvenida
+                        TcpClient client = await listener.AcceptTcpClientAsync();
+                        var stream = client.GetStream();
+                        var writer = new StreamWriter(stream);
+                        writer.WriteLine("Bienvenido al servidor");
+                        writer.Flush();
+
+                        // Crea una nueva tarea para manejar al cliente y añádela a la lista
+                        var tcs = new TaskCompletionSource<bool>();
+                        var clientTask = Task.Run(() => HandleClient(client, clientTasks.Count, tcs));
+                        clientTasks.Add(clientTask);
+
+                        // Cuando la tarea se complete, la removemos de la lista
+                        clientTask.ContinueWith(t =>
+                        {
+                            clientTasks.Remove(clientTask);
+                            Console.WriteLine("Clientes conectados: " + clientTasks.Count);
+                        });
+                    }
+                    else if (!acceptClients && listener.Pending())
+                    {
+                        // Aceptar el cliente y enviar un mensaje de rechazo
+                        TcpClient client = listener.AcceptTcpClient();
+                        var stream = client.GetStream();
+                        var writer = new StreamWriter(stream);
+                        writer.WriteLine("El servidor no está aceptando nuevos clientes");
+                        writer.Flush();
+                        await Task.Delay(1000); // Espera un segundo antes de cerrar la conexión
+                        client.Close();
+                    }
                 }
+
+
             }
             catch (Exception ex)
             {
@@ -99,7 +130,7 @@ namespace Server
             networkHelper.Send(responseBuffer);
         }
 
-        private static void HandleClient(TcpClient client, int clientNumber)
+        private static async Task HandleClient(TcpClient client, int clientNumber, TaskCompletionSource<bool> tcs)
         {
             Console.WriteLine($"El cliente {clientNumber} se conectó");
             NetworkHelper networkHelper = new NetworkHelper(client);
@@ -143,6 +174,7 @@ namespace Server
             }
             finally
             {
+                tcs.SetResult(true);
                 client.Close();
             }
         }
@@ -907,6 +939,20 @@ namespace Server
                 sb.AppendLine($"Origen del viaje: {trip.Origin}, Destino del viaje: {trip.Destination}, Score: {calification.Score}, Comment: {calification.Comment}");
             }
             return sb.ToString();
+        }
+
+        static void HandleConsoleInput()
+        {
+            while (true)
+            {
+                var input = Console.ReadLine();
+                if (input == "salir")
+                {
+                    Console.WriteLine("Dejando de aceptar nuevos clientes......");
+                    Console.WriteLine(clientTasks.Count);
+                    acceptClients = false;
+                }
+            }
         }
 
 
