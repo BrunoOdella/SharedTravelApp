@@ -150,7 +150,7 @@ namespace Server
                     if (!validUser)
                     {
                         response = "ERROR";
-                        SendMessageToClientAsync(response, networkHelper);
+                        await SendMessageToClientAsync(response, networkHelper);
                     }
                     else
                     {
@@ -161,9 +161,9 @@ namespace Server
                         Guid userId = authenticatedUser.GetGuid();
 
                         user = userRepository.Get(userId);
-                        SendMessageToClientAsync(response, networkHelper);
+                        await SendMessageToClientAsync(response, networkHelper);
 
-                        GoToOptionAsync(networkHelper, client, user);
+                        await GoToOptionAsync(networkHelper, client, user);
                     }
                 }
             }
@@ -188,31 +188,31 @@ namespace Server
                 switch (opt)
                 {
                     case 1:
-                        PublishTripAsync(networkHelper, client, user);
+                        await PublishTripAsyncAsync(networkHelper, client, user);
                         break;
                     case 2:
-                        JoinTripAsync(networkHelper, client, user);
+                        await JoinTripAsync(networkHelper, client, user);
                         break;
                     case 3:
-                        ModifyTripAsync(networkHelper, client, user);
+                        await ModifyTripAsync(networkHelper, client, user);
                         break;
                     case 4:
-                        WithdrawFromTripAsync(networkHelper, client, user);
+                        await WithdrawFromTripAsync(networkHelper, client, user);
                         break;
                     case 5:
-                        TripSearchAsync(networkHelper, client, user);
+                        await TripSearchAsyncAsync(networkHelper, client, user);
                         break;
                     case 6:
-                        ViewTripInfoAsync(networkHelper, client, user);
+                        await ViewTripInfoAsyncAsync(networkHelper, client, user);
                         break;
                     case 7:
-                        RateDriverAsync(networkHelper, client, user);
+                        await RateDriverAsyncAsync(networkHelper, client, user);
                         break;
                     case 8:
-                        ViewDriverRatingsAsync(networkHelper, client, user);
+                        await ViewDriverRatingsAsyncAsync(networkHelper, client, user);
                         break;
                     case 9:
-                        DeleteTripAsync(networkHelper, client, user);
+                        await DeleteTripAsyncAsync(networkHelper, client, user);
                         break;
                     case 10:
                         salir = true;
@@ -223,7 +223,7 @@ namespace Server
             }
         }
 
-        private static async Task DeleteTripAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task DeleteTripAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -238,17 +238,17 @@ namespace Server
 
                 if (ActualsTrips.Count == 0)
                 {
-                    SendMessageToClientAsync("0", networkHelper);
+                    await SendMessageToClientAsync("0", networkHelper);
                     return;
                 }
 
-                SendMessageToClientAsync($"{ActualsTrips.Count}", networkHelper);
+                await SendMessageToClientAsync($"{ActualsTrips.Count}", networkHelper);
 
 
                 int count = 1;
                 foreach (var trip in ActualsTrips)
                 {
-                    SendMessageToClientAsync($"{count} | Origen: {trip.Origin}, Destino: {trip.Destination}, Fecha de salida: {trip.Departure}", networkHelper);
+                    await SendMessageToClientAsync($"{count} | Origen: {trip.Origin}, Destino: {trip.Destination}, Fecha de salida: {trip.Departure}", networkHelper);
                     count++;
                 }
 
@@ -260,36 +260,36 @@ namespace Server
 
                 ITripRepo.Remove(ActualsTrips[pos]);
 
-                SendMessageToClientAsync("Se elimino el viaje", networkHelper);
+                await SendMessageToClientAsync("Se elimino el viaje", networkHelper);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error al eliminar un viaje: " + e.Message);
-                SendMessageToClientAsync("Error al eliminar un viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al eliminar un viaje.", networkHelper);
             }
             
         }
 
 
-        public static async Task ViewDriverRatingsAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        public static async Task ViewDriverRatingsAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
-            SendUsernamesToClient(networkHelper);
+            await SendUsernamesToClient(networkHelper);
             string username = await ReceiveMessageFromClientAsync(networkHelper);
             User foundUser = userRepository.GetUserByUsername(username);
 
             if (foundUser == null)
             {
-                SendMessageToClientAsync("Error: Usuario no encontrado.", networkHelper);
+                await SendMessageToClientAsync("Error: Usuario no encontrado.", networkHelper);
                 return;
             }
 
             List<Calification> califications = GetDriverCalifications(foundUser.GetGuid());
             string response = califications.Count > 0 ? FormatCalifications(califications)
                 : "Este conductor no tiene calificaciones disponibles.";
-            SendMessageToClientAsync(response, networkHelper);
+            await SendMessageToClientAsync(response, networkHelper);
         }
 
-        private static async Task RateDriverAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task RateDriverAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -303,16 +303,16 @@ namespace Server
 
                 if (users.Count == 0)
                 {
-                    SendMessageToClientAsync("EMPTY", networkHelper);
+                    await SendMessageToClientAsync("EMPTY", networkHelper);
                     return;
                 }
-                SendMessageToClientAsync($"{users.Count}", networkHelper);
+                await SendMessageToClientAsync($"{users.Count}", networkHelper);
                 int count = 1;
                 for (int i = 0; i < trips.Count && i < users.Count; i++)
                 {
                     var actualUser = users[i];
                     var actualTrip = trips[i];
-                    SendMessageToClientAsync($"{count} | {actualUser.Name}, Origen del viaje: {actualTrip.Origin}" +
+                    await SendMessageToClientAsync($"{count} | {actualUser.Name}, Origen del viaje: {actualTrip.Origin}" +
                                         $", Destino del viaje {actualTrip.Destination}, Fecha del viaje " +
                                         $"{actualTrip.Departure}", networkHelper);
                     count++;
@@ -333,25 +333,25 @@ namespace Server
                 var ActualOwner= users[selected - 1];
                 ActualOwner.AddScore(score);
                 IUserRepo.Update(ActualOwner);
-                SendMessageToClientAsync($"Calificacion cargada", networkHelper);
+                await SendMessageToClientAsync($"Calificacion cargada", networkHelper);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error al calificar un conductor: " + e.Message);
-                SendMessageToClientAsync("Error al calificar un conductor.", networkHelper);
+                await SendMessageToClientAsync("Error al calificar un conductor.", networkHelper);
 
             }
         }
 
-        private static async Task ViewTripInfoAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task ViewTripInfoAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
 
             List<Trip> trips;
             try
             {
-                trips = await TripSearchAsync(networkHelper, client, user);
+                trips = await TripSearchAsyncAsync(networkHelper, client, user);
                 int amountOfTrips = trips.Count;
-                SendMessageToClientAsync(amountOfTrips.ToString(), networkHelper);
+                await SendMessageToClientAsync(amountOfTrips.ToString(), networkHelper);
 
                 if (amountOfTrips > 0)
                 {
@@ -361,12 +361,12 @@ namespace Server
                     if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                     {
                         Trip selectedTrip = trips[selectedTripIndex];
-                        SendAllTripInfo(networkHelper, selectedTrip);
+                        await SendAllTripInfo(networkHelper, selectedTrip);
 
                         string download = await ReceiveMessageFromClientAsync(networkHelper);
                         if (download == "si")
                         {
-                            SendStreamToClient(networkHelper, selectedTrip.Photo);
+                            await SendStreamToClient(networkHelper, selectedTrip.Photo);
                         }
                     }
                     else
@@ -380,7 +380,7 @@ namespace Server
             catch (Exception ex)
             {
                 // Enviar mensaje al cliente sobre la falta de viajes disponibles
-                SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
+                await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
             }
         }
 
@@ -393,7 +393,7 @@ namespace Server
             //hacer una funcion que filtre
             trips = ITripRepo.FilterByDeparture(trips);
 
-            SendMessageToClientAsync(trips.Count.ToString(), networkHelper);
+            await SendMessageToClientAsync(trips.Count.ToString(), networkHelper);
             //le mando la cant dfe trips al cliente asi sabe si decirle al user que elija uno
             if (trips.Count > 0)
             {
@@ -444,20 +444,20 @@ namespace Server
                         catch (Exception ex)
                         {
                             response = "Error al unirse al viaje: " + ex.Message;
-                            SendMessageToClientAsync(response, networkHelper);
+                            await SendMessageToClientAsync(response, networkHelper);
                         }
                     }
                     else
                     {
                         response = "Seleccion de viaje invalida";
                     }
-                    SendMessageToClientAsync(response, networkHelper);
+                    await SendMessageToClientAsync(response, networkHelper);
 
 
                 }
                 catch (Exception ex)
                 {
-                    SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
+                    await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
                 }
             }
             
@@ -478,15 +478,15 @@ namespace Server
 
                 if (!UserInTrips.Any())
                 {
-                    SendMessageToClientAsync("EMPTY", networkHelper);
+                    await SendMessageToClientAsync("EMPTY", networkHelper);
                     return;
                 }
 
-                SendMessageToClientAsync($"{UserInTrips.Count}", networkHelper);
+                await SendMessageToClientAsync($"{UserInTrips.Count}", networkHelper);
                 int count = 1;
                 foreach (Trip trip in UserInTrips)
                 {
-                    SendMessageToClientAsync($"{count} | Origen: {trip.Destination}, Destino: {trip.Destination}, " +
+                    await SendMessageToClientAsync($"{count} | Origen: {trip.Destination}, Destino: {trip.Destination}, " +
                                         $"Fecha de salida: {trip.Departure}", networkHelper);
                     count++;
                 }
@@ -500,11 +500,11 @@ namespace Server
                 Trip TripSelected = UserInTrips[pos];
                 TripSelected.Withdraw(user.GetGuid());
 
-                SendMessageToClientAsync("OK", networkHelper);
+                await SendMessageToClientAsync("OK", networkHelper);
             }
             catch (Exception ex)
             {
-                SendMessageToClientAsync("Error al eliminar el pasajero del viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al eliminar el pasajero del viaje.", networkHelper);
             }
             
         }
@@ -525,16 +525,16 @@ namespace Server
                 }
                 if(map.Count == 0) 
                 {
-                    SendMessageToClientAsync("EMPTY", networkHelper);
+                    await SendMessageToClientAsync("EMPTY", networkHelper);
                     return;
                 }
                 else
                 {
-                    SendMessageToClientAsync($"{map.Count}", networkHelper);
+                    await SendMessageToClientAsync($"{map.Count}", networkHelper);
                     foreach (var trip in map)
                     {
                         var actualTrip = ITripRepo.Get(trip.Value);
-                        SendMessageToClientAsync($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
+                        await SendMessageToClientAsync($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
                             $" y Fecha {actualTrip.Departure.ToString()}", networkHelper);
                     }
                 }
@@ -543,7 +543,7 @@ namespace Server
                 {
                     var tripSelected = map[Int32.Parse(selected)];
                     var selectedTrip = ITripRepo.Get(tripSelected);
-                    SendMessageToClientAsync($"Viaje seleccionado\n" +
+                    await SendMessageToClientAsync($"Viaje seleccionado\n" +
                         $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
                         $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper);
 
@@ -588,7 +588,7 @@ namespace Server
                         newPhoto = await ReceiveStreamFromClientAsync(networkHelper);
                     }
 
-                    SendMessageToClientAsync($"Viaje actualizado", networkHelper);
+                    await SendMessageToClientAsync($"Viaje actualizado", networkHelper);
 
                     ITripRepo.Update(selectedTrip);
                 }
@@ -596,7 +596,7 @@ namespace Server
             }
             catch (Exception ex)
             {
-                SendMessageToClientAsync("Error al modificar el viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al modificar el viaje.", networkHelper);
             }
         }
 
@@ -612,7 +612,7 @@ namespace Server
         
 
         
-        private static async Task PublishTripAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task PublishTripAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -639,15 +639,15 @@ namespace Server
                 newTrip.SetOwner(user.GetGuid());
                 ITripRepo.Add(newTrip);
 
-                SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper);
+                await SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper);
             }
             catch (Exception ex)
             {
-                SendMessageToClientAsync("Error al publicar el viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al publicar el viaje.", networkHelper);
             }
         }
 
-        private static async Task<List<Trip>> TripSearchAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task<List<Trip>> TripSearchAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             string option = await ReceiveMessageFromClientAsync(networkHelper);
             int opt = Int32.Parse(option);
@@ -695,19 +695,19 @@ namespace Server
                 tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
 
                 string tripCount = tripsToOriginAndDestination.Count.ToString();
-                SendMessageToClientAsync(tripCount, networkHelper);
+                await SendMessageToClientAsync(tripCount, networkHelper);
 
                 for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
                 {
                     Trip trip = tripsToOriginAndDestination[i];
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClientAsync(tripString, networkHelper);
+                    await SendMessageToClientAsync(tripString, networkHelper);
                 }
                 return tripsToOriginAndDestination;
             }
             catch (Exception ex)
             {
-                SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
+                await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
                 return new List<Trip> { };
                 
             }
@@ -728,19 +728,19 @@ namespace Server
                 trips = ITripRepo.GetTripsFilteredByPetFriendly(petFriendly);
 
                 string tripCount = trips.Count.ToString();
-                SendMessageToClientAsync(tripCount, networkHelper);
+                await SendMessageToClientAsync(tripCount, networkHelper);
 
                 for (int i = 0; i < trips.Count; i++)
                 {
                     Trip trip = trips[i];
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClientAsync(tripString, networkHelper);
+                    await SendMessageToClientAsync(tripString, networkHelper);
                 }
                 return trips;
             }
             catch (Exception ex)
             {
-                SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
+                await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
                 return new List<Trip> { };
             }
         }
@@ -825,13 +825,13 @@ namespace Server
             byte[] fileNameInBytes = Encoding.UTF8.GetBytes(fileName);
             int fileNameLength = fileNameInBytes.Length;
             byte[] fileNameLengthInBytes = BitConverter.GetBytes(fileNameLength);
-            networkHelper.SendAsync(fileNameLengthInBytes);
+            await networkHelper.SendAsync(fileNameLengthInBytes);
 
-            networkHelper.SendAsync(fileNameInBytes);
+            await networkHelper.SendAsync(fileNameInBytes);
 
             long fileLength = fileInfo.Length;
             byte[] fileLengthInBytes = BitConverter.GetBytes(fileLength);
-            networkHelper.SendAsync(fileLengthInBytes);
+            await networkHelper.SendAsync(fileLengthInBytes);
 
 
             long numberOfParts = Protocol.numberOfParts(fileLength);
@@ -856,14 +856,14 @@ namespace Server
 
                 byte[] bytesReadFromDisk = await fs.ReadAsync(filePath, offset, numberOfBytesToSend);
 
-                networkHelper.SendAsync(bytesReadFromDisk);
+                await networkHelper.SendAsync(bytesReadFromDisk);
                 currentPart++;
                 offset += numberOfBytesToSend;
             }
             Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
 
         }
-        public static void SendUsernamesToClient(NetworkHelper networkHelper)
+        public static async Task SendUsernamesToClient(NetworkHelper networkHelper)
         {
             List<User> users = userRepository.GetAll();
             StringBuilder usernames = new StringBuilder();
@@ -871,17 +871,17 @@ namespace Server
             {
                 usernames.AppendLine(user.Name);
             }
-            SendMessageToClientAsync(usernames.ToString(), networkHelper);
+            await SendMessageToClientAsync(usernames.ToString(), networkHelper);
         }
 
-        private static void SendAllTripInfo(NetworkHelper networkHelper, Trip trip)
+        private static async Task SendAllTripInfo(NetworkHelper networkHelper, Trip trip)
         {
-            SendMessageToClientAsync(trip.Origin, networkHelper);
-            SendMessageToClientAsync(trip.Destination, networkHelper);
-            SendMessageToClientAsync(trip.Departure.ToString(), networkHelper);
-            SendMessageToClientAsync(trip.AvailableSeats.ToString(), networkHelper);
-            SendMessageToClientAsync(trip.PricePerPassanger.ToString(), networkHelper);
-            SendMessageToClientAsync(trip.Pet.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.Origin, networkHelper);
+            await SendMessageToClientAsync(trip.Destination, networkHelper);
+            await SendMessageToClientAsync(trip.Departure.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.AvailableSeats.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.PricePerPassanger.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.Pet.ToString(), networkHelper);
         }
 
 
@@ -893,19 +893,19 @@ namespace Server
 
             if (user == null)
             {
-                SendMessageToClientAsync("Error: El usuario no existe.", networkHelper);
+                await SendMessageToClientAsync("Error: El usuario no existe.", networkHelper);
                 return;
             }
 
             List<Calification> califications = GetDriverCalifications(user._id);
             if (califications.Count == 0)
             {
-                SendMessageToClientAsync("El usuario no tiene calificaciones disponibles.", networkHelper);
+                await SendMessageToClientAsync("El usuario no tiene calificaciones disponibles.", networkHelper);
             }
             else
             {
                 string response = FormatCalifications(califications);
-                SendMessageToClientAsync(response, networkHelper);
+                await SendMessageToClientAsync(response, networkHelper);
             }
         }
 
