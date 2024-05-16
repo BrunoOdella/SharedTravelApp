@@ -47,7 +47,7 @@ namespace Server
 
                 int clients = 1;
 
-                while (true)
+                while (acceptClients || clientTasks.Count > 0)
                 {
                     if (acceptClients && listener.Pending())
                     {
@@ -78,12 +78,11 @@ namespace Server
                         var writer = new StreamWriter(stream);
                         writer.WriteLine("El servidor no está aceptando nuevos clientes");
                         writer.Flush();
-                        await Task.Delay(1000); // Espera un segundo antes de cerrar la conexión
                         client.Close();
                     }
                 }
-
-
+                
+                Console.WriteLine("Servidor apagado.....");
             }
             catch (Exception ex)
             {
@@ -949,7 +948,7 @@ namespace Server
                 if (input == "salir")
                 {
                     Console.WriteLine("Dejando de aceptar nuevos clientes......");
-                    Console.WriteLine(clientTasks.Count);
+                    Console.WriteLine("Clientes conectados: " + clientTasks.Count);
                     acceptClients = false;
                 }
             }
