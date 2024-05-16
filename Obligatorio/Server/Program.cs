@@ -173,9 +173,9 @@ namespace Server
             }
             finally
             {
-                tcs.SetResult(true);
                 client.Close();
             }
+            tcs.SetResult(true);
         }
 
         private static async Task GoToOptionAsync(NetworkHelper networkHelper, TcpClient client, User user)
