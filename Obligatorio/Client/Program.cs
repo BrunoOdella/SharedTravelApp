@@ -308,7 +308,7 @@ namespace Client
             string comment = PromptForNonEmptyString("Introduzca un comentario:");
             await SendMessageToServerAsync(comment, networkHelper);
 
-            Console.WriteLine(ReceiveMessageFromServerAsync(networkHelper));
+            Console.WriteLine(await ReceiveMessageFromServerAsync(networkHelper));
         }
 
         private static async Task<string> ReceiveMessageFromServerAsync(NetworkHelper networkHelper)

@@ -60,7 +60,7 @@ namespace Server
 
                         // Crea una nueva tarea para manejar al cliente y añádela a la lista
                         var tcs = new TaskCompletionSource<bool>();
-                        var clientTask = Task.Run(() => HandleClient(client, clientTasks.Count, tcs));
+                        var clientTask = Task.Run(() => HandleClientAsync(client, clientTasks.Count, tcs));
                         clientTasks.Add(clientTask);
 
                         // Cuando la tarea se complete, la removemos de la lista
@@ -129,7 +129,7 @@ namespace Server
             await networkHelper.SendAsync(responseBuffer);
         }
 
-        private static async Task HandleClient(TcpClient client, int clientNumber, TaskCompletionSource<bool> tcs)
+        private static async Task HandleClientAsync(TcpClient client, int clientNumber, TaskCompletionSource<bool> tcs)
         {
             Console.WriteLine($"El cliente {clientNumber} se conectó");
             NetworkHelper networkHelper = new NetworkHelper(client);
