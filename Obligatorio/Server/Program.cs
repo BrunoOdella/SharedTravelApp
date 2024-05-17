@@ -60,7 +60,7 @@ namespace Server
 
                         // Crea una nueva tarea para manejar al cliente y añádela a la lista
                         var tcs = new TaskCompletionSource<bool>();
-                        var clientTask = Task.Run(() => HandleClient(client, clientTasks.Count, tcs));
+                        var clientTask = Task.Run(() => HandleClientAsync(client, clientTasks.Count, tcs));
                         clientTasks.Add(clientTask);
 
                         // Cuando la tarea se complete, la removemos de la lista
@@ -112,24 +112,24 @@ namespace Server
             CalificationContext context = CalificationContext.CreateInsance();
             CalificationContext.LoadCalificationsFromTxt(userContenxt, tripContext); 
         }
-        private static string ReceiveMessageFromClient(NetworkHelper networkHelper)
+        private static async Task<string> ReceiveMessageFromClientAsync(NetworkHelper networkHelper)
         {
-            byte[] messageInBytes = networkHelper.Receive(Protocol.DataLengthSize);
+            byte[] messageInBytes = await networkHelper.ReceiveAsync(Protocol.DataLengthSize);
             int messageLength = BitConverter.ToInt32(messageInBytes);
-            byte[] messageBufferInBytes = networkHelper.Receive(messageLength);
+            byte[] messageBufferInBytes = await networkHelper.ReceiveAsync(messageLength);
             return Encoding.UTF8.GetString(messageBufferInBytes);
         }
 
-        private static void SendMessageToClient(string message, NetworkHelper networkHelper)
+        private static async Task SendMessageToClientAsync(string message, NetworkHelper networkHelper)
         {
             byte[] responseBuffer = Encoding.UTF8.GetBytes(message);
             int responseLength = responseBuffer.Length;
             byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
-            networkHelper.Send(responseLengthInBytes);
-            networkHelper.Send(responseBuffer);
+            await networkHelper.SendAsync(responseLengthInBytes);
+            await networkHelper.SendAsync(responseBuffer);
         }
 
-        private static async Task HandleClient(TcpClient client, int clientNumber, TaskCompletionSource<bool> tcs)
+        private static async Task HandleClientAsync(TcpClient client, int clientNumber, TaskCompletionSource<bool> tcs)
         {
             Console.WriteLine($"El cliente {clientNumber} se conectó");
             NetworkHelper networkHelper = new NetworkHelper(client);
@@ -141,8 +141,8 @@ namespace Server
 
                 while (!validUser)
                 {
-                    string username = ReceiveMessageFromClient(networkHelper);
-                    string password = ReceiveMessageFromClient(networkHelper);
+                    string username = await ReceiveMessageFromClientAsync(networkHelper);
+                    string password = await ReceiveMessageFromClientAsync(networkHelper);
 
                     validUser = AuthenticateUser(username, password);
 
@@ -150,7 +150,7 @@ namespace Server
                     if (!validUser)
                     {
                         response = "ERROR";
-                        SendMessageToClient(response, networkHelper);
+                        await SendMessageToClientAsync(response, networkHelper);
                     }
                     else
                     {
@@ -161,9 +161,9 @@ namespace Server
                         Guid userId = authenticatedUser.GetGuid();
 
                         user = userRepository.Get(userId);
-                        SendMessageToClient(response, networkHelper);
+                        await SendMessageToClientAsync(response, networkHelper);
 
-                        GoToOption(networkHelper, client, user);
+                        await GoToOptionAsync(networkHelper, client, user);
                     }
                 }
             }
@@ -173,46 +173,46 @@ namespace Server
             }
             finally
             {
-                tcs.SetResult(true);
                 client.Close();
             }
+            tcs.SetResult(true);
         }
 
-        private static void GoToOption(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task GoToOptionAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             bool salir = false;
             while (!salir)
             {
-                string option = ReceiveMessageFromClient(networkHelper);
+                string option = await ReceiveMessageFromClientAsync(networkHelper);
                 int opt = Int32.Parse(option);
                 switch (opt)
                 {
                     case 1:
-                        PublishTrip(networkHelper, client, user);
+                        await PublishTripAsyncAsync(networkHelper, client, user);
                         break;
                     case 2:
-                        JoinTrip(networkHelper, client, user);
+                        await JoinTripAsync(networkHelper, client, user);
                         break;
                     case 3:
-                        ModifyTrip(networkHelper, client, user);
+                        await ModifyTripAsync(networkHelper, client, user);
                         break;
                     case 4:
-                        WithdrawFromTrip(networkHelper, client, user);
+                        await WithdrawFromTripAsync(networkHelper, client, user);
                         break;
                     case 5:
-                        TripSearch(networkHelper, client, user);
+                        await TripSearchAsyncAsync(networkHelper, client, user);
                         break;
                     case 6:
-                        ViewTripInfo(networkHelper, client, user);
+                        await ViewTripInfoAsyncAsync(networkHelper, client, user);
                         break;
                     case 7:
-                        RateDriver(networkHelper, client, user);
+                        await RateDriverAsyncAsync(networkHelper, client, user);
                         break;
                     case 8:
-                        ViewDriverRatings(networkHelper, client, user);
+                        await ViewDriverRatingsAsyncAsync(networkHelper, client, user);
                         break;
                     case 9:
-                        DeleteTrip(networkHelper, client, user);
+                        await DeleteTripAsyncAsync(networkHelper, client, user);
                         break;
                     case 10:
                         salir = true;
@@ -223,7 +223,7 @@ namespace Server
             }
         }
 
-        private static void DeleteTrip(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task DeleteTripAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -238,21 +238,21 @@ namespace Server
 
                 if (ActualsTrips.Count == 0)
                 {
-                    SendMessageToClient("0", networkHelper);
+                    await SendMessageToClientAsync("0", networkHelper);
                     return;
                 }
 
-                SendMessageToClient($"{ActualsTrips.Count}", networkHelper);
+                await SendMessageToClientAsync($"{ActualsTrips.Count}", networkHelper);
 
 
                 int count = 1;
                 foreach (var trip in ActualsTrips)
                 {
-                    SendMessageToClient($"{count} | Origen: {trip.Origin}, Destino: {trip.Destination}, Fecha de salida: {trip.Departure}", networkHelper);
+                    await SendMessageToClientAsync($"{count} | Origen: {trip.Origin}, Destino: {trip.Destination}, Fecha de salida: {trip.Departure}", networkHelper);
                     count++;
                 }
 
-                string selected = ReceiveMessageFromClient(networkHelper);
+                string selected = await ReceiveMessageFromClientAsync(networkHelper);
                 if (selected == "salir")
                     return;
 
@@ -260,37 +260,36 @@ namespace Server
 
                 ITripRepo.Remove(ActualsTrips[pos]);
 
-                SendMessageToClient("Se elimino el viaje", networkHelper);
+                await SendMessageToClientAsync("Se elimino el viaje", networkHelper);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error al eliminar un viaje: " + e.Message);
-                SendMessageToClient("Error al eliminar un viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al eliminar un viaje.", networkHelper);
             }
             
-
         }
 
 
-        public static void ViewDriverRatings(NetworkHelper networkHelper, TcpClient client, User user)
+        public static async Task ViewDriverRatingsAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
-            SendUsernamesToClient(networkHelper);
-            string username = ReceiveMessageFromClient(networkHelper);
+            await SendUsernamesToClient(networkHelper);
+            string username = await ReceiveMessageFromClientAsync(networkHelper);
             User foundUser = userRepository.GetUserByUsername(username);
 
             if (foundUser == null)
             {
-                SendMessageToClient("Error: Usuario no encontrado.", networkHelper);
+                await SendMessageToClientAsync("Error: Usuario no encontrado.", networkHelper);
                 return;
             }
 
             List<Calification> califications = GetDriverCalifications(foundUser.GetGuid());
             string response = califications.Count > 0 ? FormatCalifications(califications)
                 : "Este conductor no tiene calificaciones disponibles.";
-            SendMessageToClient(response, networkHelper);
+            await SendMessageToClientAsync(response, networkHelper);
         }
 
-        private static void RateDriver(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task RateDriverAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -304,70 +303,70 @@ namespace Server
 
                 if (users.Count == 0)
                 {
-                    SendMessageToClient("EMPTY", networkHelper);
+                    await SendMessageToClientAsync("EMPTY", networkHelper);
                     return;
                 }
-                SendMessageToClient($"{users.Count}", networkHelper);
+                await SendMessageToClientAsync($"{users.Count}", networkHelper);
                 int count = 1;
                 for (int i = 0; i < trips.Count && i < users.Count; i++)
                 {
                     var actualUser = users[i];
                     var actualTrip = trips[i];
-                    SendMessageToClient($"{count} | {actualUser.Name}, Origen del viaje: {actualTrip.Origin}" +
+                    await SendMessageToClientAsync($"{count} | {actualUser.Name}, Origen del viaje: {actualTrip.Origin}" +
                                         $", Destino del viaje {actualTrip.Destination}, Fecha del viaje " +
                                         $"{actualTrip.Departure}", networkHelper);
                     count++;
                 }
 
-                string response = ReceiveMessageFromClient(networkHelper);
+                string response = await ReceiveMessageFromClientAsync(networkHelper);
                 if(response == "salir")
                     return;
 
                 int selected = int.Parse(response);
 
-                float score = float.Parse(ReceiveMessageFromClient(networkHelper));
+                float score = float.Parse(await ReceiveMessageFromClientAsync(networkHelper));
 
-                string comment = ReceiveMessageFromClient(networkHelper);
+                string comment = await ReceiveMessageFromClientAsync(networkHelper);
 
                 ICalificationRepo.Add(new Calification(users[selected - 1].GetGuid(), trips[selected - 1].GetGuid(), score, comment));
 
                 var ActualOwner= users[selected - 1];
                 ActualOwner.AddScore(score);
                 IUserRepo.Update(ActualOwner);
-                SendMessageToClient($"Calificacion cargada", networkHelper);
+                await SendMessageToClientAsync($"Calificacion cargada", networkHelper);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error al calificar un conductor: " + e.Message);
-                SendMessageToClient("Error al calificar un conductor.", networkHelper);
+                await SendMessageToClientAsync("Error al calificar un conductor.", networkHelper);
 
             }
         }
 
-        private static void ViewTripInfo(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task ViewTripInfoAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
 
             List<Trip> trips;
             try
             {
-                trips = TripSearch(networkHelper, client, user);
+                trips = await TripSearchAsyncAsync(networkHelper, client, user);
                 int amountOfTrips = trips.Count;
-                SendMessageToClient(amountOfTrips.ToString(), networkHelper);
+                await SendMessageToClientAsync(amountOfTrips.ToString(), networkHelper);
 
                 if (amountOfTrips > 0)
                 {
-                    string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    string selectedTripIndexStr = await ReceiveMessageFromClientAsync(networkHelper);
                     int selectedTripIndex = int.Parse(selectedTripIndexStr) - 1;
 
                     if (selectedTripIndex >= 0 && selectedTripIndex < trips.Count)
                     {
                         Trip selectedTrip = trips[selectedTripIndex];
-                        SendAllTripInfo(networkHelper, selectedTrip);
+                        await SendAllTripInfo(networkHelper, selectedTrip);
 
-                        string download = ReceiveMessageFromClient(networkHelper);
+                        string download = await ReceiveMessageFromClientAsync(networkHelper);
                         if (download == "si")
                         {
-                            SendStreamToClient(networkHelper, selectedTrip.Photo);
+                            await SendStreamToClient(networkHelper, selectedTrip.Photo);
                         }
                     }
                     else
@@ -381,27 +380,27 @@ namespace Server
             catch (Exception ex)
             {
                 // Enviar mensaje al cliente sobre la falta de viajes disponibles
-                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
             }
         }
 
-        private static void JoinTrip(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task JoinTripAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             
             string response = "";
 
-            List<Trip> trips= ViewAllFutureTrips(networkHelper, client, user);
+            List<Trip> trips= await ViewAllFutureTripsAsync(networkHelper, client, user);
             //hacer una funcion que filtre
             trips = ITripRepo.FilterByDeparture(trips);
 
-            SendMessageToClient(trips.Count.ToString(), networkHelper);
+            await SendMessageToClientAsync(trips.Count.ToString(), networkHelper);
             //le mando la cant dfe trips al cliente asi sabe si decirle al user que elija uno
             if (trips.Count > 0)
             {
                 try
                 {
 
-                    string selectedTripIndexStr = ReceiveMessageFromClient(networkHelper);
+                    string selectedTripIndexStr = await ReceiveMessageFromClientAsync(networkHelper);
                     if (selectedTripIndexStr == "exit")
                     {
                         return;
@@ -445,27 +444,27 @@ namespace Server
                         catch (Exception ex)
                         {
                             response = "Error al unirse al viaje: " + ex.Message;
-                            SendMessageToClient(response, networkHelper);
+                            await SendMessageToClientAsync(response, networkHelper);
                         }
                     }
                     else
                     {
                         response = "Seleccion de viaje invalida";
                     }
-                    SendMessageToClient(response, networkHelper);
+                    await SendMessageToClientAsync(response, networkHelper);
 
 
                 }
                 catch (Exception ex)
                 {
-                    SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                    await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
                 }
             }
             
             
         }
 
-        private static void WithdrawFromTrip(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task WithdrawFromTripAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -479,20 +478,20 @@ namespace Server
 
                 if (!UserInTrips.Any())
                 {
-                    SendMessageToClient("EMPTY", networkHelper);
+                    await SendMessageToClientAsync("EMPTY", networkHelper);
                     return;
                 }
 
-                SendMessageToClient($"{UserInTrips.Count}", networkHelper);
+                await SendMessageToClientAsync($"{UserInTrips.Count}", networkHelper);
                 int count = 1;
                 foreach (Trip trip in UserInTrips)
                 {
-                    SendMessageToClient($"{count} | Origen: {trip.Destination}, Destino: {trip.Destination}, " +
+                    await SendMessageToClientAsync($"{count} | Origen: {trip.Destination}, Destino: {trip.Destination}, " +
                                         $"Fecha de salida: {trip.Departure}", networkHelper);
                     count++;
                 }
 
-                string selected = ReceiveMessageFromClient(networkHelper);
+                string selected = await ReceiveMessageFromClientAsync(networkHelper);
                 if(selected == "salir")
                     return;
 
@@ -501,16 +500,16 @@ namespace Server
                 Trip TripSelected = UserInTrips[pos];
                 TripSelected.Withdraw(user.GetGuid());
 
-                SendMessageToClient("OK", networkHelper);
+                await SendMessageToClientAsync("OK", networkHelper);
             }
             catch (Exception ex)
             {
-                SendMessageToClient("Error al eliminar el pasajero del viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al eliminar el pasajero del viaje.", networkHelper);
             }
             
         }
 
-        private static void ModifyTrip(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task ModifyTripAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -526,25 +525,25 @@ namespace Server
                 }
                 if(map.Count == 0) 
                 {
-                    SendMessageToClient("EMPTY", networkHelper);
+                    await SendMessageToClientAsync("EMPTY", networkHelper);
                     return;
                 }
                 else
                 {
-                    SendMessageToClient($"{map.Count}", networkHelper);
+                    await SendMessageToClientAsync($"{map.Count}", networkHelper);
                     foreach (var trip in map)
                     {
                         var actualTrip = ITripRepo.Get(trip.Value);
-                        SendMessageToClient($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
+                        await SendMessageToClientAsync($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
                             $" y Fecha {actualTrip.Departure.ToString()}", networkHelper);
                     }
                 }
-                string selected = ReceiveMessageFromClient(networkHelper);
+                string selected = await ReceiveMessageFromClientAsync(networkHelper);
                 if (selected != "null")
                 {
                     var tripSelected = map[Int32.Parse(selected)];
                     var selectedTrip = ITripRepo.Get(tripSelected);
-                    SendMessageToClient($"Viaje seleccionado\n" +
+                    await SendMessageToClientAsync($"Viaje seleccionado\n" +
                         $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
                         $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper);
 
@@ -552,44 +551,44 @@ namespace Server
                     //y previo hacer las comprobaciones adecuadas
 
 
-                    string newOrigin = ReceiveMessageFromClient(networkHelper);
+                    string newOrigin = await ReceiveMessageFromClientAsync(networkHelper);
                     if (newOrigin != "EMPTY")
                     {
                         selectedTrip.Origin = newOrigin;
                     }
 
-                    string newDestination = ReceiveMessageFromClient(networkHelper);
+                    string newDestination = await ReceiveMessageFromClientAsync(networkHelper);
                     if (newDestination != "EMPTY")
                     {
                         selectedTrip.Destination = newDestination;
                     }
 
                     DateTime newDepartureTime;
-                    string aux = ReceiveMessageFromClient(networkHelper);
+                    string aux = await ReceiveMessageFromClientAsync(networkHelper);
                     if (aux != "EMPTY")
                     {
                         selectedTrip.Departure = DateTime.Parse(aux);
                     }
 
-                    string newPet = ReceiveMessageFromClient(networkHelper);
+                    string newPet = await ReceiveMessageFromClientAsync(networkHelper);
                     if (newPet != "EMPTY")
                     {
                         selectedTrip.Pet = bool.Parse(newPet);
                     }
 
-                    string newPricePerSeat = ReceiveMessageFromClient(networkHelper);
+                    string newPricePerSeat = await ReceiveMessageFromClientAsync(networkHelper);
                     if (newPricePerSeat != "EMPTY")
                     {
                         selectedTrip.PricePerPassanger = int.Parse(newPricePerSeat);
                     }
 
                     string newPhoto;
-                    if (bool.Parse(ReceiveMessageFromClient(networkHelper)))
+                    if (bool.Parse(await ReceiveMessageFromClientAsync(networkHelper)))
                     {
-                        newPhoto = ReceiveStreamFromClient(networkHelper);
+                        newPhoto = await ReceiveStreamFromClientAsync(networkHelper);
                     }
 
-                    SendMessageToClient($"Viaje actualizado", networkHelper);
+                    await SendMessageToClientAsync($"Viaje actualizado", networkHelper);
 
                     ITripRepo.Update(selectedTrip);
                 }
@@ -597,7 +596,7 @@ namespace Server
             }
             catch (Exception ex)
             {
-                SendMessageToClient("Error al modificar el viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al modificar el viaje.", networkHelper);
             }
         }
 
@@ -613,17 +612,17 @@ namespace Server
         
 
         
-        private static void PublishTrip(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task PublishTripAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
-                string origin = ReceiveMessageFromClient(networkHelper);
-                string destination = ReceiveMessageFromClient(networkHelper);
-                DateTime departure = DateTime.Parse(ReceiveMessageFromClient(networkHelper));
-                int totalSeats = int.Parse(ReceiveMessageFromClient(networkHelper));
-                float pricePerPassanger = float.Parse(ReceiveMessageFromClient(networkHelper));
-                bool pet = bool.Parse(ReceiveMessageFromClient(networkHelper));
-                string photo = ReceiveStreamFromClient(networkHelper);
+                string origin = await ReceiveMessageFromClientAsync(networkHelper);
+                string destination = await ReceiveMessageFromClientAsync(networkHelper);
+                DateTime departure = DateTime.Parse(await ReceiveMessageFromClientAsync(networkHelper));
+                int totalSeats = int.Parse(await ReceiveMessageFromClientAsync(networkHelper));
+                float pricePerPassanger = float.Parse(await ReceiveMessageFromClientAsync(networkHelper));
+                bool pet = bool.Parse(await ReceiveMessageFromClientAsync(networkHelper));
+                string photo = await ReceiveStreamFromClientAsync(networkHelper);
 
                 Trip newTrip = new Trip()
                 {
@@ -640,59 +639,55 @@ namespace Server
                 newTrip.SetOwner(user.GetGuid());
                 ITripRepo.Add(newTrip);
 
-                SendMessageToClient("Viaje publicado con éxito.", networkHelper);
+                await SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper);
             }
             catch (Exception ex)
             {
-                SendMessageToClient("Error al publicar el viaje.", networkHelper);
+                await SendMessageToClientAsync("Error al publicar el viaje.", networkHelper);
             }
         }
 
-        private static List<Trip> TripSearch(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task<List<Trip>> TripSearchAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
-            string option = ReceiveMessageFromClient(networkHelper);
+            string option = await ReceiveMessageFromClientAsync(networkHelper);
             int opt = Int32.Parse(option);
             switch (opt)
             {
                 case 1:
-                    return ViewAllTrips(networkHelper, client, user);
-                    break;
+                    return await ViewAllTripsAsync(networkHelper, client, user);
                 case 2:
-                    return ViewTripsFilteredByOriginAndDestination(networkHelper, client, user);
-                    break;
+                    return await ViewTripsFilteredByOriginAndDestinationAsync(networkHelper, client, user);
                 case 3:
-                    return ViewAllTripsFilteredPetFriendly(networkHelper, client, user);
-                    break;
+                    return await ViewAllTripsFilteredPetFriendlyAsync(networkHelper, client, user);
                 case 4:
-                    return ViewAllFutureTrips(networkHelper, client, user);
-                    break ;
+                    return await ViewAllFutureTripsAsync(networkHelper, client, user);
                 default:
                     return new List<Trip>();
-                    break;
             }
         }
 
-        private static List<Trip> ViewAllTrips(NetworkHelper networkHelper, TcpClient client, User user)
-        {
-            List<Trip> allTrips;
-            allTrips = ITripRepo.GetAll();
 
+
+        private static async Task<List<Trip>> ViewAllTripsAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        {
+            List<Trip> allTrips = ITripRepo.GetAll();
             string tripCount = allTrips.Count.ToString();
-            SendMessageToClient(tripCount, networkHelper);
+            await SendMessageToClientAsync(tripCount, networkHelper);
 
             for (int i = 0; i < allTrips.Count; i++)
             {
                 Trip trip = allTrips[i];
                 string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                SendMessageToClient(tripString, networkHelper);
+                await SendMessageToClientAsync(tripString, networkHelper);
             }
-            return allTrips;   
+            return allTrips;
         }
 
-        private static List<Trip> ViewTripsFilteredByOriginAndDestination(NetworkHelper networkHelper, TcpClient client, User user)
+
+        private static async Task<List<Trip>> ViewTripsFilteredByOriginAndDestinationAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
-            string origin = ReceiveMessageFromClient(networkHelper);
-            string destination = ReceiveMessageFromClient(networkHelper);
+            string origin = await ReceiveMessageFromClientAsync(networkHelper);
+            string destination = await ReceiveMessageFromClientAsync(networkHelper);
 
             List<Trip> tripsToOriginAndDestination;
             try
@@ -700,27 +695,27 @@ namespace Server
                 tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
 
                 string tripCount = tripsToOriginAndDestination.Count.ToString();
-                SendMessageToClient(tripCount, networkHelper);
+                await SendMessageToClientAsync(tripCount, networkHelper);
 
                 for (int i = 0; i < tripsToOriginAndDestination.Count; i++)
                 {
                     Trip trip = tripsToOriginAndDestination[i];
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClient(tripString, networkHelper);
+                    await SendMessageToClientAsync(tripString, networkHelper);
                 }
                 return tripsToOriginAndDestination;
             }
             catch (Exception ex)
             {
-                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
                 return new List<Trip> { };
                 
             }
         }
 
-        private static List<Trip> ViewAllTripsFilteredPetFriendly(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task<List<Trip>> ViewAllTripsFilteredPetFriendlyAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
-            string option = ReceiveMessageFromClient(networkHelper);
+            string option = await ReceiveMessageFromClientAsync(networkHelper);
             bool petFriendly = false;
             if(option == "SI")  
             {
@@ -733,40 +728,40 @@ namespace Server
                 trips = ITripRepo.GetTripsFilteredByPetFriendly(petFriendly);
 
                 string tripCount = trips.Count.ToString();
-                SendMessageToClient(tripCount, networkHelper);
+                await SendMessageToClientAsync(tripCount, networkHelper);
 
                 for (int i = 0; i < trips.Count; i++)
                 {
                     Trip trip = trips[i];
                     string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                    SendMessageToClient(tripString, networkHelper);
+                    await SendMessageToClientAsync(tripString, networkHelper);
                 }
                 return trips;
             }
             catch (Exception ex)
             {
-                SendMessageToClient("ERROR" + ex.Message, networkHelper);
+                await SendMessageToClientAsync("ERROR" + ex.Message, networkHelper);
                 return new List<Trip> { };
             }
         }
-        private static List<Trip> ViewAllFutureTrips(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task<List<Trip>> ViewAllFutureTripsAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
-            List<Trip> allTrips;
-            List<Trip> trips;
-            allTrips = ITripRepo.GetAll();
-            trips = ITripRepo.FilterByDeparture(allTrips);
+            List<Trip> allTrips = ITripRepo.GetAll();
+            List<Trip> trips = ITripRepo.FilterByDeparture(allTrips);
 
             string tripCount = trips.Count.ToString();
-            SendMessageToClient(tripCount, networkHelper);
+            await SendMessageToClientAsync(tripCount, networkHelper);
 
             for (int i = 0; i < trips.Count; i++)
             {
                 Trip trip = trips[i];
                 string tripString = $"{i + 1}: {SerializeTrip(trip)}";
-                SendMessageToClient(tripString, networkHelper);
+                await SendMessageToClientAsync(tripString, networkHelper);
             }
+
             return trips;
         }
+
 
         private static string SerializeTrip(Trip trip)
         {
@@ -774,15 +769,15 @@ namespace Server
         }
 
 
-        private static string ReceiveStreamFromClient(NetworkHelper networkHelper)
+        private static async Task<string> ReceiveStreamFromClientAsync(NetworkHelper networkHelper)
         {
-            byte[] fileNameLengthInBytes = networkHelper.Receive(Protocol.fileNameLengthSize);
+            byte[] fileNameLengthInBytes = await networkHelper.ReceiveAsync(Protocol.fileNameLengthSize);
             int fileNameLength = BitConverter.ToInt32(fileNameLengthInBytes);
 
-            byte[] fileNameInBytes = networkHelper.Receive(fileNameLength);
+            byte[] fileNameInBytes = await networkHelper.ReceiveAsync(fileNameLength);
             string fileName = Encoding.UTF8.GetString(fileNameInBytes);
 
-            byte[] fileLengthInBytes = networkHelper.Receive(Protocol.fileSizeLength);
+            byte[] fileLengthInBytes = await networkHelper.ReceiveAsync(Protocol.fileSizeLength);
             long fileLength = BitConverter.ToInt64(fileLengthInBytes);
 
             long numberOfParts = Protocol.numberOfParts(fileLength);
@@ -791,7 +786,7 @@ namespace Server
             int offset = 0;
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            string relativePath = "ReceivedFiles"; 
+            string relativePath = "ReceivedFiles";
             string saveDirectory = Path.Combine(basePath, relativePath);
 
             if (!Directory.Exists(saveDirectory))
@@ -807,9 +802,9 @@ namespace Server
                 bool isLastPart = (currentPart == numberOfParts);
                 int numberOfBytesToReceive = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
 
-                byte[] buffer = networkHelper.Receive(numberOfBytesToReceive);
+                byte[] buffer = await networkHelper.ReceiveAsync(numberOfBytesToReceive);
 
-                fs.Write(savePath, buffer);
+                await fs.WriteAsync(savePath, buffer);
 
                 currentPart++;
                 offset += numberOfBytesToReceive;
@@ -822,20 +817,21 @@ namespace Server
 
 
 
-        private static void SendStreamToClient(NetworkHelper networkHelper, string filePath)
+
+        private static async Task SendStreamToClient(NetworkHelper networkHelper, string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             string fileName = fileInfo.Name;
             byte[] fileNameInBytes = Encoding.UTF8.GetBytes(fileName);
             int fileNameLength = fileNameInBytes.Length;
             byte[] fileNameLengthInBytes = BitConverter.GetBytes(fileNameLength);
-            networkHelper.Send(fileNameLengthInBytes);
+            await networkHelper.SendAsync(fileNameLengthInBytes);
 
-            networkHelper.Send(fileNameInBytes);
+            await networkHelper.SendAsync(fileNameInBytes);
 
             long fileLength = fileInfo.Length;
             byte[] fileLengthInBytes = BitConverter.GetBytes(fileLength);
-            networkHelper.Send(fileLengthInBytes);
+            await networkHelper.SendAsync(fileLengthInBytes);
 
 
             long numberOfParts = Protocol.numberOfParts(fileLength);
@@ -858,16 +854,16 @@ namespace Server
                     numberOfBytesToSend = Protocol.MaxPartSize;
                 }
 
-                byte[] bytesReadFromDisk = fs.Read(filePath, offset, numberOfBytesToSend);
+                byte[] bytesReadFromDisk = await fs.ReadAsync(filePath, offset, numberOfBytesToSend);
 
-                networkHelper.Send(bytesReadFromDisk);
+                await networkHelper.SendAsync(bytesReadFromDisk);
                 currentPart++;
                 offset += numberOfBytesToSend;
             }
             Console.WriteLine($"Termine de enviar archivo {filePath}, de tamaño {fileLength} bytes");
 
         }
-        public static void SendUsernamesToClient(NetworkHelper networkHelper)
+        public static async Task SendUsernamesToClient(NetworkHelper networkHelper)
         {
             List<User> users = userRepository.GetAll();
             StringBuilder usernames = new StringBuilder();
@@ -875,41 +871,41 @@ namespace Server
             {
                 usernames.AppendLine(user.Name);
             }
-            SendMessageToClient(usernames.ToString(), networkHelper);
+            await SendMessageToClientAsync(usernames.ToString(), networkHelper);
         }
 
-        private static void SendAllTripInfo(NetworkHelper networkHelper, Trip trip)
+        private static async Task SendAllTripInfo(NetworkHelper networkHelper, Trip trip)
         {
-            SendMessageToClient(trip.Origin, networkHelper);
-            SendMessageToClient(trip.Destination, networkHelper);
-            SendMessageToClient(trip.Departure.ToString(), networkHelper);
-            SendMessageToClient(trip.AvailableSeats.ToString(), networkHelper);
-            SendMessageToClient(trip.PricePerPassanger.ToString(), networkHelper);
-            SendMessageToClient(trip.Pet.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.Origin, networkHelper);
+            await SendMessageToClientAsync(trip.Destination, networkHelper);
+            await SendMessageToClientAsync(trip.Departure.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.AvailableSeats.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.PricePerPassanger.ToString(), networkHelper);
+            await SendMessageToClientAsync(trip.Pet.ToString(), networkHelper);
         }
 
 
 
-        public static void ProcessUserSelection(NetworkHelper networkHelper)
+        public static async Task ProcessUserSelection(NetworkHelper networkHelper)
         {
-            string selectedUsername = ReceiveMessageFromClient(networkHelper);
+            string selectedUsername = await ReceiveMessageFromClientAsync(networkHelper);
             User user = userRepository.GetUserByUsername(selectedUsername);
 
             if (user == null)
             {
-                SendMessageToClient("Error: El usuario no existe.", networkHelper);
+                await SendMessageToClientAsync("Error: El usuario no existe.", networkHelper);
                 return;
             }
 
             List<Calification> califications = GetDriverCalifications(user._id);
             if (califications.Count == 0)
             {
-                SendMessageToClient("El usuario no tiene calificaciones disponibles.", networkHelper);
+                await SendMessageToClientAsync("El usuario no tiene calificaciones disponibles.", networkHelper);
             }
             else
             {
                 string response = FormatCalifications(califications);
-                SendMessageToClient(response, networkHelper);
+                await SendMessageToClientAsync(response, networkHelper);
             }
         }
 

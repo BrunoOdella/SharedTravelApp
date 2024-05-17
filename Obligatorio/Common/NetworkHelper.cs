@@ -13,19 +13,19 @@ namespace Common
             _stream = client.GetStream();
         }
 
-        public void Send(byte[] data)
+        public async Task SendAsync(byte[] data)
         {
-            _stream.Write(data, 0, data.Length);
+            await _stream.WriteAsync(data, 0, data.Length);
         }
 
-        public byte[] Receive(int dataLength)
+        public async Task<byte[]> ReceiveAsync(int dataLength)
         {
             byte[] buffer = new byte[dataLength];
             int offset = 0;
             int size = dataLength;
             while (offset < size)
             {
-                int bytesReceived = _stream.Read(buffer, offset, size - offset);
+                int bytesReceived = await _stream.ReadAsync(buffer, offset, size - offset);
                 if (bytesReceived == 0)
                 {
                     throw new Exception("Connection closed by remote host.");

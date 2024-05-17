@@ -8,7 +8,7 @@ namespace Common
 {
     public static  class CommandsConstants
     {
-        public const int PublishTrip = 1;
+        public const int PublishTripAsync = 1;
         public const int JoinTrip = 2;
         public const int ModifyTrip = 3;
         public const int QuitTrip = 4;
