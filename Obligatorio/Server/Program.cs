@@ -49,18 +49,15 @@ namespace Server
                 {
                     if (acceptClients && listener.Pending())
                     {
-                        // Aceptar el cliente y enviar un mensaje de bienvenida
                         TcpClient client = await listener.AcceptTcpClientAsync();
                         var stream = client.GetStream();
                         var writer = new StreamWriter(stream);
                         writer.WriteLine("Bienvenido al servidor");
                         writer.Flush();
 
-                        // Crea una nueva tarea para manejar al cliente y añádela a la lista
                         var clientTask = HandleClientAsync(client, clientTasks.Count, shutdownCancellation.Token);
                         clientTasks.Add(clientTask);
 
-                        // Cuando la tarea se complete, la removemos de la lista
                         clientTask.ContinueWith(t =>
                         {
                             clientTasks.Remove(clientTask);
@@ -69,7 +66,6 @@ namespace Server
                     }
                     else if (!acceptClients && listener.Pending())
                     {
-                        // Aceptar el cliente y enviar un mensaje de rechazo
                         TcpClient client = await listener.AcceptTcpClientAsync();
                         var stream = client.GetStream();
                         var writer = new StreamWriter(stream);
@@ -78,13 +74,12 @@ namespace Server
                         client.Close();
                     }
 
-                    // Si no se aceptan más clientes y no hay tareas de clientes pendientes, apagamos el servidor
                     if (!acceptClients && clientTasks.Count == 0)
                     {
                         break;
                     }
 
-                    await Task.Delay(100); // Añadimos una pequeña espera para evitar un bucle ocupado
+                    await Task.Delay(100);
                 }
 
                 Console.WriteLine("Servidor apagado.....");
@@ -114,7 +109,7 @@ namespace Server
                     {
                         acceptClients = false;
                         shutdownCancellation.Cancel();
-                        Task.WhenAll(clientTasks).Wait(); // Espera a que las tareas se terminen después de cancelar
+                        Task.WhenAll(clientTasks).Wait();
                         Environment.Exit(0);
                     }
                 }
@@ -218,7 +213,7 @@ namespace Server
                 switch (opt)
                 {
                     case 1:
-                        await PublishTripAsyncAsync(networkHelper, client, user);
+                        await PublishTripAsync(networkHelper, client, user);
                         break;
                     case 2:
                         await JoinTripAsync(networkHelper, client, user);
@@ -230,19 +225,19 @@ namespace Server
                         await WithdrawFromTripAsync(networkHelper, client, user);
                         break;
                     case 5:
-                        await TripSearchAsyncAsync(networkHelper, client, user);
+                        await TripSearchAsync(networkHelper, client, user);
                         break;
                     case 6:
-                        await ViewTripInfoAsyncAsync(networkHelper, client, user);
+                        await ViewTripInfoAsync(networkHelper, client, user);
                         break;
                     case 7:
-                        await RateDriverAsyncAsync(networkHelper, client, user);
+                        await RateDriverAsync(networkHelper, client, user);
                         break;
                     case 8:
-                        await ViewDriverRatingsAsyncAsync(networkHelper, client, user);
+                        await ViewDriverRatingsAsync(networkHelper, client, user);
                         break;
                     case 9:
-                        await DeleteTripAsyncAsync(networkHelper, client, user);
+                        await DeleteTripAsync(networkHelper, client, user);
                         break;
                     case 10:
                         salir = true;
@@ -256,7 +251,7 @@ namespace Server
 
 
 
-        private static async Task DeleteTripAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task DeleteTripAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -304,7 +299,7 @@ namespace Server
         }
 
 
-        public static async Task ViewDriverRatingsAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        public static async Task ViewDriverRatingsAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             await SendUsernamesToClient(networkHelper);
             string username = await ReceiveMessageFromClientAsync(networkHelper);
@@ -322,7 +317,7 @@ namespace Server
             await SendMessageToClientAsync(response, networkHelper);
         }
 
-        private static async Task RateDriverAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task RateDriverAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -376,13 +371,13 @@ namespace Server
             }
         }
 
-        private static async Task ViewTripInfoAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task ViewTripInfoAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
 
             List<Trip> trips;
             try
             {
-                trips = await TripSearchAsyncAsync(networkHelper, client, user);
+                trips = await TripSearchAsync(networkHelper, client, user);
                 int amountOfTrips = trips.Count;
                 await SendMessageToClientAsync(amountOfTrips.ToString(), networkHelper);
 
@@ -645,7 +640,7 @@ namespace Server
         
 
         
-        private static async Task PublishTripAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task PublishTripAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             try
             {
@@ -680,7 +675,7 @@ namespace Server
             }
         }
 
-        private static async Task<List<Trip>> TripSearchAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task<List<Trip>> TripSearchAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
             string option = await ReceiveMessageFromClientAsync(networkHelper);
             int opt = Int32.Parse(option);
@@ -968,22 +963,6 @@ namespace Server
             }
             return sb.ToString();
         }
-
-        /*
-        static void HandleConsoleInput()
-        {
-            while (true)
-            {
-                var input = Console.ReadLine();
-                if (input == "salir")
-                {
-                    Console.WriteLine("Dejando de aceptar nuevos clientes......");
-                    Console.WriteLine("Clientes conectados: " + clientTasks.Count);
-                    acceptClients = false;
-                }
-            }
-        }
-        */
 
 
     }
