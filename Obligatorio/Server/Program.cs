@@ -26,7 +26,7 @@ namespace Server
 
         static bool acceptClients = true;
         static List<Task> clientTasks = new List<Task>();
-
+        static CancellationTokenSource shutdownCancellation = new CancellationTokenSource();
 
         static async Task Main(string[] args)
         {
@@ -45,8 +45,6 @@ namespace Server
 
                 var consoleTask = Task.Run(() => HandleConsoleInput());
 
-                int clients = 1;
-
                 while (acceptClients || clientTasks.Count > 0)
                 {
                     if (acceptClients && listener.Pending())
@@ -59,8 +57,7 @@ namespace Server
                         writer.Flush();
 
                         // Crea una nueva tarea para manejar al cliente y añádela a la lista
-                        var tcs = new TaskCompletionSource<bool>();
-                        var clientTask = Task.Run(() => HandleClientAsync(client, clientTasks.Count, tcs));
+                        var clientTask = HandleClientAsync(client, clientTasks.Count, shutdownCancellation.Token);
                         clientTasks.Add(clientTask);
 
                         // Cuando la tarea se complete, la removemos de la lista
@@ -73,15 +70,23 @@ namespace Server
                     else if (!acceptClients && listener.Pending())
                     {
                         // Aceptar el cliente y enviar un mensaje de rechazo
-                        TcpClient client = listener.AcceptTcpClient();
+                        TcpClient client = await listener.AcceptTcpClientAsync();
                         var stream = client.GetStream();
                         var writer = new StreamWriter(stream);
                         writer.WriteLine("El servidor no está aceptando nuevos clientes");
                         writer.Flush();
                         client.Close();
                     }
+
+                    // Si no se aceptan más clientes y no hay tareas de clientes pendientes, apagamos el servidor
+                    if (!acceptClients && clientTasks.Count == 0)
+                    {
+                        break;
+                    }
+
+                    await Task.Delay(100); // Añadimos una pequeña espera para evitar un bucle ocupado
                 }
-                
+
                 Console.WriteLine("Servidor apagado.....");
             }
             catch (Exception ex)
@@ -90,6 +95,31 @@ namespace Server
             }
         }
 
+        private static void HandleConsoleInput()
+        {
+            while (true)
+            {
+                var input = Console.ReadLine();
+                if (input.Equals("shutdown", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("¿Desea esperar a que los clientes actuales se desconecten? (si/no)");
+                    var response = Console.ReadLine().Trim().ToLower();
+                    if (response == "si")
+                    {
+                        acceptClients = false;
+                        Task.WhenAll(clientTasks).Wait();
+                        Environment.Exit(0);
+                    }
+                    else if (response == "no")
+                    {
+                        acceptClients = false;
+                        shutdownCancellation.Cancel();
+                        Task.WhenAll(clientTasks).Wait(); // Espera a que las tareas se terminen después de cancelar
+                        Environment.Exit(0);
+                    }
+                }
+            }
+        }
 
         private static void loadTrips(UserContext userContenxt)
         {
@@ -110,8 +140,9 @@ namespace Server
         private static void loadCalification(UserContext userContenxt, TripContext tripContext)
         {
             CalificationContext context = CalificationContext.CreateInsance();
-            CalificationContext.LoadCalificationsFromTxt(userContenxt, tripContext); 
+            CalificationContext.LoadCalificationsFromTxt(userContenxt, tripContext);
         }
+
         private static async Task<string> ReceiveMessageFromClientAsync(NetworkHelper networkHelper)
         {
             byte[] messageInBytes = await networkHelper.ReceiveAsync(Protocol.DataLengthSize);
@@ -129,7 +160,7 @@ namespace Server
             await networkHelper.SendAsync(responseBuffer);
         }
 
-        private static async Task HandleClientAsync(TcpClient client, int clientNumber, TaskCompletionSource<bool> tcs)
+        private static async Task HandleClientAsync(TcpClient client, int clientNumber, CancellationToken token)
         {
             Console.WriteLine($"El cliente {clientNumber} se conectó");
             NetworkHelper networkHelper = new NetworkHelper(client);
@@ -139,7 +170,7 @@ namespace Server
                 User user = new User();
                 bool validUser = false;
 
-                while (!validUser)
+                while (!validUser && !token.IsCancellationRequested)
                 {
                     string username = await ReceiveMessageFromClientAsync(networkHelper);
                     string password = await ReceiveMessageFromClientAsync(networkHelper);
@@ -163,7 +194,7 @@ namespace Server
                         user = userRepository.Get(userId);
                         await SendMessageToClientAsync(response, networkHelper);
 
-                        await GoToOptionAsync(networkHelper, client, user);
+                        await GoToOptionAsync(networkHelper, client, user, token);
                     }
                 }
             }
@@ -175,13 +206,12 @@ namespace Server
             {
                 client.Close();
             }
-            tcs.SetResult(true);
         }
 
-        private static async Task GoToOptionAsync(NetworkHelper networkHelper, TcpClient client, User user)
+        private static async Task GoToOptionAsync(NetworkHelper networkHelper, TcpClient client, User user, CancellationToken token)
         {
             bool salir = false;
-            while (!salir)
+            while (!salir && !token.IsCancellationRequested)
             {
                 string option = await ReceiveMessageFromClientAsync(networkHelper);
                 int opt = Int32.Parse(option);
@@ -222,6 +252,9 @@ namespace Server
                 }
             }
         }
+
+
+
 
         private static async Task DeleteTripAsyncAsync(NetworkHelper networkHelper, TcpClient client, User user)
         {
@@ -936,6 +969,7 @@ namespace Server
             return sb.ToString();
         }
 
+        /*
         static void HandleConsoleInput()
         {
             while (true)
@@ -949,6 +983,7 @@ namespace Server
                 }
             }
         }
+        */
 
 
     }
