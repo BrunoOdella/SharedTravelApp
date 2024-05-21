@@ -62,14 +62,18 @@ namespace Server
                             var clientTask = HandleClientAsync(client, clients.Count, shutdownCancellation.Token);
                             //clientTasks.Add(clientTask);
                             clients.Add((clientTask, client));
-                            Predicate<(Task, TcpClient)> predicate = client => client.Item1 == clientTask;
+                            //Predicate<(Task, TcpClient)> predicate = client => client.Item1 == clientTask;
 
                             clientTask.ContinueWith(t =>
                             {
-                                lock (clientTask)
+                                lock (clients)
                                 {
-                                    //find para encontrar con el mismo predicado y cierro el tcp client
-                                    clients.Remove(clients.Find(predicate));
+                                    var clientTuple = clients.Find(c => c.Item1 == clientTask);
+                                    if (clientTuple != default)
+                                    {
+                                        clientTuple.Item2.Close();
+                                        clients.Remove(clientTuple);
+                                    }
                                 }
                                 Console.WriteLine("Clientes conectados: " + clients.Count);
                             });
