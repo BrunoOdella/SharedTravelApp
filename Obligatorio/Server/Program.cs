@@ -121,9 +121,6 @@ namespace Server
                     var response = Console.ReadLine().Trim().ToLower();
                     if (response == "si")
                     {
-                        //lo de listeners stop me lo dijo agustin y no me anda, lo de abajo me dijo que era polemico pero me anda
-
-                        //listener.Stop();
                         
                         acceptClients = false;
                         var remainingClients = clients.Select(x => x.Item1).ToArray();
