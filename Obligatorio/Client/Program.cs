@@ -13,6 +13,7 @@ namespace Client
     internal class Program
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
+        static CancellationTokenSource token = new CancellationTokenSource();
         static async Task Main(string[] args)
         {
             IPEndPoint local = new IPEndPoint(
@@ -67,18 +68,18 @@ namespace Client
 
                     if (username.Length == 0 || username == "exit")
                     {
-                        await SendMessageToServerAsync("EXIT", networkHelper);
-                        await SendMessageToServerAsync("Closing client...\n", networkHelper);
+                        await SendMessageToServerAsync("EXIT", networkHelper, token.Token);
+                        await SendMessageToServerAsync("Closing client...\n", networkHelper, token.Token);
                         break;
                     }
 
                     Console.WriteLine("Enter password:");
                     string password = Console.ReadLine().Trim();
 
-                    await SendMessageToServerAsync(username, networkHelper);
-                    await SendMessageToServerAsync(password, networkHelper);
+                    await SendMessageToServerAsync(username, networkHelper, token.Token);
+                    await SendMessageToServerAsync(password, networkHelper, token.Token);
 
-                    string response = await ReceiveMessageFromServerAsync(networkHelper);
+                    string response = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
                     if (response == "OK")
                     {
@@ -128,7 +129,7 @@ namespace Client
                     res = Console.ReadLine().Trim();
                 } while (res.Length == 0 || int.Parse(res) < 0 || int.Parse(res) > 10);
 
-                await SendMessageToServerAsync(res, networkHelper);
+                await SendMessageToServerAsync(res, networkHelper, token.Token);
                 Console.Clear();
 
                 switch (int.Parse(res))
@@ -172,7 +173,7 @@ namespace Client
 
         private static async Task DeleteTripAsync(NetworkHelper networkHelper)
         {
-            string TripCount = await ReceiveMessageFromServerAsync(networkHelper);
+            string TripCount = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             if (TripCount == "0")
             {
@@ -186,7 +187,7 @@ namespace Client
 
             for (int i = 0; i < count; i++)
             {
-                Console.WriteLine(await ReceiveMessageFromServerAsync(networkHelper));
+                Console.WriteLine(await ReceiveMessageFromServerAsync(networkHelper, token.Token));
             }
 
             Console.WriteLine("¿Que viaje desea dar de baja?\n    (Para volver escriba SALIR)");
@@ -201,13 +202,13 @@ namespace Client
 
             if (response.Trim().ToLower() == "salir")
             {
-                await SendMessageToServerAsync($"{response.ToLower()}", networkHelper);
+                await SendMessageToServerAsync($"{response.ToLower()}", networkHelper, token.Token);
                 return;
             }
 
-            await SendMessageToServerAsync($"{wich}", networkHelper);
+            await SendMessageToServerAsync($"{wich}", networkHelper, token.Token);
 
-            string ServerResponse = await ReceiveMessageFromServerAsync(networkHelper);
+            string ServerResponse = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             Console.Clear();
 
@@ -217,7 +218,7 @@ namespace Client
 
         private static async Task WithdrawFromTripAsync(NetworkHelper networkHelper)
         {
-            string TripCount = await ReceiveMessageFromServerAsync(networkHelper);
+            string TripCount = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             if (TripCount == "EMPTY")
             {
@@ -230,7 +231,7 @@ namespace Client
             int count = Int32.Parse(TripCount);
             for (int i = 0; i < count; i++)
             {
-                string currentTrip = await ReceiveMessageFromServerAsync(networkHelper);
+                string currentTrip = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                 Console.WriteLine(currentTrip);
             }
 
@@ -245,14 +246,14 @@ namespace Client
 
             if (response.Trim().ToLower() == "salir")
             {
-                await SendMessageToServerAsync($"{response.ToLower()}", networkHelper);
+                await SendMessageToServerAsync($"{response.ToLower()}", networkHelper, token.Token);
                 return;
             }
             //
             //envio que viaje quiero
-            await SendMessageToServerAsync($"{wich}", networkHelper);
+            await SendMessageToServerAsync($"{wich}", networkHelper, token.Token);
 
-            string ServerResponse = await ReceiveMessageFromServerAsync(networkHelper);
+            string ServerResponse = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             if (ServerResponse == "OK")
             {
@@ -266,7 +267,7 @@ namespace Client
         {
             Console.WriteLine("Seleccione que conductor calificar:");
 
-            string hasTrips = await ReceiveMessageFromServerAsync(networkHelper);
+            string hasTrips = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             if (hasTrips == "EMPTY")
             {
@@ -279,7 +280,7 @@ namespace Client
             int count = Int32.Parse(hasTrips);
             for (int i = 0; i < count; i++)
             {
-                string current = await ReceiveMessageFromServerAsync(networkHelper);
+                string current = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                 Console.WriteLine(current);
             }
 
@@ -295,79 +296,79 @@ namespace Client
 
             if (response.Trim().ToLower() == "salir")
             {
-                await SendMessageToServerAsync($"{response.ToLower()}", networkHelper);
+                await SendMessageToServerAsync($"{response.ToLower()}", networkHelper, token.Token);
                 return;
             }
 
 
-            await SendMessageToServerAsync($"{response}", networkHelper);
+            await SendMessageToServerAsync($"{response}", networkHelper, token.Token);
 
             float score = PromptForFloat("Introduzca el puntaje (0.0 - 10.0):");
-            await SendMessageToServerAsync(score.ToString(), networkHelper);
+            await SendMessageToServerAsync(score.ToString(), networkHelper, token.Token);
 
             string comment = PromptForNonEmptyString("Introduzca un comentario:");
-            await SendMessageToServerAsync(comment, networkHelper);
+            await SendMessageToServerAsync(comment, networkHelper, token.Token);
 
-            Console.WriteLine(await ReceiveMessageFromServerAsync(networkHelper));
+            Console.WriteLine(await ReceiveMessageFromServerAsync(networkHelper, token.Token));
         }
 
-        private static async Task<string> ReceiveMessageFromServerAsync(NetworkHelper networkHelper)
+        private static async Task<string> ReceiveMessageFromServerAsync(NetworkHelper networkHelper, CancellationToken token)
         {
-            byte[] messageInBytes = await networkHelper.ReceiveAsync(Protocol.DataLengthSize);
+            byte[] messageInBytes = await networkHelper.ReceiveAsync(Protocol.DataLengthSize, token);
             int messageLength = BitConverter.ToInt32(messageInBytes);
-            byte[] messageBufferInBytes = await networkHelper.ReceiveAsync(messageLength);
+            byte[] messageBufferInBytes = await networkHelper.ReceiveAsync(messageLength, token);
             return Encoding.UTF8.GetString(messageBufferInBytes);
         }
 
-        private static async Task SendMessageToServerAsync(string message, NetworkHelper networkHelper)
+        private static async Task SendMessageToServerAsync(string message, NetworkHelper networkHelper, CancellationToken token)
         {
             byte[] responseBuffer = Encoding.UTF8.GetBytes(message);
             int responseLength = responseBuffer.Length;
             byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
-            await networkHelper.SendAsync(responseLengthInBytes);
-            await networkHelper.SendAsync(responseBuffer);
+            await networkHelper.SendAsync(responseLengthInBytes, token);
+            await networkHelper.SendAsync(responseBuffer, token);
         }
 
 
         private static async Task PublishTripAsync(NetworkHelper networkHelper)
         {
             string origin = PromptForNonEmptyString("Introduzca el origen del viaje:");
-            await SendMessageToServerAsync(origin, networkHelper);
+            await SendMessageToServerAsync(origin, networkHelper, token.Token);
 
             string destination = PromptForNonEmptyString("Introduzca el destino del viaje:");
-            await SendMessageToServerAsync(destination, networkHelper);
+            await SendMessageToServerAsync(destination, networkHelper, token.Token);
 
             DateTime departureDate = PromptForFutureDateTime("Introduzca la fecha y hora de salida (yyyy-mm-dd hh):");
-            await SendMessageToServerAsync(departureDate.ToString("o"), networkHelper); 
+            await SendMessageToServerAsync(departureDate.ToString("o"), networkHelper, token.Token); 
 
             int availableSeats = PromptForInt("Introduzca el número de asientos disponibles:");
-            await SendMessageToServerAsync(availableSeats.ToString(), networkHelper);
+            await SendMessageToServerAsync(availableSeats.ToString(), networkHelper, token.Token);
 
             float pricePerPassenger = PromptForFloat("Introduzca el precio por pasajero:");
-            await SendMessageToServerAsync(pricePerPassenger.ToString(), networkHelper);
+            await SendMessageToServerAsync(pricePerPassenger.ToString(), networkHelper, token.Token);
 
             bool isPetFriendly = PromptForBoolean("¿Es el viaje amigable con mascotas? (si/no):");
-            await SendMessageToServerAsync(isPetFriendly.ToString(), networkHelper);
+            await SendMessageToServerAsync(isPetFriendly.ToString(), networkHelper, token.Token);
 
             Console.WriteLine("Escriba la ruta de la foto del coche");
             await SendStreamToServerAsync(networkHelper);
 
             Console.Clear();
 
-            string response = await ReceiveMessageFromServerAsync(networkHelper);
+            string response = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
             Console.WriteLine(response);
         }
 
 
         private static async Task<string> ReceiveStreamFromServerAsync(NetworkHelper networkHelper, string path)
         {
-            byte[] fileNameLengthInBytes = await networkHelper.ReceiveAsync(Protocol.fileNameLengthSize);
+            byte[] fileNameLengthInBytes = await networkHelper.ReceiveAsync(Protocol.fileNameLengthSize, token.Token);
             int fileNameLength = BitConverter.ToInt32(fileNameLengthInBytes);
 
-            byte[] fileNameInBytes = await networkHelper.ReceiveAsync(fileNameLength);
+            byte[] fileNameInBytes = await networkHelper.ReceiveAsync(fileNameLength, token.Token);
             string fileName = Encoding.UTF8.GetString(fileNameInBytes);
 
-            byte[] fileLengthInBytes = await networkHelper.ReceiveAsync(Protocol.fileSizeLength);
+            byte[] fileLengthInBytes = await networkHelper.ReceiveAsync(Protocol.fileSizeLength, token.Token);
             long fileLength = BitConverter.ToInt64(fileLengthInBytes);
 
             long numberOfParts = Protocol.numberOfParts(fileLength);
@@ -391,7 +392,7 @@ namespace Client
                 bool isLastPart = (currentPart == numberOfParts);
                 int numberOfBytesToReceive = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
 
-                byte[] buffer = await networkHelper.ReceiveAsync(numberOfBytesToReceive);
+                byte[] buffer = await networkHelper.ReceiveAsync(numberOfBytesToReceive, token.Token);
 
                 await fs.WriteAsync(savePath, buffer);
 
@@ -412,7 +413,7 @@ namespace Client
         {
             await TripSearchAsync(networkHelper);
             //string response = ReceiveMessageFromServerAsync(networkHelper);
-            string amountOfTrips= await ReceiveMessageFromServerAsync(networkHelper);
+            string amountOfTrips= await ReceiveMessageFromServerAsync(networkHelper, token.Token);
             int tripCount = Convert.ToInt16(amountOfTrips);
             if (tripCount != 0) {
 
@@ -428,7 +429,7 @@ namespace Client
 
                 Console.Clear();
 
-                await SendMessageToServerAsync(response, networkHelper);
+                await SendMessageToServerAsync(response, networkHelper, token.Token);
 
                 await RecevieAllTripInfo(networkHelper);
 
@@ -440,7 +441,7 @@ namespace Client
                     Console.WriteLine("Ingrese nuevamente la respuesta:");
                     resp = Console.ReadLine().Trim();
                 }
-                await SendMessageToServerAsync(resp, networkHelper);
+                await SendMessageToServerAsync(resp, networkHelper, token.Token);
 
                 if (resp == "si")
                 {
@@ -493,13 +494,13 @@ namespace Client
             byte[] fileNameInBytes = Encoding.UTF8.GetBytes(fileName);
             int fileNameLength = fileNameInBytes.Length;
             byte[] fileNameLengthInBytes = BitConverter.GetBytes(fileNameLength);
-            await networkHelper.SendAsync(fileNameLengthInBytes);
+            await networkHelper.SendAsync(fileNameLengthInBytes, token.Token);
 
-            await networkHelper.SendAsync(fileNameInBytes);
+            await networkHelper.SendAsync(fileNameInBytes, token.Token);
 
             long fileLength = fileInfo.Length;
             byte[] fileLengthInBytes = BitConverter.GetBytes(fileLength);
-            await networkHelper.SendAsync(fileLengthInBytes);
+            await networkHelper.SendAsync(fileLengthInBytes, token.Token);
 
             long numberOfParts = Protocol.numberOfParts(fileLength);
             int currentPart = 1;
@@ -512,7 +513,7 @@ namespace Client
                 int numberOfBytesToSend = isLastPart ? (int)(fileLength - offset) : Protocol.MaxPartSize;
 
                 byte[] bytesReadFromDisk = await fs.ReadAsync(filePath, offset, numberOfBytesToSend);
-                await networkHelper.SendAsync(bytesReadFromDisk);
+                await networkHelper.SendAsync(bytesReadFromDisk, token.Token);
                 currentPart++;
                 offset += numberOfBytesToSend;
             }
@@ -604,7 +605,7 @@ namespace Client
             //obtener los viajes del user actual que no esten vencidos
             Console.WriteLine("Listado de viajes publicados:");
 
-            string hasTrips = await ReceiveMessageFromServerAsync(networkHelper);
+            string hasTrips = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             if (hasTrips == "EMPTY")
             {
@@ -619,7 +620,7 @@ namespace Client
             //muestro los viajes
             for (int i = 0; i < count; i++)
             {
-                string currentTrip = await ReceiveMessageFromServerAsync(networkHelper);
+                string currentTrip = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                 Console.WriteLine(currentTrip);
             }
             //fin
@@ -636,14 +637,14 @@ namespace Client
 
             if (response.Trim().ToLower() == "salir")
             {
-                await SendMessageToServerAsync("null", networkHelper);
+                await SendMessageToServerAsync("null", networkHelper, token.Token);
                 return;
             }
                 
             //envio que viaje quiero
-            await SendMessageToServerAsync($"{response}", networkHelper);
+            await SendMessageToServerAsync($"{response}", networkHelper, token.Token);
             //Que quiero modificar
-            Console.WriteLine(ReceiveMessageFromServerAsync(networkHelper)); //viaje a modificar
+            Console.WriteLine(ReceiveMessageFromServerAsync(networkHelper, token.Token)); //viaje a modificar
 
             bool modificar;
             String Origin;
@@ -658,63 +659,63 @@ namespace Client
             if (modificar)
             {
                 Origin = PromptForNonEmptyString("Nuevo Origen:");
-                await SendMessageToServerAsync(Origin, networkHelper);
+                await SendMessageToServerAsync(Origin, networkHelper, token.Token);
             }
-            else await SendMessageToServerAsync("EMPTY", networkHelper);
+            else await SendMessageToServerAsync("EMPTY", networkHelper, token.Token);
 
             modificar = PromptForBoolean("¿Modificar Destino? (SI/NO)");
             if (modificar)
             {
                 Destination = PromptForNonEmptyString("Nuevo Destino:");
-                await SendMessageToServerAsync(Destination, networkHelper);
+                await SendMessageToServerAsync(Destination, networkHelper, token.Token);
             }
-            else await SendMessageToServerAsync("EMPTY", networkHelper);
+            else await SendMessageToServerAsync("EMPTY", networkHelper, token.Token);
 
             modificar = PromptForBoolean("¿Modificar fecha y hora de salida? (SI/NO)");
             if (modificar)
             {
                 DepartureTime = PromptForFutureDateTime("Nueva fecha y hora de salida (yyyy-mm-dd hh):");
-                await SendMessageToServerAsync(DepartureTime.ToString("o"), networkHelper);
+                await SendMessageToServerAsync(DepartureTime.ToString("o"), networkHelper, token.Token);
             }
-            else await SendMessageToServerAsync("EMPTY", networkHelper);
+            else await SendMessageToServerAsync("EMPTY", networkHelper, token.Token);
 
             modificar = PromptForBoolean("¿Modificar si el viaje es amigable con mascotas? (SI/NO)");
             if (modificar)
             {
                 Pet = PromptForBoolean("¿Es el viaje amigable con mascotas?:");
-                await SendMessageToServerAsync(Pet.ToString(), networkHelper);
+                await SendMessageToServerAsync(Pet.ToString(), networkHelper, token.Token);
             }
-            else await SendMessageToServerAsync("EMPTY", networkHelper);
+            else await SendMessageToServerAsync("EMPTY", networkHelper, token.Token);
 
             modificar = PromptForBoolean("¿Modificar el precio por pasajero? (SI/NO)");
             if (modificar)
             {
                 PricePerSeat = PromptForInt("Nuevo precio por pasajero:");
-                await SendMessageToServerAsync(PricePerSeat.ToString(), networkHelper);
+                await SendMessageToServerAsync(PricePerSeat.ToString(), networkHelper, token.Token);
             }
-            else await SendMessageToServerAsync("EMPTY", networkHelper);
+            else await SendMessageToServerAsync("EMPTY", networkHelper, token.Token);
 
             modificar = PromptForBoolean("¿Modificar la imagen del veiculo? (SI/NO)");
             if (modificar)
             {
-                await SendMessageToServerAsync(modificar.ToString(), networkHelper); //avisarle al server que va recibir una foto
+                await SendMessageToServerAsync(modificar.ToString(), networkHelper, token.Token); //avisarle al server que va recibir una foto
                 await SendStreamToServerAsync(networkHelper);
             }
             else
             {
-                await SendMessageToServerAsync(modificar.ToString(), networkHelper);
+                await SendMessageToServerAsync(modificar.ToString(), networkHelper, token.Token);
             }
 
             //Modificacion
             //RECIBIR UN MODIFICADO O ERROR
-            Console.WriteLine(await ReceiveMessageFromServerAsync(networkHelper));
+            Console.WriteLine(await ReceiveMessageFromServerAsync(networkHelper, token.Token));
             //FIN TOTAL
         }
 
         private static async Task JoinTripAsync(NetworkHelper networkHelper)
         {
             await ViewAllFutureTripsAsync(networkHelper);
-            string amountOfTrips= await ReceiveMessageFromServerAsync(networkHelper);
+            string amountOfTrips= await ReceiveMessageFromServerAsync(networkHelper, token.Token);
             if (amountOfTrips != "0")
             {
                 Console.WriteLine("Ingrese el número del viaje al que desea unirse:");
@@ -724,7 +725,7 @@ namespace Client
 
                 if (response.ToLower() == "salir")
                 {
-                    await SendMessageToServerAsync("exit", networkHelper);
+                    await SendMessageToServerAsync("exit", networkHelper, token.Token);
                     return;
                 }
                 while (!int.TryParse(response, out selectedTripNumber) || selectedTripNumber < 1 || selectedTripNumber > Convert.ToInt32(amountOfTrips))
@@ -732,11 +733,11 @@ namespace Client
                     Console.WriteLine("Ingrese nuevamente el número de viaje:");
                     response = Console.ReadLine().Trim();
                 }
-                await SendMessageToServerAsync(response, networkHelper);
+                await SendMessageToServerAsync(response, networkHelper, token.Token);
 
                 Console.Clear();
 
-                string resp = await ReceiveMessageFromServerAsync(networkHelper);
+                string resp = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                 Console.WriteLine(resp);
             }
             
@@ -760,7 +761,7 @@ namespace Client
                 Console.WriteLine("Ingrese nuevamente la opcion:");
                 res = Console.ReadLine().Trim();
             }
-            await SendMessageToServerAsync(res, networkHelper);
+            await SendMessageToServerAsync(res, networkHelper, token.Token);
             
             Console.Clear();
 
@@ -786,7 +787,7 @@ namespace Client
 
         private static async Task ViewAllFutureTripsAsync(NetworkHelper networkHelper)
         {
-            string response = await ReceiveMessageFromServerAsync(networkHelper);
+            string response = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
             int tripCount = int.Parse(response);
 
             Console.WriteLine();
@@ -794,7 +795,7 @@ namespace Client
             {
                 for (int i = 0; i < tripCount; i++)
                 {
-                    string trip = await ReceiveMessageFromServerAsync(networkHelper);
+                    string trip = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                     Console.WriteLine(trip);
                 }
                 Console.WriteLine();
@@ -819,9 +820,9 @@ namespace Client
                 resp = Console.ReadLine().Trim();
             }
 
-            await SendMessageToServerAsync(resp, networkHelper);
+            await SendMessageToServerAsync(resp, networkHelper, token.Token);
 
-            string response = await ReceiveMessageFromServerAsync(networkHelper);
+            string response = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             Console.Clear();
 
@@ -840,7 +841,7 @@ namespace Client
                 {
                     for (int i = 0; i < tripCount; i++)
                     {
-                        string trip = await ReceiveMessageFromServerAsync(networkHelper);
+                        string trip = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                         Console.WriteLine(trip);
                     }
                 }
@@ -856,7 +857,7 @@ namespace Client
 
         private static async Task ViewAllTripsAsync(NetworkHelper networkHelper)
         {
-            string response = await ReceiveMessageFromServerAsync(networkHelper);
+            string response = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
             int tripCount = int.Parse(response);
 
             Console.Clear();
@@ -866,7 +867,7 @@ namespace Client
             {
                 for (int i = 0; i < tripCount; i++)
                 {
-                    string trip = await ReceiveMessageFromServerAsync(networkHelper);
+                    string trip = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                     Console.WriteLine(trip);
                 }
                 Console.WriteLine();
@@ -886,10 +887,10 @@ namespace Client
             Console.WriteLine("Ingrese el destino del viaje:");
             string destination = Console.ReadLine().Trim();
 
-            await SendMessageToServerAsync(origin, networkHelper);
-            await SendMessageToServerAsync(destination, networkHelper);
+            await SendMessageToServerAsync(origin, networkHelper, token.Token);
+            await SendMessageToServerAsync(destination, networkHelper, token.Token);
 
-            string response = await ReceiveMessageFromServerAsync(networkHelper);
+            string response = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             if (response.StartsWith("ERROR"))
             {
@@ -908,7 +909,7 @@ namespace Client
                 {
                     for (int i = 0; i < tripCount; i++)
                     {
-                        string trip = await ReceiveMessageFromServerAsync(networkHelper);
+                        string trip = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
                         Console.WriteLine(trip);
                     }
                 }
@@ -924,12 +925,12 @@ namespace Client
 
         private static async Task RecevieAllTripInfo(NetworkHelper networkHelper)
         {
-            string origin= await ReceiveMessageFromServerAsync(networkHelper);
-            string destination = await ReceiveMessageFromServerAsync(networkHelper);
-            string departure = await ReceiveMessageFromServerAsync(networkHelper);
-            string availableSeats = await ReceiveMessageFromServerAsync(networkHelper);
-            string pricePerPassanger = await ReceiveMessageFromServerAsync(networkHelper);
-            string pet = await ReceiveMessageFromServerAsync(networkHelper);
+            string origin= await ReceiveMessageFromServerAsync(networkHelper, token.Token);
+            string destination = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
+            string departure = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
+            string availableSeats = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
+            string pricePerPassanger = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
+            string pet = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
 
             Console.WriteLine("Origen: " + origin);
             Console.WriteLine("Destino: " + destination);
@@ -954,16 +955,16 @@ namespace Client
         private static async Task ViewDriverRatingsAsync(NetworkHelper networkHelper)
         {
             Console.WriteLine("Usuarios disponibles en el sistema:");
-            string userNames = await ReceiveMessageFromServerAsync(networkHelper);
+            string userNames = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
             Console.WriteLine(userNames);
 
             Console.WriteLine("Ingrese el nombre del usuario para ver sus calificaciones:");
             string selectedUsername = Console.ReadLine();
-            await SendMessageToServerAsync(selectedUsername, networkHelper);
+            await SendMessageToServerAsync(selectedUsername, networkHelper, token.Token);
 
             Console.Clear();
 
-            string response = await ReceiveMessageFromServerAsync(networkHelper);
+            string response = await ReceiveMessageFromServerAsync(networkHelper, token.Token);
             Console.WriteLine("Calificaciones recibidas del servidor:");
             Console.WriteLine(response);
         }
