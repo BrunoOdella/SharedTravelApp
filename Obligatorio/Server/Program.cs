@@ -26,7 +26,6 @@ namespace Server
         static readonly ICalificationRepository ICalificationRepo = new CalificationRepository();
 
         static bool acceptClients = true;
-        //static List<Task> clientTasks = new List<Task>();
         static List<(Task, TcpClient)> clients = new List<(Task, TcpClient)>();
         static CancellationTokenSource shutdownCancellation = new CancellationTokenSource();
 
@@ -60,9 +59,7 @@ namespace Server
                             writer.Flush();
 
                             var clientTask = HandleClientAsync(client, clients.Count, shutdownCancellation.Token);
-                            //clientTasks.Add(clientTask);
                             clients.Add((clientTask, client));
-                            //Predicate<(Task, TcpClient)> predicate = client => client.Item1 == clientTask;
 
                             clientTask.ContinueWith(t =>
                             {
@@ -138,9 +135,6 @@ namespace Server
                     {
                         acceptClients = false;
                         shutdownCancellation.Cancel();
-
-                        //Task.WaitAll(clientTasks.ToArray(), shutdownCancellation.Token);
-
                         Environment.Exit(0);
                     }
                     exit = true;
@@ -467,11 +461,9 @@ namespace Server
 
             if (token.IsCancellationRequested) return;
             List<Trip> trips= await ViewAllFutureTripsAsync(networkHelper, client, user, token);
-            //hacer una funcion que filtre
             trips = ITripRepo.FilterByDeparture(trips);
 
             await SendMessageToClientAsync(trips.Count.ToString(), networkHelper, token);
-            //le mando la cant dfe trips al cliente asi sabe si decirle al user que elija uno
             if (trips.Count > 0)
             {
                 try
