@@ -53,10 +53,6 @@ namespace Server
                         try
                         {
                             TcpClient client = await listener.AcceptTcpClientAsync();
-                            var stream = client.GetStream();
-                            var writer = new StreamWriter(stream);
-                            writer.WriteLine("Bienvenido al servidor");
-                            writer.Flush();
 
                             var clientTask = HandleClientAsync(client, clients.Count, shutdownCancellation.Token);
                             clients.Add((clientTask, client));
@@ -81,15 +77,6 @@ namespace Server
                         }
                         
                         
-                    }
-                    else if (!acceptClients && listener.Pending())
-                    {
-                        TcpClient client = await listener.AcceptTcpClientAsync();
-                        var stream = client.GetStream();
-                        var writer = new StreamWriter(stream);
-                        writer.WriteLine("El servidor no está aceptando nuevos clientes");
-                        writer.Flush();
-                        client.Close();
                     }
 
                     if (!acceptClients && clients.Count == 0)
@@ -126,6 +113,7 @@ namespace Server
                         //listener.Stop();
                         
                         acceptClients = false;
+                        listener.Server.Close();
                         var remainingClients = clients.Select(x => x.Item1).ToArray();
                         Task.WhenAll(remainingClients).Wait();
                         Environment.Exit(0);
@@ -134,6 +122,7 @@ namespace Server
                     else if (response == "no")
                     {
                         acceptClients = false;
+                        listener.Server.Close();
                         shutdownCancellation.Cancel();
                         Environment.Exit(0);
                     }

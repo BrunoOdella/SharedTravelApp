@@ -31,23 +31,14 @@ namespace Client
             {
                 client.Client.Bind(local);
                 await client.ConnectAsync(server);
-                var stream = client.GetStream();
-                var reader = new StreamReader(stream);
-                var serverMessage =  await reader.ReadLineAsync();
-                if (serverMessage == "El servidor no está aceptando nuevos clientes")
-                {
-                    Console.WriteLine("No se pudo conectar con el servidor");
-                    Console.ReadLine();
-                }
-                else
-                {
-                    Console.WriteLine("Cliente conectado con el servidor");
-                    await LogInAsync(client);
-                }
+
+                Console.WriteLine("Cliente conectado con el servidor");
+                await LogInAsync(client);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                Console.ReadLine();
             }
             finally
             {
