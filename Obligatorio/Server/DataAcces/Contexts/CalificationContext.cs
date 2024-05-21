@@ -8,9 +8,9 @@ namespace DataAcces
         private static CalificationContext _calificationInstance = null;
         public Dictionary<Guid, Calification> CalificationList = new Dictionary<Guid, Calification>();
         private const string FileName = "Califications.json";
-        private static Semaphore _calificationSemaphore = new Semaphore(1, 1);
-        private static Semaphore _mutexCalification = new Semaphore(1, 1);
-        private static Semaphore _serviceQueueCalification = new Semaphore(1, 1);
+        private static SemaphoreSlim _calificationSemaphore = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _mutexCalification = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _serviceQueueCalification = new SemaphoreSlim(1, 1);
         private static int _readersCalification = 0;
 
         private static string CalificationsFilePath
@@ -25,13 +25,13 @@ namespace DataAcces
             }
         }
 
-        public static CalificationContext GetAccessReadCalification()
+        public static async Task<CalificationContext> GetAccessReadCalification()
         {
-            _serviceQueueCalification.WaitOne();     //espera de turno
-            _mutexCalification.WaitOne();            //acceso exclusivo al contador de lectores
+            await _serviceQueueCalification.WaitAsync();     //espera de turno
+            await _mutexCalification.WaitAsync();            //acceso exclusivo al contador de lectores
             _readersCalification++;
             if (_readersCalification == 1)          //si es el primero bloquea a los escritores
-                _calificationSemaphore.WaitOne();
+                await _calificationSemaphore.WaitAsync();
             _serviceQueueCalification.Release();     //libera para el siguiente esperando turno
             _mutexCalification.Release();            //libera acceso al contador
 
@@ -42,19 +42,19 @@ namespace DataAcces
             //fin seccion critica
         }
 
-        public static void ReturnReadAccessCalification()
+        public static async void ReturnReadAccessCalification()
         {
-            _mutexCalification.WaitOne();           //acceso exclusivo al contador de lectores
+            await _mutexCalification.WaitAsync();           //acceso exclusivo al contador de lectores
             _readersCalification--;
             if (_readersCalification == 0)         //si es el ultimo libera a los escritores
                 _calificationSemaphore.Release();
             _mutexCalification.Release();           //libera acceso al contador
         }
 
-        public static CalificationContext GetAccessWriteCalification()
+        public static async Task<CalificationContext> GetAccessWriteCalification()
         {
-            _serviceQueueCalification.WaitOne();
-            _calificationSemaphore.WaitOne();
+            await _serviceQueueCalification.WaitAsync();
+            await _calificationSemaphore.WaitAsync();
             _serviceQueueCalification.Release();
 
             //seccion critica

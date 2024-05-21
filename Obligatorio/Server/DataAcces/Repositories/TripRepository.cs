@@ -3,6 +3,7 @@ using Server.BL;
 using Server.BL.Repositories;
 using Server.BL.BLException;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 
 namespace Server.DataAcces.Repositories
 {
@@ -10,7 +11,8 @@ namespace Server.DataAcces.Repositories
     {
         public void Add(Trip trip)
         {
-            TripContext context = TripContext.GetAccessWriteTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessWriteTrip();
+            TripContext context = contextTask.Result;
             context.TripList.Add(trip.GetGuid(),trip);
             TripContext.ReturnWriteAccessTrip();
         }
@@ -22,7 +24,8 @@ namespace Server.DataAcces.Repositories
 
         public void Remove(Trip trip)
         {
-            TripContext context = TripContext.GetAccessWriteTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessWriteTrip();
+            TripContext context = contextTask.Result;
             Guid asociated = trip.GetGuid();
             context.TripList.Remove(asociated);
             TripContext.ReturnWriteAccessTrip();
@@ -30,7 +33,8 @@ namespace Server.DataAcces.Repositories
 
         public void Remove(Guid id)
         {
-            TripContext context = TripContext.GetAccessWriteTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessWriteTrip();
+            TripContext context = contextTask.Result;
             context.TripList.Remove(id);
             TripContext.ReturnWriteAccessTrip();
         }
@@ -38,7 +42,8 @@ namespace Server.DataAcces.Repositories
         public Trip Get(Guid id)
         {
             Trip? asociated = null;
-            TripContext context = TripContext.GetAccessReadTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessReadTrip();
+            TripContext context = contextTask.Result;
             context.TripList.TryGetValue(id, out asociated);
             TripContext.ReturnReadAccessTrip();
             if (asociated != null)
@@ -51,7 +56,8 @@ namespace Server.DataAcces.Repositories
         public void Update(Trip trip)
         {
             Guid id = trip.GetGuid();
-            TripContext context = TripContext.GetAccessWriteTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessWriteTrip();
+            TripContext context = contextTask.Result;
             if (context.TripList.ContainsKey(id))
             {
                 context.TripList[id] = trip;
@@ -83,7 +89,8 @@ namespace Server.DataAcces.Repositories
 
         public List<Trip> GetAll()
         {
-            TripContext context = TripContext.GetAccessReadTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessReadTrip();
+            TripContext context = contextTask.Result;
             List<Trip> all = new List<Trip>();
             foreach(var trip in context.TripList)
             {
@@ -109,7 +116,8 @@ namespace Server.DataAcces.Repositories
 
         public List<Trip> GetAllTripsToOriginAndDestinationAvailableToJoin(string origin, string destination)
         {
-            TripContext context = TripContext.GetAccessReadTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessReadTrip();
+            TripContext context = contextTask.Result;
             List<Trip> tripsByOriginDestination = new List<Trip>();
 
             foreach (var trip in context.TripList)
@@ -134,7 +142,8 @@ namespace Server.DataAcces.Repositories
 
         public List<Trip> GetAllTripsToOriginAndDestination(string origin, string destination)
         {
-            TripContext context = TripContext.GetAccessReadTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessReadTrip();
+            TripContext context = contextTask.Result;
             List<Trip> tripsByOriginDestination = new List<Trip>();
 
             foreach (var trip in context.TripList)
@@ -157,7 +166,8 @@ namespace Server.DataAcces.Repositories
 
         public List<Trip> GetTripsFilteredByPetFriendly(bool petFriendly)
         {
-            TripContext context = TripContext.GetAccessReadTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessReadTrip();
+            TripContext context = contextTask.Result;
             List<Trip> trips = new List<Trip>();
 
             foreach (var trip in context.TripList)
@@ -203,7 +213,8 @@ namespace Server.DataAcces.Repositories
 
         public List<Trip> GetTripsByOwner(Guid ownerId)
         {
-            TripContext context = TripContext.GetAccessReadTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessReadTrip();
+            TripContext context = contextTask.Result;
             List<Trip> ownedTrips = new List<Trip>();
             foreach (var tripEntry in context.TripList)
             {
@@ -218,7 +229,8 @@ namespace Server.DataAcces.Repositories
 
         public List<Trip> FilterByDeparture(List<Trip> trips)
         {
-            TripContext context = TripContext.GetAccessReadTrip();
+            Task<TripContext> contextTask = TripContext.GetAccessReadTrip();
+            TripContext context = contextTask.Result;
             List <Trip> newTripList = new List<Trip>();
             foreach (var trip in trips)
             {

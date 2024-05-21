@@ -8,17 +8,17 @@ namespace Common
 {
     public class FileStreamHelper
     {
-        public byte[] Read(string path, long offset, int length)
+        public async Task<byte[]> ReadAsync(string path, long offset, int length)
         {
-            byte[] data=new byte[length];
+            byte[] data = new byte[length];
 
-            using (FileStream fs=new FileStream(path,FileMode.Open))
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
             {
                 fs.Position = offset;
                 int bytesRead = 0;
                 while (bytesRead < length)
                 {
-                    int read = fs.Read(data, bytesRead, length - bytesRead);
+                    int read = await fs.ReadAsync(data, bytesRead, length - bytesRead);
                     if (read == 0)
                     {
                         throw new Exception("No se pudo leer el archivo");
@@ -29,20 +29,20 @@ namespace Common
             }
         }
 
-
-        public void Write(string fileName, byte[] data) { 
-            if(File.Exists(fileName))
+        public async Task WriteAsync(string fileName, byte[] data)
+        {
+            if (File.Exists(fileName))
             {
-                using(FileStream fs = new FileStream(fileName, FileMode.Append))
+                using (FileStream fs = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.None, 4096, useAsync: true))
                 {
-                    fs.Write(data, 0, data.Length);
+                    await fs.WriteAsync(data, 0, data.Length);
                 }
             }
             else
             {
-                using(FileStream fs = new FileStream(fileName, FileMode.Create))
+                using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
                 {
-                    fs.Write(data,0,data.Length);
+                    await fs.WriteAsync(data, 0, data.Length);
                 }
             }
         }

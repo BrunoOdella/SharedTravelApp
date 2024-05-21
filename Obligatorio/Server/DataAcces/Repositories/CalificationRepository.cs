@@ -2,6 +2,7 @@
 using Server.BL;
 using Server.BL.BLException;
 using Server.BL.Repositories;
+using System.ComponentModel.Design.Serialization;
 
 namespace Server.DataAcces.Repositories;
 
@@ -9,7 +10,8 @@ public class CalificationRepository : ICalificationRepository
 {
     public void Add(Calification calification)
     {
-        CalificationContext context = CalificationContext.GetAccessWriteCalification();
+        Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
+        CalificationContext context = contextTask.Result;
         context.CalificationList.Add(calification.GetGuid(), calification);
         CalificationContext.ReturnWriteAccessCalification();
     }
@@ -20,7 +22,8 @@ public class CalificationRepository : ICalificationRepository
 
     public void Delete(Calification calification)
     {
-        CalificationContext context = CalificationContext.GetAccessWriteCalification();
+        Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
+        CalificationContext context = contextTask.Result;
         Guid asociated = calification.GetGuid();
         context.CalificationList.Remove(asociated);
         CalificationContext.ReturnWriteAccessCalification();
@@ -28,7 +31,8 @@ public class CalificationRepository : ICalificationRepository
 
     public void Delete(Guid id)
     {
-        CalificationContext context = CalificationContext.GetAccessWriteCalification();
+        Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
+        CalificationContext context = contextTask.Result;
         context.CalificationList.Remove(id);
         CalificationContext.ReturnWriteAccessCalification();
     }
@@ -36,7 +40,8 @@ public class CalificationRepository : ICalificationRepository
     public Calification Get(Guid id)
     {
         Calification? asociated = null;
-        CalificationContext context = CalificationContext.GetAccessReadCalification();
+        Task<CalificationContext> contextTask = CalificationContext.GetAccessReadCalification();
+        CalificationContext context = contextTask.Result;
         context.CalificationList.TryGetValue(id, out asociated);
         CalificationContext.ReturnReadAccessCalification();
         if (asociated != null)
@@ -48,7 +53,8 @@ public class CalificationRepository : ICalificationRepository
 
     public List<Calification> GetAll()
     {
-        CalificationContext context = CalificationContext.GetAccessReadCalification();
+        Task<CalificationContext> contextTask = CalificationContext.GetAccessReadCalification();
+        CalificationContext context = contextTask.Result;
         List<Calification> all = new List<Calification>();
         foreach (var calification in context.CalificationList)
         {
@@ -62,7 +68,8 @@ public class CalificationRepository : ICalificationRepository
     public void Update(Calification calification)
     {
         Guid id = calification.GetGuid();
-        CalificationContext context = CalificationContext.GetAccessWriteCalification();
+        Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
+        CalificationContext context = contextTask.Result;
         if (context.CalificationList.ContainsKey(id))
         {
             context.CalificationList[id] = calification;
@@ -76,7 +83,8 @@ public class CalificationRepository : ICalificationRepository
 
     public List<Calification> GetCalificationsByTripId(Guid tripId)
     {
-        CalificationContext context = CalificationContext.GetAccessReadCalification();
+        Task<CalificationContext> contextTask = CalificationContext.GetAccessReadCalification();
+        CalificationContext context = contextTask.Result;
         List<Calification> califications = new List<Calification>();
         foreach (var calificationEntry in context.CalificationList)
         {
