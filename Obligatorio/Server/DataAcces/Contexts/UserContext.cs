@@ -18,11 +18,8 @@ namespace DataAcces
         {
             get
             {
-                string currentDirectory = Directory.GetCurrentDirectory();
-                DirectoryInfo parentDirectory = Directory.GetParent(currentDirectory);
-                parentDirectory = Directory.GetParent(parentDirectory.FullName);
-                parentDirectory = Directory.GetParent(parentDirectory.FullName);
-                return Path.Combine(parentDirectory.FullName, "Data", UsersFileName);
+                // Using AppDomain.CurrentDomain.BaseDirectory to get the base directory of the application
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Server", "Data", "Autos", UsersFileName);
             }
         }
 
