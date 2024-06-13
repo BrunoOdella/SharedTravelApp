@@ -3,10 +3,14 @@ using System.Net;
 using System.Text;
 using Common;
 using Common.Interfaces;
+using RabbitMQ.Client;
 using GrpcServer.Server.BL;
 using GrpcServer.Server.DataAcces.Repositories;
 using GrpcServer.Server.BL.Repositories;
 using GrpcServer.Server.DataAcces.Contexts;
+using Microsoft.AspNetCore.Connections;
+using System.Text.Json;
+using System.Threading.Channels;
 
 namespace GrpcServer.Server
 {
@@ -22,6 +26,9 @@ namespace GrpcServer.Server
         static bool acceptClients = true;
         static List<(Task, TcpClient)> clients = new List<(Task, TcpClient)>();
         static CancellationTokenSource shutdownCancellation = new CancellationTokenSource();
+
+        private const string tripQueue = "trips";
+        private static IModel channel;
 
         public static void Launch()
         {
@@ -39,6 +46,14 @@ namespace GrpcServer.Server
                 Console.WriteLine("Waiting for clients...");
 
                 var consoleTask = Task.Run(() => HandleConsoleInput(listener));
+
+                channel = new ConnectionFactory() { HostName = "localhost", Port = 5672 }.CreateConnection().CreateModel();
+                channel.QueueDeclare(
+                    queue: tripQueue,
+                    durable: false,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
 
                 while (acceptClients || clients.Count > 0)
                 {
@@ -262,8 +277,18 @@ namespace GrpcServer.Server
             }
         }
 
+        //funcion para mandarle al statistics server el trip (que lo voy a tener que mandar en la funcion de publich trip
+        private static void SendTripToStatistics(Trip trip)
+        {
+            var message = JsonSerializer.Serialize(trip);
+            var body = Encoding.UTF8.GetBytes(message);
 
-
+            channel.BasicPublish(
+                exchange: "",
+                routingKey: tripQueue,
+                basicProperties: null,
+                body: body);
+        }
 
         private static async Task DeleteTripAsync(NetworkHelper networkHelper, TcpClient client, User user, CancellationToken token)
         {
@@ -688,6 +713,8 @@ namespace GrpcServer.Server
 
                 newTrip.SetOwner(user.GetGuid());
                 ITripRepo.Add(newTrip);
+
+                SendTripToStatistics(newTrip);
 
                 await SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper, token);
             }
