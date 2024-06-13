@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer";
+
+package admin;
+
+service AdminGrpc {
+  // ABM de viajes
+  rpc CreateTrip (CreateTripRequest) returns (Empty);
+  rpc DeleteTrip (TripIndex) returns (Empty);
+  rpc GetAllTrips (Empty) returns (GetTripsResponse);
+  rpc UpdateTrip (UpdateTripRequest) returns (Empty);
+
+  // Consultar calificaciones de un viaje
+  rpc GetTripCalifications (TripIndex) returns (CalificationResponse);
+
+  // Ver próximos N viajes
+  rpc GetNextTrips (NextTripsRequest) returns (stream TripElem);
+}
+
+// GetTrips
+message TripElem {
+  int32 index = 1;
+  string origin = 2;
+  string destination = 3;
+  string departure = 4; 
+  float pricePerPassenger = 5;
+}
+
+message GetTripsResponse {
+  repeated TripElem trips = 1;
+}
+
+message CreateTripRequest {
+  string owner_id = 1;
+  string origin = 2;
+  string destination = 3;
+  string departure = 4;
+  int32 totalSeats = 5;
+  int32 availableSeats = 6;
+  float pricePerPassenger = 7;
+  bool petsAllowed = 8;
+}
+
+message UpdateTripRequest {
+  int32 index = 1; 
+  string origin = 2;
+  string destination = 3;
+  string departure = 4; 
+  bool petsAllowed = 5;
+  float pricePerPassenger = 6;
+}
+
+message TripIndex {
+  int32 index = 1;
+}
+
+message TripResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message CalificationResponse {
+  repeated CalificationElem ratings = 1;
+}
+
+message CalificationElem {
+  string username = 1;
+  float score = 2;
+  string comment = 3;
+}
+
+message NextTripsRequest {
+  int32 quantity = 1;
+}
+
+message Empty {}
