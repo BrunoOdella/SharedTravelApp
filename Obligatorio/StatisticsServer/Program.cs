@@ -1,4 +1,6 @@
 
+using StatisticsServer.Repositories;
+
 namespace StatisticsServer
 {
     public class Program
@@ -10,6 +12,7 @@ namespace StatisticsServer
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddSingleton<ITripRepository, TripRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
