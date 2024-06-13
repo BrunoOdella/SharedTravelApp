@@ -27,9 +27,8 @@ namespace StatisticsServer.Repositories
         {
             return _trips.Where(t =>
                 (string.IsNullOrEmpty(filter.Destination) || t.Destination == filter.Destination) &&
-                /*(!filter.MaxPrice.HasValue || t.PricePerPassanger <= filter.MaxPrice.Value) &&*/
-                (!filter.StartDate.HasValue || t.Departure >= filter.StartDate.Value) &&
-                (!filter.EndDate.HasValue || t.Departure <= filter.EndDate.Value));
+                (!filter.MaxPrice.HasValue || t.PricePerPassanger <= filter.MaxPrice.Value) &&
+                (!filter.Date.HasValue || t.Departure == filter.Date.Value));
         }
     }
 }

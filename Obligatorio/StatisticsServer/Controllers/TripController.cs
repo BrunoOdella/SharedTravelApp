@@ -15,6 +15,12 @@ namespace StatisticsServer.Controllers
             _tripRepository = tripRepository;
         }
 
+        [HttpGet]
+        public IActionResult GetAllTrips()
+        {
+            return Ok(_tripRepository.GetAll());
+        }
+
         [HttpPost]
         public IActionResult AddTrip([FromBody] Trip trip)
         {
@@ -30,4 +36,4 @@ namespace StatisticsServer.Controllers
         }
     }
 }
-}
+
