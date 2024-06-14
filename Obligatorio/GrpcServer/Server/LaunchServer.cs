@@ -28,7 +28,9 @@ namespace GrpcServer.Server
         static CancellationTokenSource shutdownCancellation = new CancellationTokenSource();
 
         private const string tripQueue = "trips";
-        private static IModel channel;
+        private const string loginQueue = "logins";
+        private static IModel tripChannel;
+        private static IModel loginChannel;
 
         public static void Launch()
         {
@@ -47,13 +49,14 @@ namespace GrpcServer.Server
 
                 var consoleTask = Task.Run(() => HandleConsoleInput(listener));
 
-                channel = new ConnectionFactory() { HostName = "localhost", Port = 5672 }.CreateConnection().CreateModel();
-                channel.QueueDeclare(
-                    queue: tripQueue,
-                    durable: false,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
+                var connectionFactory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
+                var connection = connectionFactory.CreateConnection();
+
+                tripChannel = connection.CreateModel();
+                tripChannel.QueueDeclare(queue: tripQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+                loginChannel = connection.CreateModel();
+                loginChannel.QueueDeclare(queue: loginQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
                 while (acceptClients || clients.Count > 0)
                 {
@@ -210,6 +213,7 @@ namespace GrpcServer.Server
                         user = userRepository.Get(userId);
                         await SendMessageToClientAsync(response, networkHelper, token);
 
+                        SendLoginEvent(userId);
 
                         await GoToOptionAsync(networkHelper, client, user, token);
 
@@ -283,11 +287,22 @@ namespace GrpcServer.Server
             var message = JsonSerializer.Serialize(trip);
             var body = Encoding.UTF8.GetBytes(message);
 
-            channel.BasicPublish(
+            tripChannel.BasicPublish(
                 exchange: "",
                 routingKey: tripQueue,
                 basicProperties: null,
                 body: body);
+        }
+
+        private static void SendLoginEvent(Guid userId)
+        {
+            var loginEvent = new LoginEvent
+            {
+                UserId = userId,
+                Timestamp = DateTime.UtcNow
+            };
+            var messageBody = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(loginEvent));
+            loginChannel.BasicPublish(exchange: "", routingKey: loginQueue, basicProperties: null, body: messageBody);
         }
 
         private static async Task DeleteTripAsync(NetworkHelper networkHelper, TcpClient client, User user, CancellationToken token)

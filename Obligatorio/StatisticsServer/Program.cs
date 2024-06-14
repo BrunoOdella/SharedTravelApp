@@ -1,6 +1,5 @@
-
-using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using StatisticsServer.Repositories;
 using System.Text;
 using System.Text.Json;
@@ -77,6 +76,7 @@ namespace StatisticsServer
             Console.WriteLine("Press [enter] to exit.");
             Console.ReadLine();
         }
+
         public static async Task ConnectAndReceiveLogins(ILoginEventRepository loginEventRepository)
         {
             var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
@@ -112,4 +112,3 @@ namespace StatisticsServer
         }
     }
 }
-
