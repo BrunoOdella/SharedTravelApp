@@ -25,6 +25,7 @@ message TripElem {
   string destination = 3;
   string departure = 4; 
   float pricePerPassenger = 5;
+  bool petsAllowed = 6;
 }
 
 message GetTripsResponse {
