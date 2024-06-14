@@ -1,15 +1,10 @@
 ﻿using Grpc.Net.Client;
-using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
-using System;
-using System.Threading.Tasks;
-using GrpcServer;
 
 namespace AdminServer
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             using var channel = GrpcChannel.ForAddress("http://localhost:5074");
             var client = new AdminGrpc.AdminGrpcClient(channel);
@@ -26,7 +21,7 @@ namespace AdminServer
                 switch (option)
                 {
                     case "1":
-                        await CreateTrip(client);
+                        CreateTrip(client);
                         break;
                     case "0":
                         Console.WriteLine("Saliendo...");
@@ -38,7 +33,7 @@ namespace AdminServer
             }
         }
 
-        private static async Task CreateTrip(AdminGrpc.AdminGrpcClient client)
+        private static void CreateTrip(AdminGrpc.AdminGrpcClient client)
         {
             Console.WriteLine("Ingrese los detalles del nuevo viaje:");
 
@@ -75,7 +70,7 @@ namespace AdminServer
                 PetsAllowed = petsAllowed
             };
 
-            var response = await client.CreateTripAsync(request);
+            var response = client.CreateTrip(request);
 
             Console.WriteLine("Viaje creado con éxito.");
         }
