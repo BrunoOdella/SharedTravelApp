@@ -11,7 +11,7 @@ namespace GrpcServer.Services
         private readonly ITripRepository _tripRepository;
         public AdminGrpcService()
         {
-            _tripRepository = new TripRepository(); // Asegúrate de que esto esté usando el contexto compartido.
+            _tripRepository = new TripRepository();
         }
 
         public override async Task<Empty> CreateTrip(CreateTripRequest request, ServerCallContext context)

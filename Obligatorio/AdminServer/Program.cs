@@ -13,7 +13,8 @@ namespace AdminServer
             {
                 Console.WriteLine("Seleccione una opción:");
                 Console.WriteLine("1. Crear un nuevo viaje");
-                // Puedes agregar más opciones aquí
+                Console.WriteLine("2. Modificar un viaje");
+                Console.WriteLine("3. Eliminar un viaje");
                 Console.WriteLine("0. Salir");
 
                 string option = Console.ReadLine();
