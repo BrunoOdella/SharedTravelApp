@@ -1,5 +1,7 @@
 using GrpcServer.Server;
 using GrpcServer.Services;
+using GrpcServer.Server.BL.Repositories;
+using GrpcServer.Server.DataAcces.Repositories;
 
 namespace GrpcServer
 {

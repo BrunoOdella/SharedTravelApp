@@ -145,7 +145,10 @@ namespace GrpcServer.Server.DataAcces.Contexts
 
         public static TripContext CreateInsance()
         {
-            _tripInstance = new TripContext();
+            if (_tripInstance == null)
+            {
+                _tripInstance = new TripContext();
+            }
             return _tripInstance;
         }
     }
