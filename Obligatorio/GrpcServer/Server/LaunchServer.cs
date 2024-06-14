@@ -23,9 +23,12 @@ namespace GrpcServer.Server
         static List<(Task, TcpClient)> clients = new List<(Task, TcpClient)>();
         static CancellationTokenSource shutdownCancellation = new CancellationTokenSource();
 
+        private static bool sendTripToAdmin = false;
+
         public static void Launch()
         {
             load();
+            Notifier.CreateInsance();
 
             try
             {
@@ -689,6 +692,17 @@ namespace GrpcServer.Server
                 newTrip.SetOwner(user.GetGuid());
                 await ITripRepo.AddAsync(newTrip);
 
+                if (sendTripToAdmin)
+                {
+                    Mensaje mensaje = new Mensaje
+                    {
+                        Origin = origin, Destination = destination, Departure = departure,
+                        PricePerPassenger = pricePerPassanger
+                    };
+                    var notifier = Notifier.CreateInsance();
+                    notifier.ProduceAsync(mensaje);
+                }
+
                 await SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper, token);
             }
             catch (Exception ex)
@@ -974,9 +988,6 @@ namespace GrpcServer.Server
             return driverCalifications;
         }
 
-
-
-
         public static async Task<string> FormatCalificationsAsync(List<Calification> califications)
         {
             StringBuilder sb = new StringBuilder();
@@ -986,6 +997,16 @@ namespace GrpcServer.Server
                 sb.AppendLine($"Origen del viaje: {trip.Origin}, Destino del viaje: {trip.Destination}, Score: {calification.Score}, Comment: {calification.Comment}");
             }
             return sb.ToString();
+        }
+
+        public static void ReadyToReceiveTrips()
+        {
+            sendTripToAdmin = true;
+        }
+
+        public static void StopReceivingTrips()
+        {
+            sendTripToAdmin = false;
         }
     }
 }

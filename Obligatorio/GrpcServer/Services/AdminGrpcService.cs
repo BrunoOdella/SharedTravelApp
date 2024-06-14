@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using GrpcServer.Server;
 using GrpcServer.Server.BL.Repositories;
 using GrpcServer.Server.DataAcces.Repositories;
 using GrpcServer.Server.BL;
@@ -30,5 +31,34 @@ namespace GrpcServer.Services
             return new Empty();
         }
 
+        public override async Task<TripElem> GetNextTrips(NextTripsRequest request,
+            IServerStreamWriter<TripElem> responseStream, ServerCallContext context)
+        {
+            LaunchServer.ReadyToReceiveTrips();
+
+            var notifier = Notifier.CreateInsance();
+            var cant = request.Quantity;
+
+            for (int i = 0; i < cant; i++)
+            {
+                var mensaje = await notifier.ConsumeAsync();
+                
+                var trip = new TripElem
+                {
+                    Origin = mensaje.Origin,
+                    Destination = mensaje.Destination,
+                    Departure = mensaje.Departure.ToString(),
+                    PricePerPassenger = mensaje.PricePerPassenger
+                };
+
+                await responseStream.WriteAsync(trip);
+            }
+
+            LaunchServer.StopReceivingTrips();
+
+            notifier.Reset();
+
+            return new TripElem();
+        }
     }
 }
