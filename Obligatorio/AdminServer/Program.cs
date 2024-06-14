@@ -16,7 +16,8 @@ namespace AdminServer
                 Console.WriteLine("1. Crear un nuevo viaje");
                 Console.WriteLine("2. Modificar un viaje");
                 Console.WriteLine("3. Eliminar un viaje");
-                Console.WriteLine("4. Obtener los siguientes N viajes creados");
+                Console.WriteLine("4. Ver las calificaciones de un viaje");
+                Console.WriteLine("5. Obtener los siguientes N viajes creados");
                 Console.WriteLine("0. Salir");
 
                 string option = Console.ReadLine();
@@ -33,6 +34,9 @@ namespace AdminServer
                         await DeleteTripAsync(client);
                         break;
                     case "4":
+                        await GetTripCalificationsAsync(client);
+                        break;
+                    case "5":
                         GetNextNTripsAsync(client);
                         break;
                     case "0":
@@ -194,6 +198,42 @@ namespace AdminServer
             var response = await client.DeleteTripAsync(request);
 
             Console.WriteLine("Viaje eliminado con éxito.");
+        }
+
+        private static async Task GetTripCalificationsAsync(AdminGrpc.AdminGrpcClient client)
+        {
+            var tripResponse = await client.GetAllTripsAsync(new Empty());
+            List<TripElem> tripElems = tripResponse.Trips.ToList();
+
+            foreach (var tripElem in tripElems)
+            {
+                Console.WriteLine($"ID: {tripElem.Index + 1}");
+                Console.WriteLine($"Origen: {tripElem.Origin}");
+                Console.WriteLine($"Destino: {tripElem.Destination}");
+                Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
+                Console.WriteLine($"Precio por pasajero: {tripElem.PricePerPassenger}");
+                Console.WriteLine($"¿Se permiten mascotas? {tripElem.PetsAllowed}");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("Ingrese el numero del viaje para ver sus calificaciones:");
+            int tripId = int.Parse(Console.ReadLine());
+            Console.WriteLine();
+            Console.WriteLine("Lista de calificaciones:");
+            Console.WriteLine();
+            var request = new TripIndex
+            {
+                Index = tripId-1
+            };
+
+            var response = await client.GetTripCalificationsAsync(request);
+
+            foreach (var calification in response.Ratings)
+            {
+                Console.WriteLine($"Calificación: {calification.Score}");
+                Console.WriteLine($"Comentario: {calification.Comment}");
+                Console.WriteLine();
+            }
         }
 
     }
