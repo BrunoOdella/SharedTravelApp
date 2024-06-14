@@ -17,9 +17,11 @@ namespace GrpcServer.Server.DataAcces.Contexts
         {
             get
             {
-                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                string projectDirectory = Directory.GetParent(baseDirectory).Parent.Parent.Parent.FullName;
-                return Path.Combine(projectDirectory, "Server", "Data", FileName);
+                string currentDirectory = Directory.GetCurrentDirectory();
+                DirectoryInfo parentDirectory = Directory.GetParent(currentDirectory);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                parentDirectory = Directory.GetParent(parentDirectory.FullName);
+                return Path.Combine(parentDirectory.FullName, "Data", FileName);
             }
         }
 

@@ -7,10 +7,9 @@ namespace GrpcServer.Server.DataAcces.Repositories
 {
     public class CalificationRepository : ICalificationRepository
     {
-        public void Add(Calification calification)
+        public async Task AddAsync(Calification calification)
         {
-            Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
-            CalificationContext context = contextTask.Result;
+            CalificationContext context = await CalificationContext.GetAccessWriteCalification();
             context.CalificationList.Add(calification.GetGuid(), calification);
             CalificationContext.ReturnWriteAccessCalification();
         }
@@ -19,28 +18,25 @@ namespace GrpcServer.Server.DataAcces.Repositories
             context.CalificationList.Add(calification.GetGuid(), calification);
         }
 
-        public void Delete(Calification calification)
+        public async Task DeleteAsync(Calification calification)
         {
-            Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
-            CalificationContext context = contextTask.Result;
+            CalificationContext context = await CalificationContext.GetAccessWriteCalification();
             Guid asociated = calification.GetGuid();
             context.CalificationList.Remove(asociated);
             CalificationContext.ReturnWriteAccessCalification();
         }
 
-        public void Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
-            CalificationContext context = contextTask.Result;
+            CalificationContext context = await CalificationContext.GetAccessWriteCalification();
             context.CalificationList.Remove(id);
             CalificationContext.ReturnWriteAccessCalification();
         }
 
-        public Calification Get(Guid id)
+        public async Task<Calification> GetAsync(Guid id)
         {
             Calification? asociated = null;
-            Task<CalificationContext> contextTask = CalificationContext.GetAccessReadCalification();
-            CalificationContext context = contextTask.Result;
+            CalificationContext context = await CalificationContext.GetAccessReadCalification();
             context.CalificationList.TryGetValue(id, out asociated);
             CalificationContext.ReturnReadAccessCalification();
             if (asociated != null)
@@ -50,10 +46,9 @@ namespace GrpcServer.Server.DataAcces.Repositories
             throw new CalificationManagerException($"Error 404, no se encuentra un Calification con el Guid {id}");
         }
 
-        public List<Calification> GetAll()
+        public async Task<List<Calification>> GetAllAsync()
         {
-            Task<CalificationContext> contextTask = CalificationContext.GetAccessReadCalification();
-            CalificationContext context = contextTask.Result;
+            CalificationContext context = await CalificationContext.GetAccessReadCalification();
             List<Calification> all = new List<Calification>();
             foreach (var calification in context.CalificationList)
             {
@@ -64,11 +59,10 @@ namespace GrpcServer.Server.DataAcces.Repositories
             return all;
         }
 
-        public void Update(Calification calification)
+        public async Task UpdateAsync(Calification calification)
         {
             Guid id = calification.GetGuid();
-            Task<CalificationContext> contextTask = CalificationContext.GetAccessWriteCalification();
-            CalificationContext context = contextTask.Result;
+            CalificationContext context = await CalificationContext.GetAccessWriteCalification();
             if (context.CalificationList.ContainsKey(id))
             {
                 context.CalificationList[id] = calification;
@@ -80,10 +74,9 @@ namespace GrpcServer.Server.DataAcces.Repositories
             CalificationContext.ReturnWriteAccessCalification();
         }
 
-        public List<Calification> GetCalificationsByTripId(Guid tripId)
+        public async Task<List<Calification>> GetCalificationsByTripIdAsync(Guid tripId)
         {
-            Task<CalificationContext> contextTask = CalificationContext.GetAccessReadCalification();
-            CalificationContext context = contextTask.Result;
+            CalificationContext context = await CalificationContext.GetAccessReadCalification();
             List<Calification> califications = new List<Calification>();
             foreach (var calificationEntry in context.CalificationList)
             {
