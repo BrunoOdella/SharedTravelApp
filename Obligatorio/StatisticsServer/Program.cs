@@ -17,6 +17,7 @@ namespace StatisticsServer
             builder.Services.AddControllers();
             builder.Services.AddSingleton<ITripRepository, TripRepository>();
             builder.Services.AddSingleton<ILoginEventRepository, LoginEventRepository>();
+            builder.Services.AddSingleton<ILogInReportRepository, LoginReportRepository>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -36,9 +37,12 @@ namespace StatisticsServer
 
             var tripRepository = app.Services.GetRequiredService<ITripRepository>();
             var loginEventRepository = app.Services.GetRequiredService<ILoginEventRepository>();
+            var loginReportRepository = app.Services.GetRequiredService<ILogInReportRepository>();
 
             Task.Run(() => ConnectAndReceiveTrips(tripRepository));
-            Task.Run(() => ConnectAndReceiveLogins(loginEventRepository));
+            Task.Run(() => ConnectAndReceiveLogins(loginEventRepository, loginReportRepository));
+
+            
 
             app.Run();
         }
@@ -77,7 +81,7 @@ namespace StatisticsServer
             Console.ReadLine();
         }
 
-        public static async Task ConnectAndReceiveLogins(ILoginEventRepository loginEventRepository)
+        public static async Task ConnectAndReceiveLogins(ILoginEventRepository loginEventRepository, ILogInReportRepository loginReportRepository)
         {
             var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
             using var connection = factory.CreateConnection();
@@ -101,6 +105,30 @@ namespace StatisticsServer
                 {
                     loginEventRepository.Add(loginEvent);
                 }
+
+                List<LogInReport> reportsToUpdate;
+                lock (loginReportRepository)
+                {
+                    reportsToUpdate = loginReportRepository.GetAllReports().Where(r => !r.IsReady).ToList();
+                }
+
+                foreach (var report in reportsToUpdate)
+                {
+                    if (report.Logins.Count < report.RequiredLogins)
+                    {
+                        report.Logins.Add(loginEvent);
+                    }
+
+                    if (report.Logins.Count >= report.RequiredLogins)
+                    {
+                        report.IsReady = true;
+                        report.ReadyAt = DateTime.UtcNow;
+                        lock (loginReportRepository)
+                        {
+                            loginReportRepository.UpdateReport(report);
+                        }
+                    }
+                }
             };
 
             channel.BasicConsume(queue: "logins",
@@ -110,5 +138,7 @@ namespace StatisticsServer
             Console.WriteLine("Press [enter] to exit.");
             Console.ReadLine();
         }
+
+
     }
 }
