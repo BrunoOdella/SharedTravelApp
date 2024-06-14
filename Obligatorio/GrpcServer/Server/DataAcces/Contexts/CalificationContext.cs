@@ -92,7 +92,10 @@ namespace GrpcServer.Server.DataAcces.Contexts
 
         public static CalificationContext CreateInsance()
         {
-            _calificationInstance = new CalificationContext();
+            if (_calificationInstance is null)
+            {
+                _calificationInstance = new CalificationContext();
+            }
             return _calificationInstance;
         }
 
