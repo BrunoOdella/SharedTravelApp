@@ -6,6 +6,7 @@ namespace StatisticsServer.Repositories
     {
         void AddReport(LogInReport report);
         LogInReport GetReport(Guid reportId);
+        bool GetReportStatus(Guid reportId);
         List<LogInReport> GetAllReports();
         void UpdateReport(LogInReport report);
     }
@@ -22,6 +23,11 @@ namespace StatisticsServer.Repositories
         public LogInReport GetReport(Guid reportId)
         {
             return _reports.FirstOrDefault(r => r.ReportId == reportId);
+        }
+
+        public bool GetReportStatus(Guid reportId)
+        {
+            return GetReport(reportId).IsReady;
         }
 
         public List<LogInReport> GetAllReports()

@@ -23,16 +23,35 @@ namespace StatisticsServer.Controllers
             return Ok(report.ReportId);
         }
 
-        [HttpGet("{reportId}")]
-        public IActionResult GetReport(Guid reportId)
+        [HttpGet("{id}")]
+        public IActionResult GetReport(Guid id)
         {
-            var report = _loginReportRepository.GetReport(reportId);
+            var report = _loginReportRepository.GetReport(id);
             if (report == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Report not found" });
+            }
+
+            if (!report.IsReady)
+            {
+                return Accepted(new { message = "Report is still in progress. Please check back later." });
             }
 
             return Ok(report);
+        }
+
+        [HttpGet("{reportId}/status")]
+        public IActionResult GetReportStatus(Guid reportId)
+        {
+            var status = _loginReportRepository.GetReportStatus(reportId);
+            if (status)
+            {
+                return Ok("Report is ready");
+            }
+            else
+            {
+                return Ok("Report is still in progress");
+            }
         }
     }
 }
