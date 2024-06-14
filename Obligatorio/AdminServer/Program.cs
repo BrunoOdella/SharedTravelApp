@@ -1,10 +1,16 @@
-﻿namespace AdminServer
+﻿using Grpc.Net.Client;
+using GrpcServer;
+
+namespace AdminServer
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Creando gRPC Client...");
+
+            // Me conecto al servidor:
+            using var channel = GrpcChannel.ForAddress("http://localhost:5035");
         }
     }
 }
