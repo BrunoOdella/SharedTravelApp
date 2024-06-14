@@ -18,7 +18,7 @@ namespace StatisticsServer.Controllers
         [HttpGet]
         public IActionResult GetAllTrips()
         {
-            return Ok(_tripRepository.GetAll());
+           return Ok(_tripRepository.GetAll());
         }
 
         [HttpPost]

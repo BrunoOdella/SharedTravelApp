@@ -168,7 +168,7 @@ namespace GrpcServer.Server
         {
             byte[] responseBuffer = Encoding.UTF8.GetBytes(message);
             int responseLength = responseBuffer.Length;
-            byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
+             byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
             await networkHelper.SendAsync(responseLengthInBytes, token);
             await networkHelper.SendAsync(responseBuffer, token);
         }
