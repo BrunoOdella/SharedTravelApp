@@ -19,5 +19,12 @@ namespace StatisticsServer.Controllers
         {
             return Ok(_loginEventRepository.GetAll());
         }
+
+        [HttpGet("logInCounts")]
+        public IActionResult GetUniqueUserCount()
+        {
+            int count = _loginEventRepository.GetUserLogInCount();
+            return Ok(new { UniqueUserCount = count });
+        }
     }
 }

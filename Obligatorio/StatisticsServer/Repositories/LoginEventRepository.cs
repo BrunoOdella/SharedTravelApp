@@ -6,6 +6,7 @@ namespace StatisticsServer.Repositories
     {
         void Add(LoginEvent loginEvent);
         List<LoginEvent> GetAll();
+        int GetUserLogInCount();
     }
 
     public class LoginEventRepository : ILoginEventRepository
@@ -20,6 +21,11 @@ namespace StatisticsServer.Repositories
         public List<LoginEvent> GetAll()
         {
             return _loginEvents;
+        }
+
+        public int GetUserLogInCount()
+        {
+            return _loginEvents.Select(e => e.UserId).Distinct().Count();
         }
     }
 }
