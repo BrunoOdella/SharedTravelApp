@@ -1,4 +1,5 @@
-﻿using Grpc.Net.Client;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
 
 namespace AdminServer
 {
@@ -23,6 +24,9 @@ namespace AdminServer
                     case "1":
                         CreateTrip(client);
                         break;
+                    case "4":
+                        GetNextNTrips(client);
+                        break;
                     case "0":
                         Console.WriteLine("Saliendo...");
                         return;
@@ -30,6 +34,34 @@ namespace AdminServer
                         Console.WriteLine("Opción no válida. Intente de nuevo.");
                         break;
                 }
+            }
+        }
+
+        private static async Task GetNextNTrips(AdminGrpc.AdminGrpcClient client)
+        {
+            Console.WriteLine("Ingrese la cantidad de viajes que quiere resivir.");
+
+            string cantidad;
+
+            do             {
+                cantidad = Console.ReadLine();
+            } while (!int.TryParse(cantidad, out _) && int.Parse(cantidad) > 0);
+
+            var request = new NextTripsRequest
+            {
+                Quantity = int.Parse(cantidad)
+            };
+
+            using var response = client.GetNextTrips(request);
+
+            await foreach (var trip in response.ResponseStream.ReadAllAsync())
+            {
+                Console.WriteLine($"Viaje {trip.Index}");
+                Console.WriteLine($"Origen: {trip.Origin}");
+                Console.WriteLine($"Destino: {trip.Destination}");
+                Console.WriteLine($"Fecha de salida: {trip.Departure}");
+                Console.WriteLine($"Precio por pasajero: {trip.PricePerPassenger}");
+                Console.WriteLine();
             }
         }
 

@@ -45,6 +45,7 @@ namespace GrpcServer.Services
                 
                 var trip = new TripElem
                 {
+                    Index = i + 1,
                     Origin = mensaje.Origin,
                     Destination = mensaje.Destination,
                     Departure = mensaje.Departure.ToString(),
