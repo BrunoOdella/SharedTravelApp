@@ -21,12 +21,6 @@ namespace StatisticsServer.Controllers
            return Ok(_tripRepository.GetAll());
         }
 
-        [HttpPost]
-        public IActionResult AddTrip([FromBody] Trip trip)
-        {
-            _tripRepository.Add(trip);
-            return Ok();
-        }
 
         [HttpGet("filter")]
         public IActionResult GetFilteredTrips([FromQuery] TripFilter filter)
