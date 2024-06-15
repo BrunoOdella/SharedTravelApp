@@ -16,7 +16,8 @@ namespace AdminServer
                 Console.WriteLine("1. Crear un nuevo viaje");
                 Console.WriteLine("2. Modificar un viaje");
                 Console.WriteLine("3. Eliminar un viaje");
-                Console.WriteLine("4. Obtener los siguientes N viajes creados");
+                Console.WriteLine("4. Ver las calificaciones de un viaje");
+                Console.WriteLine("5. Obtener los siguientes N viajes creados");
                 Console.WriteLine("0. Salir");
 
                 string option = Console.ReadLine();
@@ -24,16 +25,19 @@ namespace AdminServer
                 switch (option)
                 {
                     case "1":
-                        CreateTrip(client);
+                        await CreateTripAsync(client);
                         break;
                     case "2":
-                        UpdateTrip(client);
+                        await UpdateTripAsync(client);
                         break;
                     case "3":
-                        DeleteTrip(client);
+                        await DeleteTripAsync(client);
                         break;
                     case "4":
-                        GetNextNTrips(client);
+                        await GetTripCalificationsAsync(client);
+                        break;
+                    case "5":
+                        GetNextNTripsAsync(client);
                         break;
                     case "0":
                         Console.WriteLine("Saliendo...");
@@ -45,7 +49,7 @@ namespace AdminServer
             }
         }
 
-        private static async Task GetNextNTrips(AdminGrpc.AdminGrpcClient client)
+        private static async Task GetNextNTripsAsync(AdminGrpc.AdminGrpcClient client)
         {
             Console.WriteLine("Ingrese la cantidad de viajes que quiere resivir.");
 
@@ -76,7 +80,7 @@ namespace AdminServer
             }
         }
 
-        private static void CreateTrip(AdminGrpc.AdminGrpcClient client)
+        private static async Task CreateTripAsync(AdminGrpc.AdminGrpcClient client)
         {
             Console.WriteLine("Ingrese los detalles del nuevo viaje:");
 
@@ -113,14 +117,15 @@ namespace AdminServer
                 PetsAllowed = petsAllowed
             };
 
-            var response = client.CreateTrip(request);
+            var response = await client.CreateTripAsync(request);
 
             Console.WriteLine("Viaje creado con éxito.");
         }
 
-        private static void UpdateTrip(AdminGrpc.AdminGrpcClient client)
+        private static async Task UpdateTripAsync(AdminGrpc.AdminGrpcClient client)
         {
-            List<TripElem> tripElems = client.GetAllTrips(new Empty()).Trips.ToList();
+            var tripResponse = await client.GetAllTripsAsync(new Empty());
+            List<TripElem> tripElems = tripResponse.Trips.ToList();
 
             foreach (var tripElem in tripElems)
             {
@@ -161,14 +166,15 @@ namespace AdminServer
                 PricePerPassenger = pricePerPassenger,
             };
 
-            var response = client.UpdateTrip(request);
+            var response = await client.UpdateTripAsync(request);
 
             Console.WriteLine("Viaje modificado con éxito.");
         }
 
-        private static void DeleteTrip(AdminGrpc.AdminGrpcClient client)
+        private static async Task DeleteTripAsync(AdminGrpc.AdminGrpcClient client)
         {
-            List<TripElem> tripElems = client.GetAllTrips(new Empty()).Trips.ToList();
+            var tripResponse = await client.GetAllTripsAsync(new Empty());
+            List<TripElem> tripElems = tripResponse.Trips.ToList();
 
             foreach (var tripElem in tripElems)
             {
@@ -189,9 +195,45 @@ namespace AdminServer
                 Index = tripId-1
             };
 
-            var response = client.DeleteTrip(request);
+            var response = await client.DeleteTripAsync(request);
 
             Console.WriteLine("Viaje eliminado con éxito.");
+        }
+
+        private static async Task GetTripCalificationsAsync(AdminGrpc.AdminGrpcClient client)
+        {
+            var tripResponse = await client.GetAllTripsAsync(new Empty());
+            List<TripElem> tripElems = tripResponse.Trips.ToList();
+
+            foreach (var tripElem in tripElems)
+            {
+                Console.WriteLine($"ID: {tripElem.Index + 1}");
+                Console.WriteLine($"Origen: {tripElem.Origin}");
+                Console.WriteLine($"Destino: {tripElem.Destination}");
+                Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
+                Console.WriteLine($"Precio por pasajero: {tripElem.PricePerPassenger}");
+                Console.WriteLine($"¿Se permiten mascotas? {tripElem.PetsAllowed}");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("Ingrese el numero del viaje para ver sus calificaciones:");
+            int tripId = int.Parse(Console.ReadLine());
+            Console.WriteLine();
+            Console.WriteLine("Lista de calificaciones:");
+            Console.WriteLine();
+            var request = new TripIndex
+            {
+                Index = tripId-1
+            };
+
+            var response = await client.GetTripCalificationsAsync(request);
+
+            foreach (var calification in response.Ratings)
+            {
+                Console.WriteLine($"Calificación: {calification.Score}");
+                Console.WriteLine($"Comentario: {calification.Comment}");
+                Console.WriteLine();
+            }
         }
 
     }

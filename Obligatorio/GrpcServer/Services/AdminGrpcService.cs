@@ -15,11 +15,13 @@ namespace GrpcServer.Services
     {
         private readonly ITripRepository _tripRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICalificationRepository _calificationRepository;
 
         public AdminGrpcService()
         {
             _tripRepository = new TripRepository();
             _userRepository = new UserRepository();
+            _calificationRepository = new CalificationRepository();
         }
 
         public override async Task<Empty> CreateTrip(CreateTripRequest request, ServerCallContext context)
@@ -134,6 +136,22 @@ namespace GrpcServer.Services
             notifier.Reset();
 
             return new TripElem();
+        }
+
+        public override async Task<CalificationResponse> GetTripCalifications(TripIndex request, ServerCallContext context)
+        {
+            List<Trip> trips = await _tripRepository.GetAllAsync();
+            List<Calification> califications = await _calificationRepository.GetCalificationsByTripIdAsync(trips[request.Index]._id);
+            CalificationResponse response = new CalificationResponse();
+            foreach (Calification calification in califications)
+            {
+                response.Ratings.Add(new CalificationElem
+                {
+                    Score = calification.Score,
+                    Comment = calification.Comment
+                });
+            }
+            return response;
         }
     }
 }
