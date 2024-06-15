@@ -24,6 +24,10 @@ namespace GrpcServer.Server
         static CancellationTokenSource shutdownCancellation = new CancellationTokenSource();
 
         private static bool sendTripToAdmin = false;
+        private static SemaphoreSlim _sendTripToAdmin = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _mutexTripToAdmin = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _serviceQueueTripToAdmin = new SemaphoreSlim(1, 1);
+        private static int _readersTripToAdmin = 0;
 
         public static void Launch()
         {
@@ -700,7 +704,8 @@ namespace GrpcServer.Server
                         PricePerPassenger = pricePerPassanger
                     };
                     var notifier = Notifier.CreateInsance();
-                    notifier.ProduceAsync(mensaje);
+                    notifier.Publish(mensaje);
+                    Console.WriteLine("Mensaje publicado exitosamente.");
                 }
 
                 await SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper, token);
@@ -999,14 +1004,28 @@ namespace GrpcServer.Server
             return sb.ToString();
         }
 
-        public static void ReadyToReceiveTrips()
+        public static async Task ReadyToReceiveTrips()
         {
-            sendTripToAdmin = true;
+            await _serviceQueueTripToAdmin.WaitAsync();
+            await _mutexTripToAdmin.WaitAsync();
+            _readersTripToAdmin++;
+
+            if(_readersTripToAdmin == 1)
+                sendTripToAdmin = true;
+
+            _serviceQueueTripToAdmin.Release();
+            _mutexTripToAdmin.Release();
         }
 
-        public static void StopReceivingTrips()
+        public static async Task StopReceivingTrips()
         {
-            sendTripToAdmin = false;
+            await _mutexTripToAdmin.WaitAsync();
+            _readersTripToAdmin--;
+
+            if (_readersTripToAdmin == 0)
+                sendTripToAdmin = false;
+
+            _mutexTripToAdmin.Release();
         }
     }
 }

@@ -5,7 +5,9 @@ using GrpcServer.Server.BL.Repositories;
 using GrpcServer.Server.DataAcces.Repositories;
 using GrpcServer.Server.BL;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Channels;
 
 namespace GrpcServer.Services
 {
@@ -90,20 +92,41 @@ namespace GrpcServer.Services
             var notifier = Notifier.CreateInsance();
             var cant = request.Quantity;
 
-            for (int i = 0; i < cant; i++)
-            {
-                var mensaje = await notifier.ConsumeAsync();
-                
-                var trip = new TripElem
-                {
-                    Index = i + 1,
-                    Origin = mensaje.Origin,
-                    Destination = mensaje.Destination,
-                    Departure = mensaje.Departure.ToString(),
-                    PricePerPassenger = mensaje.PricePerPassenger
-                };
+            var channel = Channel.CreateUnbounded<Mensaje>();
 
-                await responseStream.WriteAsync(trip);
+            var subscription = notifier.Subscribe(Observer.Create<Mensaje>(
+                onNext: async message => {
+                    await channel.Writer.WriteAsync(message);
+                },
+                onError: error => channel.Writer.Complete(error),
+                onCompleted: () => channel.Writer.Complete()
+            ));
+
+            int index = 1;
+
+            while (await channel.Reader.WaitToReadAsync(context.CancellationToken) && cant > 0)
+            {
+                Console.WriteLine("dentro del primer while");
+                while (channel.Reader.TryRead(out var mensaje) && cant > 0)
+                {
+                    Console.WriteLine("dentro del 2do while");
+
+                    var trip = new TripElem
+                    {
+                        Index = index,
+                        Origin = mensaje.Origin,
+                        Destination = mensaje.Destination,
+                        Departure = mensaje.Departure.ToString(),
+                        PricePerPassenger = mensaje.PricePerPassenger
+                    };
+
+                    await responseStream.WriteAsync(trip);
+
+                    Console.WriteLine("enviado");
+
+                    cant--;
+                    index++;
+                }
             }
 
             LaunchServer.StopReceivingTrips();
