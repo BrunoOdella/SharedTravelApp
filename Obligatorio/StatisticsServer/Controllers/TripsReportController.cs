@@ -17,9 +17,9 @@ namespace StatisticsServer.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateReport([FromBody] int numberOfTrips)
+        public IActionResult CreateReport([FromBody] CreateReportRequest request)
         {
-            var report = new TripReport(numberOfTrips);
+            var report = new TripReport(request.NumberOfTrips);
             _tripReportRepository.AddReport(report);
             return Ok(report.ReportId);
         }
