@@ -24,7 +24,7 @@ namespace StatisticsServer.Controllers
         public IActionResult GetUniqueUserCount()
         {
             int count = _loginEventRepository.GetUserLogInCount();
-            return Ok(new { UniqueUserCount = count });
+            return Ok(new { UniqueUserLogInCount = count });
         }
     }
 }
