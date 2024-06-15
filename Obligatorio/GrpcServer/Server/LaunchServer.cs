@@ -11,6 +11,7 @@ using GrpcServer.Server.DataAcces.Contexts;
 using Microsoft.AspNetCore.Connections;
 using System.Text.Json;
 using System.Threading.Channels;
+using System.Data;
 
 namespace GrpcServer.Server
 {
@@ -282,9 +283,16 @@ namespace GrpcServer.Server
         }
 
         //funcion para mandarle al statistics server el trip (que lo voy a tener que mandar en la funcion de publich trip
-        private static void SendTripToStatistics(Trip trip)
+        private static void SendTripToStatistics(Trip trip, string operation)
         {
-            var message = JsonSerializer.Serialize(trip);
+            var tripMessage = new TripMessage
+            {
+                Operation = operation,
+                TripId = trip.GetGuid(), // Aquí obtienes el ID del Trip
+                Trip = trip
+            };
+
+            var message = JsonSerializer.Serialize(tripMessage);
             var body = Encoding.UTF8.GetBytes(message);
 
             tripChannel.BasicPublish(
@@ -293,6 +301,8 @@ namespace GrpcServer.Server
                 basicProperties: null,
                 body: body);
         }
+
+
 
         private static void SendLoginEvent(Guid userId)
         {
@@ -343,6 +353,8 @@ namespace GrpcServer.Server
                 int pos = int.Parse(selected) - 1;
 
                 ITripRepo.Remove(ActualsTrips[pos]);
+
+                SendTripToStatistics(ActualsTrips[pos], "Delete");
 
                 await SendMessageToClientAsync("Se elimino el viaje", networkHelper, token);
             }
@@ -522,6 +534,11 @@ namespace GrpcServer.Server
 
                                 ITripRepo.Update(tripToJoin);
 
+                                SendTripToStatistics(tripToJoin, "tripToJoin");
+
+
+
+
                                 response = "Se ha unido correctamente al viaje.";
 
 
@@ -680,6 +697,8 @@ namespace GrpcServer.Server
                     await SendMessageToClientAsync($"Viaje actualizado", networkHelper, token);
 
                     ITripRepo.Update(selectedTrip);
+
+                    SendTripToStatistics(selectedTrip, "Update");
                 }
 
             }
@@ -729,7 +748,7 @@ namespace GrpcServer.Server
                 newTrip.SetOwner(user.GetGuid());
                 ITripRepo.Add(newTrip);
 
-                SendTripToStatistics(newTrip);
+                SendTripToStatistics(newTrip, "Create");
 
                 await SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper, token);
             }

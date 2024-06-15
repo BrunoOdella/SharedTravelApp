@@ -20,5 +20,10 @@
             this.Id = Guid.NewGuid();
             this.Passengers = new List<Guid>();
         }
+
+        internal void SetGuid(Guid tripId)
+        {
+            this.Id = tripId;
+        }
     }
 }

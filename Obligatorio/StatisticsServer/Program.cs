@@ -16,8 +16,8 @@ namespace StatisticsServer
             // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddSingleton<ITripRepository, TripRepository>();
+            builder.Services.AddSingleton<ITripReportRepository, TripReportRepository>();
             builder.Services.AddSingleton<ILoginEventRepository, LoginEventRepository>();
-            builder.Services.AddSingleton<ILogInReportRepository, LoginReportRepository>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -36,18 +36,16 @@ namespace StatisticsServer
             app.MapControllers();
 
             var tripRepository = app.Services.GetRequiredService<ITripRepository>();
+            var tripReportRepository = app.Services.GetRequiredService<ITripReportRepository>();
             var loginEventRepository = app.Services.GetRequiredService<ILoginEventRepository>();
-            var loginReportRepository = app.Services.GetRequiredService<ILogInReportRepository>();
 
-            Task.Run(() => ConnectAndReceiveTrips(tripRepository));
-            Task.Run(() => ConnectAndReceiveLogins(loginEventRepository, loginReportRepository));
-
-            
+            Task.Run(() => ConnectAndReceiveTrips(tripRepository, tripReportRepository));
+            Task.Run(() => ConnectAndReceiveLogins(loginEventRepository));
 
             app.Run();
         }
 
-        public static async Task ConnectAndReceiveTrips(ITripRepository tripRepository)
+        public static async Task ConnectAndReceiveTrips(ITripRepository tripRepository, ITripReportRepository tripReportRepository)
         {
             var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
             using var connection = factory.CreateConnection();
@@ -64,12 +62,58 @@ namespace StatisticsServer
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                var trip = JsonSerializer.Deserialize<Trip>(message);
-                Console.WriteLine($"Received trip: {trip.Origin} to {trip.Destination}");
+                var tripMessage = JsonSerializer.Deserialize<TripMessage>(message);
 
-                lock (tripRepository)
+                var trip = tripMessage.Trip;
+                trip.SetGuid(tripMessage.TripId);
+
+                if (tripMessage != null)
                 {
-                    tripRepository.Add(trip);
+                    switch (tripMessage.Operation)
+                    {
+                        case "Create":
+                            lock (tripRepository)
+                            {
+                                tripRepository.Add(trip);
+                            }
+                            break;
+                        case "Update":
+                            lock (tripRepository)
+                            {
+                                tripRepository.Update(trip);
+                            }
+                            break;
+                        case "Delete":
+                            lock (tripRepository)
+                            {
+                                tripRepository.Delete(tripMessage.TripId);
+                            }
+                            break;
+                    }
+
+                    List<TripReport> reportsToUpdate;
+                    lock (tripReportRepository)
+                    {
+                        reportsToUpdate = tripReportRepository.GetAllReports().Where(r => !r.IsReady).ToList();
+                    }
+
+                    foreach (var report in reportsToUpdate)
+                    {
+                        if (report.Trips.Count < report.RequiredTrips)
+                        {
+                            report.Trips.Add(tripMessage.Trip);
+                        }
+
+                        if (report.Trips.Count >= report.RequiredTrips)
+                        {
+                            report.IsReady = true;
+                            report.ReadyAt = DateTime.UtcNow;
+                            lock (tripReportRepository)
+                            {
+                                tripReportRepository.UpdateReport(report);
+                            }
+                        }
+                    }
                 }
             };
 
@@ -81,7 +125,7 @@ namespace StatisticsServer
             Console.ReadLine();
         }
 
-        public static async Task ConnectAndReceiveLogins(ILoginEventRepository loginEventRepository, ILogInReportRepository loginReportRepository)
+        public static async Task ConnectAndReceiveLogins(ILoginEventRepository loginEventRepository)
         {
             var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
             using var connection = factory.CreateConnection();
@@ -105,30 +149,6 @@ namespace StatisticsServer
                 {
                     loginEventRepository.Add(loginEvent);
                 }
-
-                List<LogInReport> reportsToUpdate;
-                lock (loginReportRepository)
-                {
-                    reportsToUpdate = loginReportRepository.GetAllReports().Where(r => !r.IsReady).ToList();
-                }
-
-                foreach (var report in reportsToUpdate)
-                {
-                    if (report.Logins.Count < report.RequiredLogins)
-                    {
-                        report.Logins.Add(loginEvent);
-                    }
-
-                    if (report.Logins.Count >= report.RequiredLogins)
-                    {
-                        report.IsReady = true;
-                        report.ReadyAt = DateTime.UtcNow;
-                        lock (loginReportRepository)
-                        {
-                            loginReportRepository.UpdateReport(report);
-                        }
-                    }
-                }
             };
 
             channel.BasicConsume(queue: "logins",
@@ -138,7 +158,5 @@ namespace StatisticsServer
             Console.WriteLine("Press [enter] to exit.");
             Console.ReadLine();
         }
-
-
     }
 }
