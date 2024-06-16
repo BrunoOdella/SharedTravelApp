@@ -696,7 +696,7 @@ namespace GrpcServer.Server
                 newTrip.SetOwner(user.GetGuid());
                 await ITripRepo.AddAsync(newTrip);
 
-                if (sendTripToAdmin)
+                if (await CheckIfSendingToAdminAsync())
                 {
                     Mensaje mensaje = new Mensaje
                     {
@@ -1026,6 +1026,19 @@ namespace GrpcServer.Server
                 sendTripToAdmin = false;
 
             _mutexTripToAdmin.Release();
+        }
+
+        public static async Task<bool> CheckIfSendingToAdminAsync()
+        {
+            await _serviceQueueTripToAdmin.WaitAsync(); 
+            await _mutexTripToAdmin.WaitAsync(); 
+
+            bool result = sendTripToAdmin; 
+
+            _mutexTripToAdmin.Release(); 
+            _serviceQueueTripToAdmin.Release(); 
+
+            return result;
         }
     }
 }
