@@ -3,10 +3,15 @@ using System.Net;
 using System.Text;
 using Common;
 using Common.Interfaces;
+using RabbitMQ.Client;
 using GrpcServer.Server.BL;
 using GrpcServer.Server.DataAcces.Repositories;
 using GrpcServer.Server.BL.Repositories;
 using GrpcServer.Server.DataAcces.Contexts;
+using Microsoft.AspNetCore.Connections;
+using System.Text.Json;
+using System.Threading.Channels;
+using System.Data;
 
 namespace GrpcServer.Server
 {
@@ -22,6 +27,11 @@ namespace GrpcServer.Server
         static bool acceptClients = true;
         static List<(Task, TcpClient)> clients = new List<(Task, TcpClient)>();
         static CancellationTokenSource shutdownCancellation = new CancellationTokenSource();
+
+        private const string tripQueue = "trips";
+        private const string loginQueue = "logins";
+        private static IModel tripChannel;
+        private static IModel loginChannel;
 
         public static void Launch()
         {
@@ -39,6 +49,15 @@ namespace GrpcServer.Server
                 Console.WriteLine("Waiting for clients...");
 
                 var consoleTask = Task.Run(() => HandleConsoleInput(listener));
+
+                var connectionFactory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
+                var connection = connectionFactory.CreateConnection();
+
+                tripChannel = connection.CreateModel();
+                tripChannel.QueueDeclare(queue: tripQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+                loginChannel = connection.CreateModel();
+                loginChannel.QueueDeclare(queue: loginQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
                 while (acceptClients || clients.Count > 0)
                 {
@@ -153,7 +172,7 @@ namespace GrpcServer.Server
         {
             byte[] responseBuffer = Encoding.UTF8.GetBytes(message);
             int responseLength = responseBuffer.Length;
-            byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
+             byte[] responseLengthInBytes = BitConverter.GetBytes(responseLength);
             await networkHelper.SendAsync(responseLengthInBytes, token);
             await networkHelper.SendAsync(responseBuffer, token);
         }
@@ -195,6 +214,7 @@ namespace GrpcServer.Server
                         user = userRepository.Get(userId);
                         await SendMessageToClientAsync(response, networkHelper, token);
 
+                        SendLoginEvent(userId);
 
                         await GoToOptionAsync(networkHelper, client, user, token);
 
@@ -262,8 +282,38 @@ namespace GrpcServer.Server
             }
         }
 
+        //funcion para mandarle al statistics server el trip (que lo voy a tener que mandar en la funcion de publich trip
+        private static void SendTripToStatistics(Trip trip, string operation)
+        {
+            var tripMessage = new TripMessage
+            {
+                Operation = operation,
+                TripId = trip.GetGuid(), // Aquí obtienes el ID del Trip
+                Trip = trip
+            };
+
+            var message = JsonSerializer.Serialize(tripMessage);
+            var body = Encoding.UTF8.GetBytes(message);
+
+            tripChannel.BasicPublish(
+                exchange: "",
+                routingKey: tripQueue,
+                basicProperties: null,
+                body: body);
+        }
 
 
+
+        private static void SendLoginEvent(Guid userId)
+        {
+            var loginEvent = new LoginEvent
+            {
+                UserId = userId,
+                Timestamp = DateTime.UtcNow
+            };
+            var messageBody = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(loginEvent));
+            loginChannel.BasicPublish(exchange: "", routingKey: loginQueue, basicProperties: null, body: messageBody);
+        }
 
         private static async Task DeleteTripAsync(NetworkHelper networkHelper, TcpClient client, User user, CancellationToken token)
         {
@@ -303,6 +353,8 @@ namespace GrpcServer.Server
                 int pos = int.Parse(selected) - 1;
 
                 ITripRepo.Remove(ActualsTrips[pos]);
+
+                SendTripToStatistics(ActualsTrips[pos], "Delete");
 
                 await SendMessageToClientAsync("Se elimino el viaje", networkHelper, token);
             }
@@ -482,6 +534,11 @@ namespace GrpcServer.Server
 
                                 ITripRepo.Update(tripToJoin);
 
+                                SendTripToStatistics(tripToJoin, "tripToJoin");
+
+
+
+
                                 response = "Se ha unido correctamente al viaje.";
 
 
@@ -640,6 +697,8 @@ namespace GrpcServer.Server
                     await SendMessageToClientAsync($"Viaje actualizado", networkHelper, token);
 
                     ITripRepo.Update(selectedTrip);
+
+                    SendTripToStatistics(selectedTrip, "Update");
                 }
 
             }
@@ -688,6 +747,8 @@ namespace GrpcServer.Server
 
                 newTrip.SetOwner(user.GetGuid());
                 ITripRepo.Add(newTrip);
+
+                SendTripToStatistics(newTrip, "Create");
 
                 await SendMessageToClientAsync("Viaje publicado con éxito.", networkHelper, token);
             }
