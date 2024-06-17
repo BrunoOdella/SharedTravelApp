@@ -1,0 +1,3753 @@
+[
+  {
+    "TripID": "77b18bba-7b1a-4eb8-a591-d2466a34970d",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen14",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 12,
+    "Hora": 16,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 330.06,
+    "Mascota": true,
+    "photo": "auto0",
+    "Pasageros": [
+      "7ed65480-be11-4d06-a60d-53f2484dc44a"
+    ]
+  },
+  {
+    "TripID": "39b32bcd-558e-4f14-9440-6a749e689452",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen11",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 13,
+    "Hora": 17,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 455.07,
+    "Mascota": true,
+    "photo": "auto1",
+    "Pasageros": [
+      "b2006717-8fa9-47be-8090-c50187633fca",
+      "561e649a-ecf1-4c63-beda-53402ee29a7c"
+    ]
+  },
+  {
+    "TripID": "3b49601b-4319-47b3-acd6-d3f12ae3cbbb",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen6",
+    "Destino": "destino4",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 17,
+    "Hora": 14,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 346.33,
+    "Mascota": true,
+    "photo": "auto2",
+    "Pasageros": [
+      "98ef7b9a-10eb-489e-9c40-51c9499e5436",
+      "b0ee5fba-5e1b-4f38-a505-1465e816e73d",
+      "e084911f-78e2-4b68-9778-7b6ea4904bd0"
+    ]
+  },
+  {
+    "TripID": "238d63ab-e9c6-4537-8f6b-e7c4d9764943",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen10",
+    "Destino": "destino3",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 29,
+    "Hora": 5,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 469.02,
+    "Mascota": true,
+    "photo": "auto3",
+    "Pasageros": [
+      "42a2f4b9-e6f8-4c53-ab88-c65e615db467",
+      "ff813478-5738-4d96-b305-8d7394bf4405"
+    ]
+  },
+  {
+    "TripID": "d32223dc-297d-41c8-8245-3373ffe180a4",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen13",
+    "Destino": "destino14",
+    "Anio": 2024,
+    "Mes": 5,
+    "Dia": 21,
+    "Hora": 14,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 381.27,
+    "Mascota": true,
+    "photo": "auto4",
+    "Pasageros": [
+      "82f4b9e7-ea79-445c-8255-835c42362e1e",
+      "4d36d190-7907-4943-9ff6-93f1d8ad9a29"
+    ]
+  },
+  {
+    "TripID": "6ba85040-0cd8-49bb-b1ff-13e8c0cefbfd",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen8",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 22,
+    "Hora": 8,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 442.79,
+    "Mascota": true,
+    "photo": "auto5",
+    "Pasageros": [
+      "6d6ca69f-a0e3-4a40-bc16-4fad25dd2d9a",
+      "e051c0f5-0072-461b-a672-b617b09c6aad"
+    ]
+  },
+  {
+    "TripID": "d4478f13-6881-473e-bf60-8e59a3651763",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen14",
+    "Destino": "destino13",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 25,
+    "Hora": 11,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 350.13,
+    "Mascota": true,
+    "photo": "auto6",
+    "Pasageros": [
+      "da098f7b-d92e-4e70-a994-b3d302530a5f"
+    ]
+  },
+  {
+    "TripID": "5f50f8a1-7710-41b9-b934-cd0e6a9048f2",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen3",
+    "Destino": "destino7",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 18,
+    "Hora": 14,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 447.67,
+    "Mascota": true,
+    "photo": "auto7",
+    "Pasageros": [
+      "5f76e363-4a78-4fa1-b6ea-f560aba6bc0e",
+      "8779d270-0273-40d5-b908-4a5af3142dcb",
+      "08a0488e-498d-4f5c-af76-d23cc29de3af"
+    ]
+  },
+  {
+    "TripID": "57177564-ee14-4308-8f7f-9db146d66c0e",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen11",
+    "Destino": "destino13",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 25,
+    "Hora": 10,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 427.16,
+    "Mascota": true,
+    "photo": "auto8",
+    "Pasageros": [
+      "be75f7ee-ce08-47fc-9e4f-dd67776ec6ee",
+      "7ff00b8f-93a7-4de9-aca2-2416aeb0138a",
+      "2e14c615-bdb9-4aa1-b014-bb54851a4d54"
+    ]
+  },
+  {
+    "TripID": "3bec0c54-dd4c-40fe-8aea-b8ea7bd7d563",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen2",
+    "Destino": "destino8",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 11,
+    "Hora": 14,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 333.3,
+    "Mascota": true,
+    "photo": "auto9",
+    "Pasageros": [
+      "2555dc13-e69d-4543-82fb-f626713fbf21"
+    ]
+  },
+  {
+    "TripID": "f9acafc2-1795-4e67-83c6-fb80a0a896aa",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen8",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 4,
+    "Hora": 13,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 385.08,
+    "Mascota": true,
+    "photo": "auto10",
+    "Pasageros": [
+      "e084911f-78e2-4b68-9778-7b6ea4904bd0",
+      "6f6adca4-14aa-4f8a-b36e-241c9c8b378e"
+    ]
+  },
+  {
+    "TripID": "61af04b0-4e06-4c07-828d-105caffcbb1a",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen8",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 7,
+    "Hora": 18,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 354.94,
+    "Mascota": true,
+    "photo": "auto11",
+    "Pasageros": [
+      "53140ca2-def4-44e4-9f2f-ef7f72249423"
+    ]
+  },
+  {
+    "TripID": "0aa97854-ec79-4e4a-8ff7-cee961592552",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen14",
+    "Destino": "destino5",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 9,
+    "Hora": 14,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 394.51,
+    "Mascota": true,
+    "photo": "auto12",
+    "Pasageros": [
+      "49671a5b-1389-40c1-8a91-b894feb850c9"
+    ]
+  },
+  {
+    "TripID": "b41966a1-58a2-473d-a01c-1cd884a93743",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen15",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 6,
+    "Hora": 8,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 336.51,
+    "Mascota": true,
+    "photo": "auto13",
+    "Pasageros": [
+      "ff813478-5738-4d96-b305-8d7394bf4405",
+      "010cde7f-437e-4b71-8f43-dd82b1127b0f"
+    ]
+  },
+  {
+    "TripID": "500bb3f8-3f0b-46c2-98da-7fb9054da3b0",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen8",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 15,
+    "Hora": 13,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 360.66,
+    "Mascota": true,
+    "photo": "auto14",
+    "Pasageros": [
+      "d4f49a56-3e73-4aa3-b673-21d633542d97",
+      "82e1e182-0970-49e1-a287-fed7edfc63d3"
+    ]
+  },
+  {
+    "TripID": "0d231d5d-65d7-4ea6-b5d0-2d5e1f509286",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen7",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 4,
+    "Hora": 7,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 451.06,
+    "Mascota": true,
+    "photo": "auto15",
+    "Pasageros": [
+      "36dcb5bb-e93e-4512-9245-029f5c4532db",
+      "8779d270-0273-40d5-b908-4a5af3142dcb"
+    ]
+  },
+  {
+    "TripID": "77451bef-bf99-4e3d-ac5b-5aeb23afbf7f",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen9",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 10,
+    "Hora": 17,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 474.1,
+    "Mascota": true,
+    "photo": "auto16",
+    "Pasageros": [
+      "498caa02-e603-4a13-b276-6b9c38d99e42"
+    ]
+  },
+  {
+    "TripID": "64499b28-aa58-4eee-8b21-b20161a3dcf3",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen8",
+    "Destino": "destino5",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 13,
+    "Hora": 4,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 372.1,
+    "Mascota": true,
+    "photo": "auto17",
+    "Pasageros": [
+      "42a2f4b9-e6f8-4c53-ab88-c65e615db467",
+      "b15550b1-c7d1-4b0a-a565-ed50c88a225b"
+    ]
+  },
+  {
+    "TripID": "3a7d4cf3-92d1-449d-ba73-11c7633965c2",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen17",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 26,
+    "Hora": 13,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 339.13,
+    "Mascota": true,
+    "photo": "auto18",
+    "Pasageros": [
+      "498caa02-e603-4a13-b276-6b9c38d99e42"
+    ]
+  },
+  {
+    "TripID": "e05e62bf-789b-44b3-824f-46fdb15d9f76",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen9",
+    "Destino": "destino18",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 22,
+    "Hora": 3,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 462.7,
+    "Mascota": true,
+    "photo": "auto19",
+    "Pasageros": [
+      "25052c11-6ab1-43d9-a743-70ca942983b5",
+      "4b7595aa-1870-4323-9c4f-627ac7038742"
+    ]
+  },
+  {
+    "TripID": "479f03dc-61de-4edf-a4ae-4578742a48ba",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen9",
+    "Destino": "destino5",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 22,
+    "Hora": 20,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 471.15,
+    "Mascota": true,
+    "photo": "auto20",
+    "Pasageros": [
+      "14d2d2ff-940d-487b-b141-3cb0bbb7a356",
+      "89cf685e-05bb-4363-a9a2-485d4fa4d71c"
+    ]
+  },
+  {
+    "TripID": "a1703d81-2d46-49d8-8c06-1cc741120684",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen11",
+    "Destino": "destino4",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 27,
+    "Hora": 5,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 464.03,
+    "Mascota": true,
+    "photo": "auto21",
+    "Pasageros": [
+      "c2f471aa-b3e2-4dc5-9cdc-c266bd6a2dc0",
+      "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+      "7e1bf77b-530b-4922-b78f-e1f7c0d0b8df"
+    ]
+  },
+  {
+    "TripID": "ea87b954-f17c-4898-8385-f7b181405419",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen5",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 26,
+    "Hora": 5,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 348.21,
+    "Mascota": true,
+    "photo": "auto22",
+    "Pasageros": [
+      "dee69949-5acb-4d6b-b497-81a7e149a084"
+    ]
+  },
+  {
+    "TripID": "2cadef54-2cb9-4e9d-b18b-e45410b9aa94",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen10",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 3,
+    "Hora": 23,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 418.95,
+    "Mascota": true,
+    "photo": "auto23",
+    "Pasageros": [
+      "c2f471aa-b3e2-4dc5-9cdc-c266bd6a2dc0"
+    ]
+  },
+  {
+    "TripID": "f17db145-17b4-45f2-a688-6598fb85250e",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen16",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 15,
+    "Hora": 9,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 453.14,
+    "Mascota": true,
+    "photo": "auto24",
+    "Pasageros": [
+      "3dc02239-9070-4674-b347-886c02e34ab6",
+      "e084911f-78e2-4b68-9778-7b6ea4904bd0",
+      "39b07b33-7532-431e-a3c6-51086d05560d"
+    ]
+  },
+  {
+    "TripID": "9e0b1842-2740-4232-ae04-27bc0706b8bb",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen5",
+    "Destino": "destino15",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 12,
+    "Hora": 15,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 471.06,
+    "Mascota": true,
+    "photo": "auto25",
+    "Pasageros": [
+      "e79c9b51-ef40-4d6f-be80-c800a93a5c50",
+      "9f24ace1-19f5-4f7f-8c1e-26067352323e"
+    ]
+  },
+  {
+    "TripID": "dab9a20d-495f-48bf-b4c5-26a995758b46",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen3",
+    "Destino": "destino5",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 26,
+    "Hora": 5,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 471.52,
+    "Mascota": true,
+    "photo": "auto26",
+    "Pasageros": [
+      "c9ad1e54-d6fb-4e7b-9a59-57f51596f312"
+    ]
+  },
+  {
+    "TripID": "d43479b5-9a9d-4504-bfbd-87fc42ec784f",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen2",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 2,
+    "Hora": 20,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 471.08,
+    "Mascota": true,
+    "photo": "auto27",
+    "Pasageros": [
+      "9badd830-05a0-4662-94af-b3deb0d56a31"
+    ]
+  },
+  {
+    "TripID": "8c400685-c491-4ef5-95ea-8e40d4414d31",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen18",
+    "Destino": "destino3",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 10,
+    "Hora": 12,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 404.13,
+    "Mascota": true,
+    "photo": "auto28",
+    "Pasageros": [
+      "2555dc13-e69d-4543-82fb-f626713fbf21",
+      "81e7f488-2fb9-411e-9d1a-ca3a2bf9ec37"
+    ]
+  },
+  {
+    "TripID": "ccc848b0-4a06-4ac9-8439-e7f89b0a2a55",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen6",
+    "Destino": "destino17",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 23,
+    "Hora": 15,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 383.1,
+    "Mascota": true,
+    "photo": "auto29",
+    "Pasageros": [
+      "04dcb2fe-9917-42da-8a41-c259d4bbc730",
+      "f1beac83-f13c-440c-bcbb-89c5e4e6d756",
+      "f26c54d5-e5a8-4ff4-90a7-82e4bb6a6165"
+    ]
+  },
+  {
+    "TripID": "f84f306d-7def-46d4-b09c-c052aa8c1f98",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen3",
+    "Destino": "destino15",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 15,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 441.95,
+    "Mascota": true,
+    "photo": "auto30",
+    "Pasageros": [
+      "f025e300-be61-4b80-806a-a18024c7c8f1",
+      "c2c7b94d-08a9-4ae9-9deb-34bcd07affe5"
+    ]
+  },
+  {
+    "TripID": "60587e7b-265c-4de4-bb25-469b329cb1f9",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen15",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 21,
+    "Hora": 13,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 419.06,
+    "Mascota": true,
+    "photo": "auto31",
+    "Pasageros": [
+      "e541128c-a3b4-4ecf-836a-66cbbecf3ae0"
+    ]
+  },
+  {
+    "TripID": "1e08450f-815c-4608-a440-0b7955308ac3",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen15",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 26,
+    "Hora": 15,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 423.8,
+    "Mascota": true,
+    "photo": "auto32",
+    "Pasageros": [
+      "8dcaa661-e786-489b-abdb-1e615348854e"
+    ]
+  },
+  {
+    "TripID": "3eb009e0-6bf4-40e4-9717-a749d3adb6ef",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen14",
+    "Destino": "destino4",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 10,
+    "Hora": 3,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 389.14,
+    "Mascota": true,
+    "photo": "auto33",
+    "Pasageros": [
+      "088fe36a-baea-4737-9b01-7f07d21b9e57"
+    ]
+  },
+  {
+    "TripID": "1b662565-420b-417a-9405-55ccd28828a4",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen16",
+    "Destino": "destino8",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 10,
+    "Hora": 3,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 458.91,
+    "Mascota": true,
+    "photo": "auto34",
+    "Pasageros": [
+      "baf67e19-1027-4b51-b904-ce75d96e3394",
+      "37c9de7d-114a-4dfa-b517-cfbc49ba274c"
+    ]
+  },
+  {
+    "TripID": "d9bdafb8-aeb9-4b63-bd18-f749384493cc",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen16",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 5,
+    "Hora": 20,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 456.71,
+    "Mascota": true,
+    "photo": "auto35",
+    "Pasageros": [
+      "bb4fcab0-d9e6-4b98-ba92-746fb048ed7f",
+      "f2d4224c-e74b-49d7-a444-7f2da30ecfc7"
+    ]
+  },
+  {
+    "TripID": "113171ac-f6ac-4fbd-85d3-1fb23ff5e730",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen18",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 4,
+    "Hora": 16,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 386.24,
+    "Mascota": true,
+    "photo": "auto36",
+    "Pasageros": [
+      "b15550b1-c7d1-4b0a-a565-ed50c88a225b"
+    ]
+  },
+  {
+    "TripID": "3835a3c2-5a98-45bb-ac3a-08a95573753c",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen18",
+    "Destino": "destino15",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 3,
+    "Hora": 21,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 343.91,
+    "Mascota": true,
+    "photo": "auto37",
+    "Pasageros": [
+      "ea8788f8-9986-4741-a4c8-4bffb1d3d4b5"
+    ]
+  },
+  {
+    "TripID": "0e063c50-8186-4967-ad0e-3a1d731284a5",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen18",
+    "Destino": "destino15",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 16,
+    "Hora": 5,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 459.25,
+    "Mascota": true,
+    "photo": "auto38",
+    "Pasageros": [
+      "39b07b33-7532-431e-a3c6-51086d05560d",
+      "8dcaa661-e786-489b-abdb-1e615348854e",
+      "82f4b9e7-ea79-445c-8255-835c42362e1e"
+    ]
+  },
+  {
+    "TripID": "27a31ba0-2d67-4a4a-b58d-a8bf58364c03",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen5",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 21,
+    "Hora": 15,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 428.23,
+    "Mascota": true,
+    "photo": "auto39",
+    "Pasageros": [
+      "21155835-e7ee-4928-a5c8-d1ef489ddd85",
+      "f2bb20cb-eb29-4d9f-b882-76f96e3a9576",
+      "2eb4975e-a75f-4d6c-a8c8-5ddc12e934f1"
+    ]
+  },
+  {
+    "TripID": "f8aa5c2f-1587-49b6-a90e-eefafe8a5483",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen2",
+    "Destino": "destino9",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 29,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 365.14,
+    "Mascota": true,
+    "photo": "auto40",
+    "Pasageros": [
+      "76bfde7d-a276-47fc-be1e-e149afec9e7a",
+      "ad68fbbc-c3f2-4a0c-9743-ed6e4744c0eb"
+    ]
+  },
+  {
+    "TripID": "d3d44f80-03fe-4341-a95c-5165ecf64ef8",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen13",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 13,
+    "Hora": 14,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 397.16,
+    "Mascota": true,
+    "photo": "auto41",
+    "Pasageros": [
+      "77e04134-bb4c-425a-83db-2ee38051bc6c"
+    ]
+  },
+  {
+    "TripID": "3bda1c3b-ad78-446d-90ac-b2e18f145e66",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen13",
+    "Destino": "destino17",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 24,
+    "Hora": 23,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 370.79,
+    "Mascota": true,
+    "photo": "auto42",
+    "Pasageros": [
+      "f025e300-be61-4b80-806a-a18024c7c8f1"
+    ]
+  },
+  {
+    "TripID": "40d6df6b-6e95-475a-adf1-2e7e502bb75b",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen17",
+    "Destino": "destino9",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 4,
+    "Hora": 22,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 443.1,
+    "Mascota": true,
+    "photo": "auto43",
+    "Pasageros": [
+      "d4a7be84-91d0-4fce-bad9-e405b16deff2"
+    ]
+  },
+  {
+    "TripID": "d977a766-bfaa-4208-8622-0d7868aed222",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen8",
+    "Destino": "destino2",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 27,
+    "Hora": 15,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 430.74,
+    "Mascota": true,
+    "photo": "auto44",
+    "Pasageros": [
+      "088fe36a-baea-4737-9b01-7f07d21b9e57"
+    ]
+  },
+  {
+    "TripID": "0006173e-7c95-4d4a-a750-6ab13dace018",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen18",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 3,
+    "Dia": 15,
+    "Hora": 19,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 398.81,
+    "Mascota": true,
+    "photo": "auto45",
+    "Pasageros": [
+      "43c9994a-f0ba-4a14-9f2a-9cfacfe74f9e"
+    ]
+  },
+  {
+    "TripID": "3cc28bcf-c45f-4130-8af0-aa0076125951",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen10",
+    "Destino": "destino18",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 19,
+    "Hora": 21,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 476.63,
+    "Mascota": true,
+    "photo": "auto46",
+    "Pasageros": [
+      "8779d270-0273-40d5-b908-4a5af3142dcb"
+    ]
+  },
+  {
+    "TripID": "1ce06d71-63d2-4bb1-b13c-b88f2e8a290c",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen18",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 19,
+    "Hora": 18,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 450.28,
+    "Mascota": true,
+    "photo": "auto47",
+    "Pasageros": [
+      "f26c54d5-e5a8-4ff4-90a7-82e4bb6a6165",
+      "53140ca2-def4-44e4-9f2f-ef7f72249423"
+    ]
+  },
+  {
+    "TripID": "aa3fa254-e031-4704-8843-48cde1be8a20",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen6",
+    "Destino": "destino5",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 3,
+    "Hora": 2,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 380.92,
+    "Mascota": true,
+    "photo": "auto48",
+    "Pasageros": [
+      "da098f7b-d92e-4e70-a994-b3d302530a5f",
+      "9cd2f85f-aeda-4fc4-bb1d-acbaa1d9e82b"
+    ]
+  },
+  {
+    "TripID": "c3d3378d-13ef-4b6f-b3ac-691f415d6583",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen5",
+    "Destino": "destino2",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 19,
+    "Hora": 16,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 336.64,
+    "Mascota": true,
+    "photo": "auto49",
+    "Pasageros": [
+      "43c9994a-f0ba-4a14-9f2a-9cfacfe74f9e",
+      "460605c0-a7e4-4cb8-a0da-4d024217a5a3",
+      "4e94af71-76a8-4dac-99af-2568175e2580"
+    ]
+  },
+  {
+    "TripID": "2f2b60ff-a855-4bc1-9da7-a42de081e80d",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen2",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 8,
+    "Dia": 20,
+    "Hora": 12,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 362.4,
+    "Mascota": true,
+    "photo": "auto50",
+    "Pasageros": [
+      "7e1bf77b-530b-4922-b78f-e1f7c0d0b8df",
+      "838e179c-5d51-4516-ab4f-a60c9a53406c",
+      "89cf685e-05bb-4363-a9a2-485d4fa4d71c"
+    ]
+  },
+  {
+    "TripID": "8bb6f99b-a8d1-402d-b9ad-617b04657970",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen2",
+    "Destino": "destino15",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 9,
+    "Hora": 4,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 328.67,
+    "Mascota": true,
+    "photo": "auto51",
+    "Pasageros": [
+      "db56d756-cf63-4811-9c56-6f5e4283fcbe",
+      "fff87bb9-f5d9-4538-ace5-8f48b10266e1"
+    ]
+  },
+  {
+    "TripID": "d54f9c84-6c71-470b-a500-2330e5b9db40",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen15",
+    "Destino": "destino8",
+    "Anio": 2024,
+    "Mes": 3,
+    "Dia": 20,
+    "Hora": 17,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 426.86,
+    "Mascota": true,
+    "photo": "auto52",
+    "Pasageros": [
+      "cccf94b9-3536-4508-9c47-f54b55082124"
+    ]
+  },
+  {
+    "TripID": "0aa50d41-528f-4b93-af9a-c12e508d5899",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen18",
+    "Destino": "destino8",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 27,
+    "Hora": 18,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 432.62,
+    "Mascota": true,
+    "photo": "auto53",
+    "Pasageros": [
+      "5f76e363-4a78-4fa1-b6ea-f560aba6bc0e"
+    ]
+  },
+  {
+    "TripID": "479b37f8-2a5e-471d-b89e-86bacbe45e2d",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen7",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 9,
+    "Dia": 22,
+    "Hora": 2,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 447.08,
+    "Mascota": true,
+    "photo": "auto54",
+    "Pasageros": [
+      "010cde7f-437e-4b71-8f43-dd82b1127b0f"
+    ]
+  },
+  {
+    "TripID": "e3f16cb9-60ba-46c3-b10d-f4a8172549c8",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen13",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 25,
+    "Hora": 11,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 373.61,
+    "Mascota": true,
+    "photo": "auto55",
+    "Pasageros": [
+      "6dec9d2a-c2ca-497a-9491-329a0bbf2e06",
+      "37c9de7d-114a-4dfa-b517-cfbc49ba274c",
+      "be75f7ee-ce08-47fc-9e4f-dd67776ec6ee"
+    ]
+  },
+  {
+    "TripID": "fc824024-e5e0-47d7-ab95-6247b8ed0c5c",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen12",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 21,
+    "Hora": 21,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 448.02,
+    "Mascota": true,
+    "photo": "auto56",
+    "Pasageros": [
+      "9a16e3d5-1ef5-4a3d-b73f-0af6331fec34",
+      "39b07b33-7532-431e-a3c6-51086d05560d"
+    ]
+  },
+  {
+    "TripID": "b7bb939a-8c3f-460c-94d7-30a9b4e97205",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen14",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 12,
+    "Hora": 5,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 409.46,
+    "Mascota": true,
+    "photo": "auto57",
+    "Pasageros": [
+      "f025e300-be61-4b80-806a-a18024c7c8f1"
+    ]
+  },
+  {
+    "TripID": "fdaa3fe6-17c5-43a4-a78e-478b00576e06",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen11",
+    "Destino": "destino2",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 13,
+    "Hora": 11,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 326.74,
+    "Mascota": true,
+    "photo": "auto58",
+    "Pasageros": [
+      "be75f7ee-ce08-47fc-9e4f-dd67776ec6ee"
+    ]
+  },
+  {
+    "TripID": "7c6a1ace-28db-4204-a0b3-46a02ca3d990",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen10",
+    "Destino": "destino2",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 28,
+    "Hora": 16,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 476.74,
+    "Mascota": true,
+    "photo": "auto59",
+    "Pasageros": [
+      "25052c11-6ab1-43d9-a743-70ca942983b5",
+      "c2c7b94d-08a9-4ae9-9deb-34bcd07affe5"
+    ]
+  },
+  {
+    "TripID": "830ba859-844c-4aa2-94e3-f65b6702f166",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen11",
+    "Destino": "destino13",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 10,
+    "Hora": 21,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 330.92,
+    "Mascota": true,
+    "photo": "auto60",
+    "Pasageros": [
+      "42a2f4b9-e6f8-4c53-ab88-c65e615db467"
+    ]
+  },
+  {
+    "TripID": "e5346386-a378-427a-91ea-ef0e06142ec1",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen15",
+    "Destino": "destino12",
+    "Anio": 2024,
+    "Mes": 2,
+    "Dia": 3,
+    "Hora": 14,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 452.44,
+    "Mascota": true,
+    "photo": "auto61",
+    "Pasageros": [
+      "21155835-e7ee-4928-a5c8-d1ef489ddd85"
+    ]
+  },
+  {
+    "TripID": "d04f1c8a-7f70-4a29-a9ea-b690341e434d",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen13",
+    "Destino": "destino4",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 26,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 476.68,
+    "Mascota": true,
+    "photo": "auto62",
+    "Pasageros": [
+      "da098f7b-d92e-4e70-a994-b3d302530a5f",
+      "21155835-e7ee-4928-a5c8-d1ef489ddd85"
+    ]
+  },
+  {
+    "TripID": "d2d8421e-22e5-45fe-a5cd-957093f77335",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen15",
+    "Destino": "destino4",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 10,
+    "Hora": 13,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 340.21,
+    "Mascota": true,
+    "photo": "auto63",
+    "Pasageros": [
+      "bb4fcab0-d9e6-4b98-ba92-746fb048ed7f",
+      "7ed65480-be11-4d06-a60d-53f2484dc44a"
+    ]
+  },
+  {
+    "TripID": "3d74f6e8-b54e-4659-8bfe-4dd0f413ef3e",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen12",
+    "Destino": "destino18",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 16,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 326.21,
+    "Mascota": true,
+    "photo": "auto64",
+    "Pasageros": [
+      "0736a303-5afb-4eb7-8e27-23b1dbc3da64",
+      "f433276e-e4c4-467a-82a0-1aa892e0e5f1"
+    ]
+  },
+  {
+    "TripID": "426cad2d-653a-4c75-995c-cc8287e639dd",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen14",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 5,
+    "Dia": 17,
+    "Hora": 8,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 394.11,
+    "Mascota": true,
+    "photo": "auto65",
+    "Pasageros": [
+      "476a6328-41e3-43a2-b8c1-3b7b28b80e46"
+    ]
+  },
+  {
+    "TripID": "fe23112f-cc55-4e6f-b039-39b1a5c400d4",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen14",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 11,
+    "Hora": 15,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 330.62,
+    "Mascota": true,
+    "photo": "auto66",
+    "Pasageros": [
+      "8ec5f149-8841-4215-8cab-86dae16a5a48"
+    ]
+  },
+  {
+    "TripID": "66b1416b-0676-4ab7-8d0c-efd32036469c",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen17",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 26,
+    "Hora": 2,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 343.36,
+    "Mascota": true,
+    "photo": "auto67",
+    "Pasageros": [
+      "f025e300-be61-4b80-806a-a18024c7c8f1"
+    ]
+  },
+  {
+    "TripID": "c96f4522-2e36-4977-9f6b-a7e57070c441",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen11",
+    "Destino": "destino14",
+    "Anio": 2024,
+    "Mes": 3,
+    "Dia": 7,
+    "Hora": 22,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 408.92,
+    "Mascota": true,
+    "photo": "auto68",
+    "Pasageros": [
+      "62677c11-6645-4e07-ae90-1e3a03065aef",
+      "810233ed-9449-41ef-a730-892c694b76b0"
+    ]
+  },
+  {
+    "TripID": "ec8c7454-c0ee-466e-b7ad-79a1b1381906",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen7",
+    "Destino": "destino8",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 15,
+    "Hora": 18,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 392.71,
+    "Mascota": true,
+    "photo": "auto69",
+    "Pasageros": [
+      "14f096aa-ca9b-4aea-a238-99c5fd561e5c"
+    ]
+  },
+  {
+    "TripID": "a66f42e4-6032-4921-80b2-db85adf934ac",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen7",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 15,
+    "Hora": 22,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 444.02,
+    "Mascota": true,
+    "photo": "auto70",
+    "Pasageros": [
+      "dcf64b72-4b32-49c3-9403-78d279be207f",
+      "fda44b8f-e303-4548-944e-9923df45cb2d",
+      "9c6d8501-5f59-4729-bd08-69b6aa9fe30d"
+    ]
+  },
+  {
+    "TripID": "48d404e2-828e-43b1-914c-7ebd90998395",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen3",
+    "Destino": "destino18",
+    "Anio": 2024,
+    "Mes": 5,
+    "Dia": 27,
+    "Hora": 11,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 402.16,
+    "Mascota": true,
+    "photo": "auto71",
+    "Pasageros": [
+      "cccf94b9-3536-4508-9c47-f54b55082124",
+      "91b68733-2d97-484c-95b2-7104b186c8f7"
+    ]
+  },
+  {
+    "TripID": "e8a2538d-c348-4338-932e-ce91574d8301",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen10",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 20,
+    "Hora": 11,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 392.4,
+    "Mascota": true,
+    "photo": "auto72",
+    "Pasageros": [
+      "5aac3e42-0b18-47cf-bdd6-2407f6ad0944",
+      "39b07b33-7532-431e-a3c6-51086d05560d"
+    ]
+  },
+  {
+    "TripID": "104203fc-8f58-4f2d-af31-ee135fa73278",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen14",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 14,
+    "Hora": 16,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 392.65,
+    "Mascota": true,
+    "photo": "auto73",
+    "Pasageros": [
+      "b15550b1-c7d1-4b0a-a565-ed50c88a225b"
+    ]
+  },
+  {
+    "TripID": "07224baa-834c-4b70-a5f9-8f8f99770fa3",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen2",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 27,
+    "Hora": 2,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 424.11,
+    "Mascota": true,
+    "photo": "auto74",
+    "Pasageros": [
+      "8707d755-3cfc-4057-a222-b9850dbb522b",
+      "8707d755-3cfc-4057-a222-b9850dbb522b"
+    ]
+  },
+  {
+    "TripID": "8606b0a8-a6c1-422e-8e22-134db111fed8",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen8",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 15,
+    "Hora": 19,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 451.78,
+    "Mascota": true,
+    "photo": "auto75",
+    "Pasageros": [
+      "86e44473-65c6-4429-abea-2d24de9befcb",
+      "d4a7be84-91d0-4fce-bad9-e405b16deff2",
+      "96fe5229-04e9-43e5-ae7b-8715dc7d50bc"
+    ]
+  },
+  {
+    "TripID": "6b34bd3f-42a1-484e-b8da-8738214a016e",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen3",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 26,
+    "Hora": 17,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 425.13,
+    "Mascota": true,
+    "photo": "auto76",
+    "Pasageros": [
+      "7d5354fb-61ec-405e-b93f-a9a30ecd423b",
+      "c355fdc7-e2a8-4c63-a527-ded9536b5e8b",
+      "2555dc13-e69d-4543-82fb-f626713fbf21"
+    ]
+  },
+  {
+    "TripID": "7418de06-757e-4942-86e1-444a2d7bbec4",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen16",
+    "Destino": "destino4",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 28,
+    "Hora": 7,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 348.11,
+    "Mascota": true,
+    "photo": "auto77",
+    "Pasageros": [
+      "08cba31f-3285-47a9-94d2-0e98f23dee5d",
+      "4e94af71-76a8-4dac-99af-2568175e2580"
+    ]
+  },
+  {
+    "TripID": "c8c3d475-c7a4-4e1e-b86f-08ee3f0b49a7",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen16",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 8,
+    "Hora": 22,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 456.94,
+    "Mascota": true,
+    "photo": "auto78",
+    "Pasageros": [
+      "110f7efb-a977-4f6f-a227-ebf6fd99899d"
+    ]
+  },
+  {
+    "TripID": "3201a14c-1a38-47b7-affc-3ef8522d3bc6",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen16",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 5,
+    "Hora": 7,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 442.99,
+    "Mascota": true,
+    "photo": "auto79",
+    "Pasageros": [
+      "2d89d0b9-d524-40b0-afcd-58d0c06bc4f1",
+      "00bf94fc-4bf4-4990-96ed-4e0fc59bfc94"
+    ]
+  },
+  {
+    "TripID": "fddf8842-7c70-48e0-8412-6bafade8afc7",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen15",
+    "Destino": "destino6",
+    "Anio": 2024,
+    "Mes": 2,
+    "Dia": 4,
+    "Hora": 12,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 321.08,
+    "Mascota": true,
+    "photo": "auto80",
+    "Pasageros": [
+      "7ff00b8f-93a7-4de9-aca2-2416aeb0138a",
+      "ccfd36c1-ba53-4b2d-b62f-afdeeeaa5136"
+    ]
+  },
+  {
+    "TripID": "e77e65e4-96b2-4ca3-909a-0b540104cdfb",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen4",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 15,
+    "Hora": 22,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 342.42,
+    "Mascota": true,
+    "photo": "auto81",
+    "Pasageros": [
+      "4d163f57-fba8-4b63-9865-bf489fa33fec",
+      "5aac3e42-0b18-47cf-bdd6-2407f6ad0944"
+    ]
+  },
+  {
+    "TripID": "e7f44e1f-5abe-468e-8877-bbc0c4fec8ce",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen17",
+    "Destino": "destino11",
+    "Anio": 2024,
+    "Mes": 5,
+    "Dia": 16,
+    "Hora": 3,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 365.94,
+    "Mascota": true,
+    "photo": "auto82",
+    "Pasageros": [
+      "46e0bdb1-43eb-4b91-b7f7-e381d55158e0",
+      "7e1bf77b-530b-4922-b78f-e1f7c0d0b8df"
+    ]
+  },
+  {
+    "TripID": "208fa4d9-11db-4f38-b0af-63b225a8e6ad",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen18",
+    "Destino": "destino9",
+    "Anio": 2024,
+    "Mes": 5,
+    "Dia": 26,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 326.58,
+    "Mascota": true,
+    "photo": "auto83",
+    "Pasageros": [
+      "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+      "24b82205-76bd-4a47-a26b-815a63dddf29"
+    ]
+  },
+  {
+    "TripID": "bd962826-146a-4ba5-a024-cfb0deb4cc40",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen14",
+    "Destino": "destino5",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 19,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 426.41,
+    "Mascota": true,
+    "photo": "auto84",
+    "Pasageros": [
+      "a105d3a9-7ce8-4356-ae4a-68c94393cf31",
+      "cccf94b9-3536-4508-9c47-f54b55082124"
+    ]
+  },
+  {
+    "TripID": "174546aa-a926-420f-ba04-81df06405dca",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen10",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 14,
+    "Hora": 16,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 425.5,
+    "Mascota": true,
+    "photo": "auto85",
+    "Pasageros": [
+      "315c31d9-8d46-4c56-9812-6925a5d27b08",
+      "2555dc13-e69d-4543-82fb-f626713fbf21"
+    ]
+  },
+  {
+    "TripID": "550e098e-8eb2-4047-8fd8-f9b3a2947ccf",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen13",
+    "Destino": "destino3",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 4,
+    "Hora": 12,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 385.83,
+    "Mascota": true,
+    "photo": "auto86",
+    "Pasageros": [
+      "4b1d5589-c94f-41f8-9a3a-33a873a38633",
+      "810233ed-9449-41ef-a730-892c694b76b0"
+    ]
+  },
+  {
+    "TripID": "2513206c-6db0-4939-b23b-e85082263c8c",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen12",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 17,
+    "Hora": 19,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 389.15,
+    "Mascota": true,
+    "photo": "auto87",
+    "Pasageros": [
+      "99e05192-7d29-4941-bf15-34fa08a11423"
+    ]
+  },
+  {
+    "TripID": "779ad34e-e29f-41e8-bb43-4bccb9ef715b",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen3",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 10,
+    "Hora": 7,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 355.8,
+    "Mascota": true,
+    "photo": "auto88",
+    "Pasageros": [
+      "96fe5229-04e9-43e5-ae7b-8715dc7d50bc"
+    ]
+  },
+  {
+    "TripID": "73f1d75b-3082-44bc-9bb9-905befd71959",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen7",
+    "Destino": "destino9",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 6,
+    "Hora": 8,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 454.21,
+    "Mascota": true,
+    "photo": "auto89",
+    "Pasageros": [
+      "08f22db0-35a3-4e0f-a79d-45a2d4c1ba6c"
+    ]
+  },
+  {
+    "TripID": "50ad926a-6eb0-4d71-a4c4-211b6d80d8fa",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen17",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 15,
+    "Hora": 4,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 419.15,
+    "Mascota": true,
+    "photo": "auto90",
+    "Pasageros": [
+      "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066"
+    ]
+  },
+  {
+    "TripID": "63c10bcc-ff24-429b-b29b-edceda9c7bbc",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen16",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 23,
+    "Hora": 17,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 331.36,
+    "Mascota": true,
+    "photo": "auto91",
+    "Pasageros": [
+      "62677c11-6645-4e07-ae90-1e3a03065aef",
+      "f433276e-e4c4-467a-82a0-1aa892e0e5f1",
+      "726ce7ff-fdb4-48af-a6cb-690c4ed35095"
+    ]
+  },
+  {
+    "TripID": "dde56a61-ffcb-4ac5-80af-e94f50631733",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen8",
+    "Destino": "destino2",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 15,
+    "Hora": 18,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 409.88,
+    "Mascota": true,
+    "photo": "auto92",
+    "Pasageros": [
+      "2872938e-e948-467c-9caf-53635f80c74e"
+    ]
+  },
+  {
+    "TripID": "e6eca1da-f430-4b98-996a-f9882cb04ecc",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen5",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 15,
+    "Hora": 18,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 408.62,
+    "Mascota": true,
+    "photo": "auto93",
+    "Pasageros": [
+      "57807ebd-5bfe-461c-a633-7640807bec1b"
+    ]
+  },
+  {
+    "TripID": "41df473a-5053-4714-8665-c453a88de371",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen17",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 8,
+    "Hora": 22,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 358.03,
+    "Mascota": true,
+    "photo": "auto94",
+    "Pasageros": [
+      "57807ebd-5bfe-461c-a633-7640807bec1b"
+    ]
+  },
+  {
+    "TripID": "31927b3f-5cb0-4e1e-b1e1-24a030482448",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen2",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 15,
+    "Hora": 18,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 436.37,
+    "Mascota": true,
+    "photo": "auto95",
+    "Pasageros": [
+      "1d9561c0-6e62-4669-a33a-7d20cd9eef68",
+      "561e649a-ecf1-4c63-beda-53402ee29a7c"
+    ]
+  },
+  {
+    "TripID": "86c93faf-39c2-4ce3-b0ff-d83b25a21ab3",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen13",
+    "Destino": "destino6",
+    "Anio": 2024,
+    "Mes": 8,
+    "Dia": 5,
+    "Hora": 8,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 322.98,
+    "Mascota": true,
+    "photo": "auto96",
+    "Pasageros": [
+      "f26c54d5-e5a8-4ff4-90a7-82e4bb6a6165",
+      "3f4d8cec-7460-4f1b-bc2e-8adf7d175e4c"
+    ]
+  },
+  {
+    "TripID": "31be68f3-17b8-43c8-a2fb-7a5ac50d3c16",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen4",
+    "Destino": "destino3",
+    "Anio": 2024,
+    "Mes": 2,
+    "Dia": 5,
+    "Hora": 15,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 467.93,
+    "Mascota": true,
+    "photo": "auto97",
+    "Pasageros": [
+      "b02f2c00-77db-4e52-81a9-1cb0a8012a82"
+    ]
+  },
+  {
+    "TripID": "7d7d0b24-4036-4e76-80f9-9cfed2cf9793",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen11",
+    "Destino": "destino18",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 28,
+    "Hora": 12,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 468.15,
+    "Mascota": true,
+    "photo": "auto98",
+    "Pasageros": [
+      "c6087062-5159-42ea-b6bb-e25f71f069c0",
+      "4d33564d-0469-4ab8-ad04-da72e2b70639"
+    ]
+  },
+  {
+    "TripID": "17ffa7a1-6bf7-470b-8198-bfeacf1e3e76",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen15",
+    "Destino": "destino6",
+    "Anio": 2024,
+    "Mes": 3,
+    "Dia": 6,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 366.77,
+    "Mascota": true,
+    "photo": "auto99",
+    "Pasageros": [
+      "96fe5229-04e9-43e5-ae7b-8715dc7d50bc",
+      "4d163f57-fba8-4b63-9865-bf489fa33fec"
+    ]
+  },
+  {
+    "TripID": "0ce78407-6d3b-44a1-9028-d2642461661e",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen12",
+    "Destino": "destino4",
+    "Anio": 2024,
+    "Mes": 9,
+    "Dia": 13,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 465.42,
+    "Mascota": true,
+    "photo": "auto100",
+    "Pasageros": [
+      "14f096aa-ca9b-4aea-a238-99c5fd561e5c",
+      "96fe5229-04e9-43e5-ae7b-8715dc7d50bc"
+    ]
+  },
+  {
+    "TripID": "981440f8-bb91-44b6-bf1f-c94fa110cca8",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen15",
+    "Destino": "destino9",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 13,
+    "Hora": 21,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 333.27,
+    "Mascota": true,
+    "photo": "auto101",
+    "Pasageros": [
+      "ea313007-1b18-48bd-acc0-635ef3c1d1bb",
+      "f62b1189-2ac7-44f2-834f-f193ca656435",
+      "85fa02f5-18f5-441d-8711-74b4a441a671"
+    ]
+  },
+  {
+    "TripID": "b42fce35-5c97-4f23-b442-7c28ad07607e",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen7",
+    "Destino": "destino9",
+    "Anio": 2024,
+    "Mes": 3,
+    "Dia": 14,
+    "Hora": 6,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 354.79,
+    "Mascota": true,
+    "photo": "auto102",
+    "Pasageros": [
+      "d7d3bba9-310a-403a-a4c8-2564194b949d",
+      "39b07b33-7532-431e-a3c6-51086d05560d"
+    ]
+  },
+  {
+    "TripID": "210804f7-551f-4479-ba4e-c8f178adb99c",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen6",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 10,
+    "Hora": 12,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 441.28,
+    "Mascota": true,
+    "photo": "auto103",
+    "Pasageros": [
+      "2eb4975e-a75f-4d6c-a8c8-5ddc12e934f1",
+      "f62b1189-2ac7-44f2-834f-f193ca656435",
+      "484a9fe8-f15d-4750-80cc-2e2dc76a979b"
+    ]
+  },
+  {
+    "TripID": "2d618d3c-d266-476a-bc9d-dae5454d39de",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen2",
+    "Destino": "destino9",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 6,
+    "Hora": 7,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 453.98,
+    "Mascota": true,
+    "photo": "auto104",
+    "Pasageros": [
+      "2555dc13-e69d-4543-82fb-f626713fbf21",
+      "d4f49a56-3e73-4aa3-b673-21d633542d97"
+    ]
+  },
+  {
+    "TripID": "e0cfbaf3-5fda-44b1-961f-81204aabaf1c",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen18",
+    "Destino": "destino13",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 21,
+    "Hora": 21,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 444.64,
+    "Mascota": true,
+    "photo": "auto105",
+    "Pasageros": [
+      "7ff00b8f-93a7-4de9-aca2-2416aeb0138a"
+    ]
+  },
+  {
+    "TripID": "45719ace-f5b9-46b7-bfe4-259f714b0ddf",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen7",
+    "Destino": "destino17",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 23,
+    "Hora": 13,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 338.73,
+    "Mascota": true,
+    "photo": "auto106",
+    "Pasageros": [
+      "ee687e4f-3f92-42a2-96c9-0ab5535767b3"
+    ]
+  },
+  {
+    "TripID": "add6a96f-7689-43e9-b2ad-8303e9e7c76b",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen15",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 22,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 459.21,
+    "Mascota": true,
+    "photo": "auto107",
+    "Pasageros": [
+      "f025e300-be61-4b80-806a-a18024c7c8f1",
+      "ce16c150-934f-427b-b42f-8ecaa65c1aab"
+    ]
+  },
+  {
+    "TripID": "48469cf6-b48e-4dba-8f44-a77d4cb2175f",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen16",
+    "Destino": "destino8",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 25,
+    "Hora": 4,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 358.18,
+    "Mascota": true,
+    "photo": "auto108",
+    "Pasageros": [
+      "89cf685e-05bb-4363-a9a2-485d4fa4d71c",
+      "e5277495-f9eb-40f9-8228-06170740fb05",
+      "9a16e3d5-1ef5-4a3d-b73f-0af6331fec34"
+    ]
+  },
+  {
+    "TripID": "cfe11802-21d1-4c64-97d0-f4a88eda48d1",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen14",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 2,
+    "Hora": 17,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 359.29,
+    "Mascota": true,
+    "photo": "auto109",
+    "Pasageros": [
+      "e79c9b51-ef40-4d6f-be80-c800a93a5c50"
+    ]
+  },
+  {
+    "TripID": "8b80c923-aed5-4a31-9855-83229230bf6d",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen4",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 19,
+    "Hora": 22,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 345.93,
+    "Mascota": true,
+    "photo": "auto110",
+    "Pasageros": [
+      "14d2d2ff-940d-487b-b141-3cb0bbb7a356"
+    ]
+  },
+  {
+    "TripID": "ef909bf9-8ff4-4439-8317-205f9603f471",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen15",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 9,
+    "Dia": 16,
+    "Hora": 3,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 435.47,
+    "Mascota": true,
+    "photo": "auto111",
+    "Pasageros": [
+      "2555dc13-e69d-4543-82fb-f626713fbf21",
+      "46e0bdb1-43eb-4b91-b7f7-e381d55158e0",
+      "f59edd6b-d8bf-4088-a8d4-99b93121f8c4"
+    ]
+  },
+  {
+    "TripID": "3b29db2f-5bdc-4e77-9af3-c3c3e91e9f9e",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen15",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 6,
+    "Hora": 20,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 365.44,
+    "Mascota": true,
+    "photo": "auto112",
+    "Pasageros": [
+      "2e14c615-bdb9-4aa1-b014-bb54851a4d54",
+      "e08a9b86-35d9-4e9d-bf28-08bc30614f13"
+    ]
+  },
+  {
+    "TripID": "f22fd38b-9d6b-4bee-bbb0-0e66047452dd",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen11",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 12,
+    "Hora": 21,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 474.29,
+    "Mascota": true,
+    "photo": "auto113",
+    "Pasageros": [
+      "b0ee5fba-5e1b-4f38-a505-1465e816e73d",
+      "1d9561c0-6e62-4669-a33a-7d20cd9eef68"
+    ]
+  },
+  {
+    "TripID": "f07dd8b5-e1a2-4ec5-a34e-bf7805d0ad5d",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen16",
+    "Destino": "destino13",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 4,
+    "Hora": 8,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 369.32,
+    "Mascota": true,
+    "photo": "auto114",
+    "Pasageros": [
+      "c1ccdab4-66e7-4326-a9d4-577628c7a737"
+    ]
+  },
+  {
+    "TripID": "a9cb0d65-f224-4a7a-903e-98de59075253",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen11",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 9,
+    "Dia": 6,
+    "Hora": 10,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 442.06,
+    "Mascota": true,
+    "photo": "auto115",
+    "Pasageros": [
+      "82e1e182-0970-49e1-a287-fed7edfc63d3",
+      "f60d7531-4b82-4b69-bc30-97d9f9ad8ade"
+    ]
+  },
+  {
+    "TripID": "6715832a-fee1-4a27-a2c6-9cb12eafea58",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen5",
+    "Destino": "destino14",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 21,
+    "Hora": 3,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 443.12,
+    "Mascota": true,
+    "photo": "auto116",
+    "Pasageros": [
+      "8888d234-2961-4272-817a-511cc58bd179",
+      "5f76e363-4a78-4fa1-b6ea-f560aba6bc0e"
+    ]
+  },
+  {
+    "TripID": "d35878a0-170c-41b3-8220-6b1ff8604ebf",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen10",
+    "Destino": "destino4",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 17,
+    "Hora": 3,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 331.01,
+    "Mascota": true,
+    "photo": "auto117",
+    "Pasageros": [
+      "eea306d1-4fe9-4279-a0ad-3435f5b1d602"
+    ]
+  },
+  {
+    "TripID": "159774bb-fc8b-4bb4-aff8-b6c501bfaf86",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen12",
+    "Destino": "destino9",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 26,
+    "Hora": 6,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 406.5,
+    "Mascota": true,
+    "photo": "auto118",
+    "Pasageros": [
+      "57807ebd-5bfe-461c-a633-7640807bec1b"
+    ]
+  },
+  {
+    "TripID": "77e9e030-7327-4fac-a2e5-6851b698ee5d",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen6",
+    "Destino": "destino17",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 28,
+    "Hora": 14,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 359.45,
+    "Mascota": true,
+    "photo": "auto119",
+    "Pasageros": [
+      "08cba31f-3285-47a9-94d2-0e98f23dee5d",
+      "b15550b1-c7d1-4b0a-a565-ed50c88a225b"
+    ]
+  },
+  {
+    "TripID": "bf45aff1-df01-42e7-b01b-607c44c2c0fa",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen11",
+    "Destino": "destino2",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 16,
+    "Hora": 8,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 429.16,
+    "Mascota": true,
+    "photo": "auto120",
+    "Pasageros": [
+      "ea8788f8-9986-4741-a4c8-4bffb1d3d4b5"
+    ]
+  },
+  {
+    "TripID": "a1565ce9-18a8-410c-a720-c6de7a021cba",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen16",
+    "Destino": "destino18",
+    "Anio": 2024,
+    "Mes": 2,
+    "Dia": 3,
+    "Hora": 20,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 331.0,
+    "Mascota": true,
+    "photo": "auto121",
+    "Pasageros": [
+      "82f4b9e7-ea79-445c-8255-835c42362e1e"
+    ]
+  },
+  {
+    "TripID": "508b8c07-75c6-4158-b528-29e165cbc779",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen17",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 22,
+    "Hora": 17,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 351.33,
+    "Mascota": true,
+    "photo": "auto122",
+    "Pasageros": [
+      "6d6ca69f-a0e3-4a40-bc16-4fad25dd2d9a",
+      "420592f8-f5e5-4475-95f3-ec2d6ca2976f"
+    ]
+  },
+  {
+    "TripID": "252afd12-bf11-452d-aa39-89021a39b2af",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen5",
+    "Destino": "destino9",
+    "Anio": 2024,
+    "Mes": 2,
+    "Dia": 5,
+    "Hora": 7,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 437.47,
+    "Mascota": true,
+    "photo": "auto123",
+    "Pasageros": [
+      "82e1e182-0970-49e1-a287-fed7edfc63d3",
+      "ff4c77b8-2d4b-4254-982a-87281a6a12c4"
+    ]
+  },
+  {
+    "TripID": "e7b48b4d-e725-48d3-b8c4-47006d279d58",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen2",
+    "Destino": "destino17",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 24,
+    "Hora": 15,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 449.51,
+    "Mascota": true,
+    "photo": "auto124",
+    "Pasageros": [
+      "21155835-e7ee-4928-a5c8-d1ef489ddd85",
+      "3b9f1253-f609-477b-bde8-c020b69749b9",
+      "e051c0f5-0072-461b-a672-b617b09c6aad"
+    ]
+  },
+  {
+    "TripID": "36d43b2f-ddab-4393-9f9c-2478bbf3500d",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen18",
+    "Destino": "destino6",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 15,
+    "Hora": 13,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 411.2,
+    "Mascota": true,
+    "photo": "auto125",
+    "Pasageros": [
+      "37c9de7d-114a-4dfa-b517-cfbc49ba274c"
+    ]
+  },
+  {
+    "TripID": "c083ea87-d3ab-4512-9bec-74b4007727bb",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen12",
+    "Destino": "destino3",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 18,
+    "Hora": 14,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 427.94,
+    "Mascota": true,
+    "photo": "auto126",
+    "Pasageros": [
+      "c2c691c0-a3c8-4b19-b9a5-f50fa198e94b"
+    ]
+  },
+  {
+    "TripID": "13c35ad9-69db-4333-b6b1-4bb7db48beaf",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen12",
+    "Destino": "destino3",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 10,
+    "Hora": 20,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 477.49,
+    "Mascota": true,
+    "photo": "auto127",
+    "Pasageros": [
+      "ad68fbbc-c3f2-4a0c-9743-ed6e4744c0eb",
+      "53140ca2-def4-44e4-9f2f-ef7f72249423"
+    ]
+  },
+  {
+    "TripID": "64314ae6-2578-4403-b94e-29219a226517",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen5",
+    "Destino": "destino8",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 18,
+    "Hora": 8,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 333.31,
+    "Mascota": true,
+    "photo": "auto128",
+    "Pasageros": [
+      "f62b1189-2ac7-44f2-834f-f193ca656435",
+      "405f3309-9f8f-40fe-95d4-964ba743d769"
+    ]
+  },
+  {
+    "TripID": "d71f326a-005b-4731-acae-690056453b66",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen7",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 20,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 330.97,
+    "Mascota": true,
+    "photo": "auto129",
+    "Pasageros": [
+      "ff4c77b8-2d4b-4254-982a-87281a6a12c4",
+      "b484155e-821a-468c-999a-51365079ae15"
+    ]
+  },
+  {
+    "TripID": "b1a04fb1-d8eb-454b-903a-fb7f4615a8ae",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen17",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 17,
+    "Hora": 23,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 408.89,
+    "Mascota": true,
+    "photo": "auto130",
+    "Pasageros": [
+      "2e14c615-bdb9-4aa1-b014-bb54851a4d54"
+    ]
+  },
+  {
+    "TripID": "314cdf4c-0b5e-4be9-8932-0b0b5f381e0a",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen5",
+    "Destino": "destino6",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 18,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 392.39,
+    "Mascota": true,
+    "photo": "auto131",
+    "Pasageros": [
+      "4feea09a-f535-42d0-96ea-df25e37a6c52",
+      "ff813478-5738-4d96-b305-8d7394bf4405"
+    ]
+  },
+  {
+    "TripID": "64716664-e3a4-44d8-8c31-73809d2bf376",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen7",
+    "Destino": "destino15",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 28,
+    "Hora": 19,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 412.16,
+    "Mascota": true,
+    "photo": "auto132",
+    "Pasageros": [
+      "2e14c615-bdb9-4aa1-b014-bb54851a4d54",
+      "57807ebd-5bfe-461c-a633-7640807bec1b"
+    ]
+  },
+  {
+    "TripID": "b459a07b-6517-47b9-9a43-46cfc12ddf13",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen6",
+    "Destino": "destino17",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 3,
+    "Hora": 23,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 327.68,
+    "Mascota": true,
+    "photo": "auto133",
+    "Pasageros": [
+      "a6697bbb-479b-40f3-9b43-0e497371c1f7"
+    ]
+  },
+  {
+    "TripID": "e5d7235b-d665-42aa-90a9-0d8f58347c10",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen4",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 16,
+    "Hora": 18,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 465.72,
+    "Mascota": true,
+    "photo": "auto134",
+    "Pasageros": [
+      "4e94af71-76a8-4dac-99af-2568175e2580",
+      "2d89d0b9-d524-40b0-afcd-58d0c06bc4f1"
+    ]
+  },
+  {
+    "TripID": "f6e10295-74cb-4052-8ced-d67992de30ea",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen18",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 18,
+    "Hora": 5,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 406.64,
+    "Mascota": true,
+    "photo": "auto135",
+    "Pasageros": [
+      "9a16e3d5-1ef5-4a3d-b73f-0af6331fec34",
+      "9f24ace1-19f5-4f7f-8c1e-26067352323e"
+    ]
+  },
+  {
+    "TripID": "ab97820e-498a-494b-87dd-87f914d72d71",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen4",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 8,
+    "Hora": 3,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 474.72,
+    "Mascota": true,
+    "photo": "auto136",
+    "Pasageros": [
+      "8c05671c-948e-4852-9552-3047262d389a"
+    ]
+  },
+  {
+    "TripID": "e2853943-0dc8-4b5e-8972-06d4fcccd940",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen10",
+    "Destino": "destino15",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 15,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 416.29,
+    "Mascota": true,
+    "photo": "auto137",
+    "Pasageros": [
+      "8ec5f149-8841-4215-8cab-86dae16a5a48"
+    ]
+  },
+  {
+    "TripID": "2b93d01d-d00d-48b7-8878-bf64438df99b",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen7",
+    "Destino": "destino9",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 18,
+    "Hora": 8,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 477.42,
+    "Mascota": true,
+    "photo": "auto138",
+    "Pasageros": [
+      "63281807-db48-40be-b520-8bd7783c70d7"
+    ]
+  },
+  {
+    "TripID": "197ef316-a646-447c-a1d2-5995aa8af185",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen5",
+    "Destino": "destino14",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 27,
+    "Hora": 19,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 323.25,
+    "Mascota": true,
+    "photo": "auto139",
+    "Pasageros": [
+      "5aac3e42-0b18-47cf-bdd6-2407f6ad0944",
+      "7ff00b8f-93a7-4de9-aca2-2416aeb0138a"
+    ]
+  },
+  {
+    "TripID": "3174573b-78e0-4ec6-8b4a-686106e361dc",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen3",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 14,
+    "Hora": 10,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 407.02,
+    "Mascota": true,
+    "photo": "auto140",
+    "Pasageros": [
+      "2e14c615-bdb9-4aa1-b014-bb54851a4d54",
+      "99e05192-7d29-4941-bf15-34fa08a11423"
+    ]
+  },
+  {
+    "TripID": "256e49ae-efa4-4115-abde-6ff7f052d175",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen9",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 16,
+    "Hora": 5,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 426.02,
+    "Mascota": true,
+    "photo": "auto141",
+    "Pasageros": [
+      "315c31d9-8d46-4c56-9812-6925a5d27b08",
+      "3c1d9d90-68ae-4494-9ba7-3b348e67da1c",
+      "f025e300-be61-4b80-806a-a18024c7c8f1"
+    ]
+  },
+  {
+    "TripID": "b46dc247-b5f7-4dfe-887e-d1208fd227e7",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen10",
+    "Destino": "destino18",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 19,
+    "Hora": 4,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 463.74,
+    "Mascota": true,
+    "photo": "auto142",
+    "Pasageros": [
+      "22100beb-faa4-47ae-849c-658727ed42f5"
+    ]
+  },
+  {
+    "TripID": "52626ebd-8c51-4db6-8b1c-da4a41bcd066",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen11",
+    "Destino": "destino4",
+    "Anio": 2024,
+    "Mes": 9,
+    "Dia": 6,
+    "Hora": 9,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 338.16,
+    "Mascota": true,
+    "photo": "auto143",
+    "Pasageros": [
+      "db636cb6-1189-4c0f-9fe8-08b3b682dc32",
+      "0af752ab-7817-493b-83c7-702b95c00682",
+      "14f096aa-ca9b-4aea-a238-99c5fd561e5c"
+    ]
+  },
+  {
+    "TripID": "c2479f1a-e815-45c7-99a8-cd246d9b1cdd",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen18",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 8,
+    "Hora": 15,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 428.31,
+    "Mascota": true,
+    "photo": "auto144",
+    "Pasageros": [
+      "ff4c77b8-2d4b-4254-982a-87281a6a12c4",
+      "67a54e28-7ca8-4f85-9c47-e064ef1f438c"
+    ]
+  },
+  {
+    "TripID": "9f8fc0d7-9eaf-44c8-b918-855578f4a940",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen18",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 18,
+    "Hora": 23,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 478.83,
+    "Mascota": true,
+    "photo": "auto145",
+    "Pasageros": [
+      "7ff00b8f-93a7-4de9-aca2-2416aeb0138a",
+      "be75f7ee-ce08-47fc-9e4f-dd67776ec6ee"
+    ]
+  },
+  {
+    "TripID": "e0b8d74f-c029-44b1-bc36-7f99819ca983",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen6",
+    "Destino": "destino18",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 2,
+    "Hora": 10,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 430.81,
+    "Mascota": true,
+    "photo": "auto146",
+    "Pasageros": [
+      "226909d3-d12c-412f-9e61-6e1afb191ee8",
+      "00bf94fc-4bf4-4990-96ed-4e0fc59bfc94"
+    ]
+  },
+  {
+    "TripID": "dcbf6b4a-507d-406b-a5e7-7338f3e8de10",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen5",
+    "Destino": "destino18",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 17,
+    "Hora": 17,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 352.46,
+    "Mascota": true,
+    "photo": "auto147",
+    "Pasageros": [
+      "85fa02f5-18f5-441d-8711-74b4a441a671"
+    ]
+  },
+  {
+    "TripID": "8f2bc8f5-80aa-44b1-94ca-6236897ad749",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen9",
+    "Destino": "destino3",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 12,
+    "Hora": 19,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 373.16,
+    "Mascota": true,
+    "photo": "auto148",
+    "Pasageros": [
+      "110f7efb-a977-4f6f-a227-ebf6fd99899d",
+      "9c6d8501-5f59-4729-bd08-69b6aa9fe30d"
+    ]
+  },
+  {
+    "TripID": "919b6585-f845-4ffb-b662-1f360440f8d3",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen15",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 14,
+    "Hora": 10,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 439.78,
+    "Mascota": true,
+    "photo": "auto149",
+    "Pasageros": [
+      "f60d7531-4b82-4b69-bc30-97d9f9ad8ade",
+      "e5c4b95f-c255-4bd2-8766-92601fe1ec00"
+    ]
+  },
+  {
+    "TripID": "4d41195a-67f8-4668-93b1-a58495972393",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen5",
+    "Destino": "destino17",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 5,
+    "Hora": 21,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 380.13,
+    "Mascota": true,
+    "photo": "auto150",
+    "Pasageros": [
+      "98fc3830-0a56-4eed-9969-2bca600c6f46",
+      "04dcb2fe-9917-42da-8a41-c259d4bbc730"
+    ]
+  },
+  {
+    "TripID": "82305a94-1c30-4c3f-8fbb-2c610d192872",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen11",
+    "Destino": "destino3",
+    "Anio": 2024,
+    "Mes": 3,
+    "Dia": 13,
+    "Hora": 10,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 453.03,
+    "Mascota": true,
+    "photo": "auto151",
+    "Pasageros": [
+      "b484155e-821a-468c-999a-51365079ae15",
+      "9573ec82-ca7e-47d1-adec-fb2cc9a7f832"
+    ]
+  },
+  {
+    "TripID": "68f33bee-ecbb-4faa-a706-2f0c33ff4aa2",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen15",
+    "Destino": "destino8",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 4,
+    "Hora": 3,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 365.08,
+    "Mascota": true,
+    "photo": "auto152",
+    "Pasageros": [
+      "c2f471aa-b3e2-4dc5-9cdc-c266bd6a2dc0"
+    ]
+  },
+  {
+    "TripID": "96406e95-b7e6-4fda-bad8-aaba4c0f5c47",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen4",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 19,
+    "Hora": 17,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 434.86,
+    "Mascota": true,
+    "photo": "auto153",
+    "Pasageros": [
+      "5f0d4653-b86f-4923-887b-ea52cc85c156",
+      "f60d7531-4b82-4b69-bc30-97d9f9ad8ade"
+    ]
+  },
+  {
+    "TripID": "3a22d58e-83e5-45f8-aef0-56d0b1295661",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen9",
+    "Destino": "destino12",
+    "Anio": 2024,
+    "Mes": 5,
+    "Dia": 26,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 474.31,
+    "Mascota": true,
+    "photo": "auto154",
+    "Pasageros": [
+      "3a961941-a955-441c-aaa4-fb435d17dc5a",
+      "ff4c77b8-2d4b-4254-982a-87281a6a12c4",
+      "42a2f4b9-e6f8-4c53-ab88-c65e615db467"
+    ]
+  },
+  {
+    "TripID": "11bae894-cd4f-4c6b-920c-984ef2764c35",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen17",
+    "Destino": "destino16",
+    "Anio": 2024,
+    "Mes": 8,
+    "Dia": 10,
+    "Hora": 22,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 360.24,
+    "Mascota": true,
+    "photo": "auto155",
+    "Pasageros": [
+      "0127e6de-0af4-496d-ad08-53374a1987d1"
+    ]
+  },
+  {
+    "TripID": "cb1cc575-8852-4fe8-8233-27967e3e99b2",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen16",
+    "Destino": "destino3",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 22,
+    "Hora": 9,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 388.17,
+    "Mascota": true,
+    "photo": "auto156",
+    "Pasageros": [
+      "85fa02f5-18f5-441d-8711-74b4a441a671",
+      "14d2d2ff-940d-487b-b141-3cb0bbb7a356",
+      "3f4d8cec-7460-4f1b-bc2e-8adf7d175e4c"
+    ]
+  },
+  {
+    "TripID": "9f6879aa-9faf-4e7b-9626-48c650e0c68f",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen6",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 28,
+    "Hora": 10,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 330.14,
+    "Mascota": true,
+    "photo": "auto157",
+    "Pasageros": [
+      "0127e6de-0af4-496d-ad08-53374a1987d1"
+    ]
+  },
+  {
+    "TripID": "a0a66679-fedd-4935-9dc0-7e5680548ad3",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen14",
+    "Destino": "destino17",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 4,
+    "Hora": 20,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 475.6,
+    "Mascota": true,
+    "photo": "auto158",
+    "Pasageros": [
+      "77e04134-bb4c-425a-83db-2ee38051bc6c",
+      "4b1d5589-c94f-41f8-9a3a-33a873a38633"
+    ]
+  },
+  {
+    "TripID": "5715b379-11ea-4d07-a935-8a184ca1aae9",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen2",
+    "Destino": "destino10",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 23,
+    "Hora": 6,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 475.14,
+    "Mascota": true,
+    "photo": "auto159",
+    "Pasageros": [
+      "484a9fe8-f15d-4750-80cc-2e2dc76a979b",
+      "420592f8-f5e5-4475-95f3-ec2d6ca2976f"
+    ]
+  },
+  {
+    "TripID": "144f5c9c-229b-454f-aa37-6725ac3d9c82",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen14",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 22,
+    "Hora": 20,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 346.61,
+    "Mascota": true,
+    "photo": "auto160",
+    "Pasageros": [
+      "3858ff50-d974-4965-8c86-8ae357422e5d",
+      "3dc02239-9070-4674-b347-886c02e34ab6",
+      "08a0488e-498d-4f5c-af76-d23cc29de3af"
+    ]
+  },
+  {
+    "TripID": "eb5dcfa6-92b2-4071-bd7b-c1a37288a999",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen5",
+    "Destino": "destino2",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 6,
+    "Hora": 22,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 389.0,
+    "Mascota": true,
+    "photo": "auto161",
+    "Pasageros": [
+      "c2c7b94d-08a9-4ae9-9deb-34bcd07affe5",
+      "ff813478-5738-4d96-b305-8d7394bf4405"
+    ]
+  },
+  {
+    "TripID": "87026818-e90d-4b5a-8512-b4a1ff89b577",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen3",
+    "Destino": "destino4",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 15,
+    "Hora": 2,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 357.58,
+    "Mascota": true,
+    "photo": "auto162",
+    "Pasageros": [
+      "a51fd340-cad5-4f2a-9c06-fe6948d9658b"
+    ]
+  },
+  {
+    "TripID": "4ffd9edd-8971-4a85-a251-5c605ef1ca81",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen7",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 15,
+    "Hora": 17,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 378.77,
+    "Mascota": true,
+    "photo": "auto163",
+    "Pasageros": [
+      "e084911f-78e2-4b68-9778-7b6ea4904bd0",
+      "f2e8b493-4f66-46c2-8cf6-a2ba052ca920"
+    ]
+  },
+  {
+    "TripID": "b5cd3260-1dad-4fda-a52a-ebdff425722a",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen16",
+    "Destino": "destino9",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 2,
+    "Hora": 4,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 341.03,
+    "Mascota": true,
+    "photo": "auto164",
+    "Pasageros": [
+      "24b82205-76bd-4a47-a26b-815a63dddf29",
+      "4d163f57-fba8-4b63-9865-bf489fa33fec"
+    ]
+  },
+  {
+    "TripID": "a7a58eca-073b-4d28-8649-67795585863d",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen11",
+    "Destino": "destino18",
+    "Anio": 2023,
+    "Mes": 3,
+    "Dia": 12,
+    "Hora": 13,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 415.26,
+    "Mascota": true,
+    "photo": "auto165",
+    "Pasageros": [
+      "7ff00b8f-93a7-4de9-aca2-2416aeb0138a",
+      "5fd1ed06-e1d3-480f-9246-c12da977ed96"
+    ]
+  },
+  {
+    "TripID": "9ff46710-d150-4e39-91d9-7eec295ea4fd",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen5",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 8,
+    "Dia": 5,
+    "Hora": 23,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 455.28,
+    "Mascota": true,
+    "photo": "auto166",
+    "Pasageros": [
+      "498caa02-e603-4a13-b276-6b9c38d99e42"
+    ]
+  },
+  {
+    "TripID": "790277a0-0d08-4ad8-a955-e5fa6a762367",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen16",
+    "Destino": "destino17",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 29,
+    "Hora": 19,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 462.72,
+    "Mascota": true,
+    "photo": "auto167",
+    "Pasageros": [
+      "81e7f488-2fb9-411e-9d1a-ca3a2bf9ec37"
+    ]
+  },
+  {
+    "TripID": "277a00ad-af4e-444b-94d7-1a29480634a0",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen13",
+    "Destino": "destino5",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 6,
+    "Hora": 12,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 352.48,
+    "Mascota": true,
+    "photo": "auto168",
+    "Pasageros": [
+      "b484155e-821a-468c-999a-51365079ae15",
+      "da8258ed-7943-4b84-8fb5-48b463d4532c"
+    ]
+  },
+  {
+    "TripID": "d5325f6e-6dca-42ed-a638-9794ee1b9b99",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen15",
+    "Destino": "destino2",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 11,
+    "Hora": 20,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 332.82,
+    "Mascota": true,
+    "photo": "auto169",
+    "Pasageros": [
+      "49668569-02cb-4fff-b683-0571020e131d",
+      "49668569-02cb-4fff-b683-0571020e131d"
+    ]
+  },
+  {
+    "TripID": "ee57a6f5-e4d0-448a-95f2-2adbeccb1991",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen7",
+    "Destino": "destino3",
+    "Anio": 2024,
+    "Mes": 7,
+    "Dia": 2,
+    "Hora": 22,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 423.37,
+    "Mascota": true,
+    "photo": "auto170",
+    "Pasageros": [
+      "04dcb2fe-9917-42da-8a41-c259d4bbc730",
+      "08a0488e-498d-4f5c-af76-d23cc29de3af",
+      "d7d3bba9-310a-403a-a4c8-2564194b949d"
+    ]
+  },
+  {
+    "TripID": "4c8440f4-f3c8-4dcc-8f24-147605ef99f3",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen15",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 9,
+    "Hora": 23,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 469.03,
+    "Mascota": true,
+    "photo": "auto171",
+    "Pasageros": [
+      "baf67e19-1027-4b51-b904-ce75d96e3394",
+      "b484155e-821a-468c-999a-51365079ae15",
+      "8c1605c1-3225-4998-88b5-ed4740056441"
+    ]
+  },
+  {
+    "TripID": "610a9ae2-6a8a-4e78-917b-b565af371b3c",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen13",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 2,
+    "Hora": 10,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 363.16,
+    "Mascota": true,
+    "photo": "auto172",
+    "Pasageros": [
+      "4feea09a-f535-42d0-96ea-df25e37a6c52"
+    ]
+  },
+  {
+    "TripID": "db89bb71-15d7-42b5-a6f1-09427410a2dc",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen16",
+    "Destino": "destino9",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 4,
+    "Hora": 21,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 421.35,
+    "Mascota": true,
+    "photo": "auto173",
+    "Pasageros": [
+      "43c9994a-f0ba-4a14-9f2a-9cfacfe74f9e",
+      "08f22db0-35a3-4e0f-a79d-45a2d4c1ba6c"
+    ]
+  },
+  {
+    "TripID": "a6a2bd8f-98b4-4f57-9ac9-638342a6e7fb",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen17",
+    "Destino": "destino2",
+    "Anio": 2023,
+    "Mes": 4,
+    "Dia": 5,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 475.26,
+    "Mascota": true,
+    "photo": "auto174",
+    "Pasageros": [
+      "f025e300-be61-4b80-806a-a18024c7c8f1",
+      "e5c4b95f-c255-4bd2-8766-92601fe1ec00"
+    ]
+  },
+  {
+    "TripID": "ef10c94e-27db-4681-99e0-57e063f6f08e",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen11",
+    "Destino": "destino18",
+    "Anio": 2024,
+    "Mes": 6,
+    "Dia": 8,
+    "Hora": 8,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 341.1,
+    "Mascota": true,
+    "photo": "auto175",
+    "Pasageros": [
+      "9f7daed0-0f6f-46a4-b539-d172970560c5"
+    ]
+  },
+  {
+    "TripID": "424d4b89-293e-465a-93b6-51b4edce5c99",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen5",
+    "Destino": "destino18",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 22,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 336.08,
+    "Mascota": true,
+    "photo": "auto176",
+    "Pasageros": [
+      "3f4d8cec-7460-4f1b-bc2e-8adf7d175e4c"
+    ]
+  },
+  {
+    "TripID": "531f0de7-10cf-439f-95e8-29d35eea636b",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen18",
+    "Destino": "destino5",
+    "Anio": 2024,
+    "Mes": 11,
+    "Dia": 28,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 369.25,
+    "Mascota": true,
+    "photo": "auto177",
+    "Pasageros": [
+      "c9ad1e54-d6fb-4e7b-9a59-57f51596f312"
+    ]
+  },
+  {
+    "TripID": "64b8206f-bb4f-4d15-92b8-98a24579a06e",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen17",
+    "Destino": "destino11",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 18,
+    "Hora": 6,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 406.61,
+    "Mascota": true,
+    "photo": "auto178",
+    "Pasageros": [
+      "5fd1ed06-e1d3-480f-9246-c12da977ed96",
+      "3dc02239-9070-4674-b347-886c02e34ab6"
+    ]
+  },
+  {
+    "TripID": "1d806900-3796-44ad-ba8e-112dce76b14a",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen14",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 10,
+    "Dia": 23,
+    "Hora": 13,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 468.2,
+    "Mascota": true,
+    "photo": "auto179",
+    "Pasageros": [
+      "5c8f6131-b6fd-4154-b955-628507cb06de"
+    ]
+  },
+  {
+    "TripID": "969a5ac7-5f63-4f14-ab45-87e51898af98",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen2",
+    "Destino": "destino14",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 6,
+    "Hora": 16,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 471.07,
+    "Mascota": true,
+    "photo": "auto180",
+    "Pasageros": [
+      "53140ca2-def4-44e4-9f2f-ef7f72249423"
+    ]
+  },
+  {
+    "TripID": "522300a5-3470-47ea-876f-743db44ad35e",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen11",
+    "Destino": "destino12",
+    "Anio": 2024,
+    "Mes": 8,
+    "Dia": 26,
+    "Hora": 7,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 411.95,
+    "Mascota": true,
+    "photo": "auto181",
+    "Pasageros": [
+      "63281807-db48-40be-b520-8bd7783c70d7",
+      "c355fdc7-e2a8-4c63-a527-ded9536b5e8b"
+    ]
+  },
+  {
+    "TripID": "e81c85ad-b132-4fac-b6f3-4d7e86c5b732",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen12",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 17,
+    "Hora": 6,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 335.84,
+    "Mascota": true,
+    "photo": "auto182",
+    "Pasageros": [
+      "c6087062-5159-42ea-b6bb-e25f71f069c0"
+    ]
+  },
+  {
+    "TripID": "fabca8c9-78aa-4ae3-bc75-c2d3e2858c23",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen3",
+    "Destino": "destino5",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 13,
+    "Hora": 19,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 339.43,
+    "Mascota": true,
+    "photo": "auto183",
+    "Pasageros": [
+      "98ef7b9a-10eb-489e-9c40-51c9499e5436"
+    ]
+  },
+  {
+    "TripID": "69f386df-0241-4b29-ad5f-3b44060db922",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen5",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 25,
+    "Hora": 20,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 2,
+    "Precio": 463.61,
+    "Mascota": true,
+    "photo": "auto184",
+    "Pasageros": [
+      "54ff7d55-2a3e-481e-a367-3a3338082e90"
+    ]
+  },
+  {
+    "TripID": "08f9b314-7052-461d-9ab6-8f317e2d4ed1",
+    "OwnerID": "fadcdfc5-d8a9-4eb6-b202-bac75c8d0066",
+    "Origen": "origen11",
+    "Destino": "destino6",
+    "Anio": 2024,
+    "Mes": 10,
+    "Dia": 11,
+    "Hora": 19,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 403.31,
+    "Mascota": true,
+    "photo": "auto185",
+    "Pasageros": [
+      "50b40243-f1e6-4901-9257-400a0d0f3922"
+    ]
+  },
+  {
+    "TripID": "e85057bf-b31b-4037-ae47-f2c6f01087b7",
+    "OwnerID": "8c05671c-948e-4852-9552-3047262d389a",
+    "Origen": "origen13",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 7,
+    "Hora": 6,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 341.53,
+    "Mascota": true,
+    "photo": "auto186",
+    "Pasageros": [
+      "35623331-bd24-4d61-bcb1-0d54dc80535a"
+    ]
+  },
+  {
+    "TripID": "c1959303-7c10-452a-8e1d-d99c8edecd24",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen18",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 8,
+    "Dia": 7,
+    "Hora": 16,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 427.98,
+    "Mascota": true,
+    "photo": "auto187",
+    "Pasageros": [
+      "c1ccdab4-66e7-4326-a9d4-577628c7a737",
+      "484a9fe8-f15d-4750-80cc-2e2dc76a979b",
+      "22ba793b-b63f-43d4-8cf7-c3c78a645997"
+    ]
+  },
+  {
+    "TripID": "a37a39ef-559a-4a4c-8bf5-5f7a46e59e2b",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen8",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 11,
+    "Hora": 13,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 462.75,
+    "Mascota": true,
+    "photo": "auto188",
+    "Pasageros": [
+      "110f7efb-a977-4f6f-a227-ebf6fd99899d",
+      "810233ed-9449-41ef-a730-892c694b76b0"
+    ]
+  },
+  {
+    "TripID": "760ae6bc-cf81-4d13-a949-7c078191afa0",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen7",
+    "Destino": "destino12",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 15,
+    "Hora": 8,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 403.33,
+    "Mascota": true,
+    "photo": "auto189",
+    "Pasageros": [
+      "c2c7b94d-08a9-4ae9-9deb-34bcd07affe5",
+      "22100beb-faa4-47ae-849c-658727ed42f5",
+      "42a2f4b9-e6f8-4c53-ab88-c65e615db467"
+    ]
+  },
+  {
+    "TripID": "97b289f7-7106-4edd-943a-145d51a0104f",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen10",
+    "Destino": "destino15",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 28,
+    "Hora": 17,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 445.86,
+    "Mascota": true,
+    "photo": "auto190",
+    "Pasageros": [
+      "9f7daed0-0f6f-46a4-b539-d172970560c5",
+      "46e0bdb1-43eb-4b91-b7f7-e381d55158e0",
+      "f900f54a-8fdd-41c7-aef0-986b579546e2"
+    ]
+  },
+  {
+    "TripID": "773b874e-8cda-4914-9beb-5dd1d1f87d71",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen4",
+    "Destino": "destino16",
+    "Anio": 2023,
+    "Mes": 11,
+    "Dia": 25,
+    "Hora": 3,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 330.27,
+    "Mascota": true,
+    "photo": "auto191",
+    "Pasageros": [
+      "14d2d2ff-940d-487b-b141-3cb0bbb7a356"
+    ]
+  },
+  {
+    "TripID": "e7c93be5-ba5e-4da9-84b5-2a93a5be9a2e",
+    "OwnerID": "561e649a-ecf1-4c63-beda-53402ee29a7c",
+    "Origen": "origen12",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 5,
+    "Dia": 13,
+    "Hora": 6,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 454.22,
+    "Mascota": true,
+    "photo": "auto192",
+    "Pasageros": [
+      "e5277495-f9eb-40f9-8228-06170740fb05"
+    ]
+  },
+  {
+    "TripID": "849a67fc-8fba-4dea-a412-cdaa3834ca93",
+    "OwnerID": "f900f54a-8fdd-41c7-aef0-986b579546e2",
+    "Origen": "origen10",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 2,
+    "Dia": 18,
+    "Hora": 2,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 405.69,
+    "Mascota": true,
+    "photo": "auto193",
+    "Pasageros": [
+      "c2f471aa-b3e2-4dc5-9cdc-c266bd6a2dc0",
+      "50b40243-f1e6-4901-9257-400a0d0f3922",
+      "24fdecba-5161-44d2-b3cf-3672d3eb73b5"
+    ]
+  },
+  {
+    "TripID": "69a41cbf-7b79-4e0b-885d-e34acda62107",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen8",
+    "Destino": "destino7",
+    "Anio": 2023,
+    "Mes": 9,
+    "Dia": 24,
+    "Hora": 16,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 346.72,
+    "Mascota": true,
+    "photo": "auto194",
+    "Pasageros": [
+      "a105d3a9-7ce8-4356-ae4a-68c94393cf31"
+    ]
+  },
+  {
+    "TripID": "cd0dd6ca-de07-496d-beb6-6c334b18bbe0",
+    "OwnerID": "91b68733-2d97-484c-95b2-7104b186c8f7",
+    "Origen": "origen3",
+    "Destino": "destino10",
+    "Anio": 2024,
+    "Mes": 8,
+    "Dia": 21,
+    "Hora": 17,
+    "AsientosDisponibles": 2,
+    "AsientosTotales": 3,
+    "Precio": 382.04,
+    "Mascota": true,
+    "photo": "auto195",
+    "Pasageros": [
+      "bfeefb58-6972-4adc-a0c6-ede29baa89c2"
+    ]
+  },
+  {
+    "TripID": "1d018214-3ea3-4cd0-bfdb-5329856d6421",
+    "OwnerID": "b15550b1-c7d1-4b0a-a565-ed50c88a225b",
+    "Origen": "origen8",
+    "Destino": "destino13",
+    "Anio": 2023,
+    "Mes": 7,
+    "Dia": 19,
+    "Hora": 5,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 2,
+    "Precio": 469.82,
+    "Mascota": true,
+    "photo": "auto196",
+    "Pasageros": [
+      "c2f471aa-b3e2-4dc5-9cdc-c266bd6a2dc0",
+      "99e05192-7d29-4941-bf15-34fa08a11423"
+    ]
+  },
+  {
+    "TripID": "fa3391ba-184e-47d6-a541-b012537929a0",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen10",
+    "Destino": "destino3",
+    "Anio": 2024,
+    "Mes": 4,
+    "Dia": 6,
+    "Hora": 9,
+    "AsientosDisponibles": 1,
+    "AsientosTotales": 3,
+    "Precio": 412.87,
+    "Mascota": true,
+    "photo": "auto197",
+    "Pasageros": [
+      "9badd830-05a0-4662-94af-b3deb0d56a31",
+      "460605c0-a7e4-4cb8-a0da-4d024217a5a3"
+    ]
+  },
+  {
+    "TripID": "bac9120f-696c-4156-98a7-1b669c6a1a34",
+    "OwnerID": "726ce7ff-fdb4-48af-a6cb-690c4ed35095",
+    "Origen": "origen10",
+    "Destino": "destino8",
+    "Anio": 2024,
+    "Mes": 8,
+    "Dia": 29,
+    "Hora": 2,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 322.44,
+    "Mascota": true,
+    "photo": "auto198",
+    "Pasageros": [
+      "05005f05-f772-41d3-9369-7a90e4e9db85",
+      "46e0bdb1-43eb-4b91-b7f7-e381d55158e0",
+      "4e94af71-76a8-4dac-99af-2568175e2580"
+    ]
+  },
+  {
+    "TripID": "35422882-dafa-42c9-aacb-96ccba22a24b",
+    "OwnerID": "4b7595aa-1870-4323-9c4f-627ac7038742",
+    "Origen": "origen18",
+    "Destino": "destino6",
+    "Anio": 2023,
+    "Mes": 6,
+    "Dia": 11,
+    "Hora": 21,
+    "AsientosDisponibles": 0,
+    "AsientosTotales": 3,
+    "Precio": 412.96,
+    "Mascota": true,
+    "photo": "auto199",
+    "Pasageros": [
+      "af51c0b6-e406-4c9b-bd76-8d1e9bd1c03d",
+      "05005f05-f772-41d3-9369-7a90e4e9db85",
+      "8ec5f149-8841-4215-8cab-86dae16a5a48"
+    ]
+  }
+]
