@@ -1,14 +1,20 @@
 ﻿using Grpc.Core;
+using System;
+using System.Configuration;
 using Grpc.Net.Client;
 using System.Globalization;
+using Common.Interfaces;
+using Common;
 
 namespace AdminServer
 {
     internal class Program
     {
+        static readonly ISettingsManager SettingsMgr = new SettingsManager();
         static async Task Main(string[] args)
         {
-            using var channel = GrpcChannel.ForAddress("http://localhost:5074");
+            var grpcAddress = SettingsMgr.ReadSetting("GrpcServerAddress");
+            using var channel = GrpcChannel.ForAddress(grpcAddress);
             var client = new AdminGrpc.AdminGrpcClient(channel);
 
             while (true)
@@ -144,7 +150,7 @@ namespace AdminServer
                 Console.WriteLine();
             }
 
-            int tripId = PromptForValidId("ID del viaje: ", tripElems);
+            int tripId = PromptForValidId("ID del viaje a modificar: ", tripElems);
 
             bool modificar;
             string origin = tripElems[tripId].Origin;
@@ -373,5 +379,6 @@ namespace AdminServer
                 Console.WriteLine("");
             }
         }
+
     }
 }

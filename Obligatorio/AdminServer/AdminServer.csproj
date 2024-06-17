@@ -20,6 +20,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<Protobuf Include="Protos\admin.proto" GrpcServices="Client" />
 	</ItemGroup>
