@@ -77,7 +77,7 @@ namespace AdminServer
                 Console.WriteLine($"Destino: {trip.Destination}");
                 Console.WriteLine($"Fecha de salida: {trip.Departure}");
                 Console.WriteLine($"Precio por pasajero: {trip.PricePerPassenger}");
-                Console.WriteLine($"¿Se permiten mascotas? {trip.PetsAllowed}");
+                Console.WriteLine($"¿Se permiten mascotas? {(trip.PetsAllowed ? "Sí" : "No")}");
                 Console.WriteLine();
             }
         }
@@ -140,7 +140,7 @@ namespace AdminServer
                 Console.WriteLine($"Destino: {tripElem.Destination}");
                 Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
                 Console.WriteLine($"Precio por pasajero: {tripElem.PricePerPassenger}");
-                Console.WriteLine($"¿Se permiten mascotas? {tripElem.PetsAllowed}");
+                Console.WriteLine($"¿Se permiten mascotas? {(tripElem.PetsAllowed ? "Sí" : "No")}");
                 Console.WriteLine();
             }
 
@@ -207,7 +207,7 @@ namespace AdminServer
                 Console.WriteLine($"Destino: {tripElem.Destination}");
                 Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
                 Console.WriteLine($"Precio por pasajero: {tripElem.PricePerPassenger}");
-                Console.WriteLine($"¿Se permiten mascotas? {tripElem.PetsAllowed}");
+                Console.WriteLine($"¿Se permiten mascotas? {(tripElem.PetsAllowed ? "Sí" : "No")}");
                 Console.WriteLine();
             }
 
@@ -235,7 +235,7 @@ namespace AdminServer
                 Console.WriteLine($"Destino: {tripElem.Destination}");
                 Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
                 Console.WriteLine($"Precio por pasajero: {tripElem.PricePerPassenger}");
-                Console.WriteLine($"¿Se permiten mascotas? {tripElem.PetsAllowed}");
+                Console.WriteLine($"¿Se permiten mascotas? {(tripElem.PetsAllowed ? "Sí" : "No")}");
                 Console.WriteLine();
             }
 
