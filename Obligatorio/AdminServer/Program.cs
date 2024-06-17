@@ -135,7 +135,7 @@ namespace AdminServer
 
             foreach (var tripElem in tripElems)
             {
-                Console.WriteLine($"ID: {tripElem.Index}");
+                Console.WriteLine($"N°: {tripElem.Index}");
                 Console.WriteLine($"Origen: {tripElem.Origin}");
                 Console.WriteLine($"Destino: {tripElem.Destination}");
                 Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
@@ -202,7 +202,7 @@ namespace AdminServer
 
             foreach (var tripElem in tripElems)
             {
-                Console.WriteLine($"ID: {tripElem.Index}");
+                Console.WriteLine($"N°: {tripElem.Index}");
                 Console.WriteLine($"Origen: {tripElem.Origin}");
                 Console.WriteLine($"Destino: {tripElem.Destination}");
                 Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
