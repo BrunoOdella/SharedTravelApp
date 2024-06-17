@@ -49,7 +49,7 @@ namespace GrpcServer.Server.DataAcces.Contexts
             //fin seccion critica
         }
 
-        public static async void ReturnReadAccessTrip()
+        public static async Task ReturnReadAccessTrip()
         {
             await _mutexTrip.WaitAsync();            //acceso exclusivo al contador de lectores
             _readersTrip--;
@@ -145,7 +145,10 @@ namespace GrpcServer.Server.DataAcces.Contexts
 
         public static TripContext CreateInsance()
         {
-            _tripInstance = new TripContext();
+            if (_tripInstance == null)
+            {
+                _tripInstance = new TripContext();
+            }
             return _tripInstance;
         }
     }

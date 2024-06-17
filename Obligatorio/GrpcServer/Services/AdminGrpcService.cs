@@ -108,11 +108,8 @@ namespace GrpcServer.Services
 
             while (await channel.Reader.WaitToReadAsync(context.CancellationToken) && cant > 0)
             {
-                Console.WriteLine("dentro del primer while");
                 while (channel.Reader.TryRead(out var mensaje) && cant > 0)
                 {
-                    Console.WriteLine("dentro del 2do while");
-
                     var trip = new TripElem
                     {
                         Index = index,

@@ -34,8 +34,6 @@ namespace GrpcServer.Server.DataAcces.Contexts
             _mutexCalification.Release();            //libera acceso al contador
 
             //seccion critica
-            if (_calificationInstance is null)
-                _calificationInstance = new CalificationContext();
             return _calificationInstance;
             //fin seccion critica
         }
@@ -56,8 +54,6 @@ namespace GrpcServer.Server.DataAcces.Contexts
             _serviceQueueCalification.Release();
 
             //seccion critica
-            if (_calificationInstance is null)
-                _calificationInstance = new CalificationContext();
             return _calificationInstance;
             //fin seccion critica
         }
@@ -90,7 +86,10 @@ namespace GrpcServer.Server.DataAcces.Contexts
 
         public static CalificationContext CreateInsance()
         {
-            _calificationInstance = new CalificationContext();
+            if (_calificationInstance is null)
+            {
+                _calificationInstance = new CalificationContext();
+            }
             return _calificationInstance;
         }
 

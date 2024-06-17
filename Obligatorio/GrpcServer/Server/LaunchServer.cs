@@ -33,9 +33,16 @@ namespace GrpcServer.Server
         private static IModel tripChannel;
         private static IModel loginChannel;
 
+        private static bool sendTripToAdmin = false;
+        private static SemaphoreSlim _sendTripToAdmin = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _mutexTripToAdmin = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _serviceQueueTripToAdmin = new SemaphoreSlim(1, 1);
+        private static int _readersTripToAdmin = 0;
+
         public static void Launch()
         {
             load();
+            Notifier.CreateInsance();
 
             try
             {
@@ -195,7 +202,7 @@ namespace GrpcServer.Server
                     string username = await ReceiveMessageFromClientAsync(networkHelper, token);
                     string password = await ReceiveMessageFromClientAsync(networkHelper, token);
 
-                    validUser = AuthenticateUser(username, password);
+                    validUser = await AuthenticateUser(username, password);
 
                     string response = "OK";
                     if (!validUser)
@@ -207,11 +214,11 @@ namespace GrpcServer.Server
                     {
                         Console.WriteLine($"Logueado el usuario {clientNumber} con éxito");
 
-                        var allUsers = userRepository.GetAll();
+                        var allUsers = await userRepository.GetAllAsync();
                         var authenticatedUser = allUsers.FirstOrDefault(u => u.Name == username && u._password == password);
                         Guid userId = authenticatedUser.GetGuid();
 
-                        user = userRepository.Get(userId);
+                        user = await userRepository.GetAsync(userId);
                         await SendMessageToClientAsync(response, networkHelper, token);
 
                         SendLoginEvent(userId);
@@ -321,7 +328,7 @@ namespace GrpcServer.Server
             try
             {
                 if (token.IsCancellationRequested) return;
-                List<Trip> trips = ITripRepo.GetTripsByOwner(user.GetGuid());
+                List<Trip> trips = await ITripRepo.GetTripsByOwnerAsync(user.GetGuid());
                 List<Trip> ActualsTrips = new List<Trip>();
 
                 foreach (Trip trip in trips)
@@ -352,7 +359,7 @@ namespace GrpcServer.Server
 
                 int pos = int.Parse(selected) - 1;
 
-                ITripRepo.Remove(ActualsTrips[pos]);
+                await ITripRepo.RemoveAsync(ActualsTrips[pos]);
 
                 SendTripToStatistics(ActualsTrips[pos], "Delete");
 
@@ -372,7 +379,7 @@ namespace GrpcServer.Server
             if (token.IsCancellationRequested) return;
             await SendUsernamesToClient(networkHelper, token);
             string username = await ReceiveMessageFromClientAsync(networkHelper, token);
-            User foundUser = userRepository.GetUserByUsername(username);
+            User foundUser = await userRepository.GetUserByUsernameAsync(username);
 
             if (foundUser == null)
             {
@@ -380,8 +387,8 @@ namespace GrpcServer.Server
                 return;
             }
 
-            List<Calification> califications = GetDriverCalifications(foundUser.GetGuid());
-            string response = califications.Count > 0 ? FormatCalifications(califications)
+            List<Calification> califications = await GetDriverCalificationsAsync(foundUser.GetGuid());
+            string response = califications.Count > 0 ? await FormatCalificationsAsync(califications)
                 : "Este conductor no tiene calificaciones disponibles.";
             await SendMessageToClientAsync(response, networkHelper, token);
         }
@@ -392,11 +399,11 @@ namespace GrpcServer.Server
             try
             {
                 if (token.IsCancellationRequested) return;
-                List<Trip> trips = ITripRepo.GetAll(user._id);
+                List<Trip> trips = await ITripRepo.GetAllAsync(user._id);
                 List<User> users = new List<User>();
                 foreach (Trip trip in trips)
                 {
-                    var actual = IUserRepo.Get(trip._owner);
+                    var actual = await IUserRepo.GetAsync(trip._owner);
                     users.Add(actual);
                 }
 
@@ -427,11 +434,11 @@ namespace GrpcServer.Server
 
                 string comment = await ReceiveMessageFromClientAsync(networkHelper, token);
 
-                ICalificationRepo.Add(new Calification(users[selected - 1].GetGuid(), trips[selected - 1].GetGuid(), score, comment));
+                await ICalificationRepo.AddAsync(new Calification(users[selected - 1].GetGuid(), trips[selected - 1].GetGuid(), score, comment));
 
                 var ActualOwner = users[selected - 1];
                 ActualOwner.AddScore(score);
-                IUserRepo.Update(ActualOwner);
+                await IUserRepo.UpdateAsync(ActualOwner);
                 await SendMessageToClientAsync($"Calificacion cargada", networkHelper, token);
             }
             catch (Exception e)
@@ -490,7 +497,7 @@ namespace GrpcServer.Server
 
             if (token.IsCancellationRequested) return;
             List<Trip> trips = await ViewAllFutureTripsAsync(networkHelper, client, user, token);
-            trips = ITripRepo.FilterByDeparture(trips);
+            trips = await ITripRepo.FilterByDepartureAsync(trips);
 
             await SendMessageToClientAsync(trips.Count.ToString(), networkHelper, token);
             if (trips.Count > 0)
@@ -512,27 +519,27 @@ namespace GrpcServer.Server
 
                         try
                         {
-                            Trip tripToJoin = ITripRepo.Get(selectedTrip._id);
+                            Trip tripToJoin = await ITripRepo.GetAsync(selectedTrip._id);
 
-                            if (ITripRepo.isJoined(tripToJoin._id, user._id))
+                            if (await ITripRepo.IsJoinedAsync(tripToJoin._id, user._id))
                             {
                                 response = "Usted ya forma parte de este viaje, no es posible unirlo";
                             }
 
-                            if (ITripRepo.isOwner(tripToJoin._id, user._id))
+                            if (await ITripRepo.IsOwnerAsync(tripToJoin._id, user._id))
                             {
                                 response = "Usted es el dueño de este viaje, no es posible unirlo";
                             }
 
 
 
-                            if (!ITripRepo.isOwner(tripToJoin._id, user._id) && !ITripRepo.isJoined(tripToJoin._id, user._id))
+                            if (!await ITripRepo.IsOwnerAsync(tripToJoin._id, user._id) && !await ITripRepo.IsJoinedAsync(tripToJoin._id, user._id))
                             {
                                 tripToJoin.AvailableSeats--;
 
                                 tripToJoin._passengers.Add(user._id);
 
-                                ITripRepo.Update(tripToJoin);
+                                await ITripRepo.UpdateAsync(tripToJoin);
 
                                 SendTripToStatistics(tripToJoin, "tripToJoin");
 
@@ -572,7 +579,7 @@ namespace GrpcServer.Server
             if (token.IsCancellationRequested) return;
             try
             {
-                List<Trip> trips = ITripRepo.GetAll();
+                List<Trip> trips = await ITripRepo.GetAllAsync();
                 List<Trip> UserInTrips = new List<Trip>();
                 foreach (Trip trip in trips)
                 {
@@ -619,7 +626,7 @@ namespace GrpcServer.Server
             try
             {
                 if (token.IsCancellationRequested) return;
-                var trips = ITripRepo.GetAll();
+                var trips = await ITripRepo.GetAllAsync();
                 var map = new Dictionary<int, Guid>();
                 int count = 1;
                 foreach (var trip in trips)
@@ -639,7 +646,7 @@ namespace GrpcServer.Server
                     await SendMessageToClientAsync($"{map.Count}", networkHelper, token);
                     foreach (var trip in map)
                     {
-                        var actualTrip = ITripRepo.Get(trip.Value);
+                        var actualTrip = await ITripRepo.GetAsync(trip.Value);
                         await SendMessageToClientAsync($"Viaje {trip.Key} | Origen: {actualTrip.Origin}, Destino: {actualTrip.Destination}" +
                             $" y Fecha {actualTrip.Departure.ToString()}", networkHelper, token);
                     }
@@ -648,7 +655,7 @@ namespace GrpcServer.Server
                 if (selected != "null")
                 {
                     var tripSelected = map[Int32.Parse(selected)];
-                    var selectedTrip = ITripRepo.Get(tripSelected);
+                    var selectedTrip = await ITripRepo.GetAsync(tripSelected);
                     await SendMessageToClientAsync($"Viaje seleccionado\n" +
                         $"Origen: {selectedTrip.Origin}, Destino: {selectedTrip.Destination}" +
                         $" y Fecha {selectedTrip.Departure.ToString()}", networkHelper, token);
@@ -696,7 +703,7 @@ namespace GrpcServer.Server
 
                     await SendMessageToClientAsync($"Viaje actualizado", networkHelper, token);
 
-                    ITripRepo.Update(selectedTrip);
+                    await ITripRepo.UpdateAsync(selectedTrip);
 
                     SendTripToStatistics(selectedTrip, "Update");
                 }
@@ -708,9 +715,9 @@ namespace GrpcServer.Server
             }
         }
 
-        private static bool AuthenticateUser(string username, string password)
+        private static async Task<bool> AuthenticateUser(string username, string password)
         {
-            var allUsers = userRepository.GetAll();
+            var allUsers = await userRepository.GetAllAsync();
 
             var authenticatedUser = allUsers.FirstOrDefault(u => u.Name == username && u._password == password);
 
@@ -746,7 +753,19 @@ namespace GrpcServer.Server
                 };
 
                 newTrip.SetOwner(user.GetGuid());
-                ITripRepo.Add(newTrip);
+                await ITripRepo.AddAsync(newTrip);
+
+                if (await CheckIfSendingToAdminAsync())
+                {
+                    Mensaje mensaje = new Mensaje
+                    {
+                        Origin = origin, Destination = destination, Departure = departure,
+                        PricePerPassenger = pricePerPassanger
+                    };
+                    var notifier = Notifier.CreateInsance();
+                    notifier.Publish(mensaje);
+                    Console.WriteLine("Mensaje publicado exitosamente.");
+                }
 
                 SendTripToStatistics(newTrip, "Create");
 
@@ -782,7 +801,7 @@ namespace GrpcServer.Server
 
         private static async Task<List<Trip>> ViewAllTripsAsync(NetworkHelper networkHelper, TcpClient client, User user, CancellationToken token)
         {
-            List<Trip> allTrips = ITripRepo.GetAll();
+            List<Trip> allTrips = await ITripRepo.GetAllAsync();
             string tripCount = allTrips.Count.ToString();
             await SendMessageToClientAsync(tripCount, networkHelper, token);
 
@@ -804,7 +823,7 @@ namespace GrpcServer.Server
             List<Trip> tripsToOriginAndDestination;
             try
             {
-                tripsToOriginAndDestination = ITripRepo.GetAllTripsToOriginAndDestination(origin, destination);
+                tripsToOriginAndDestination = await ITripRepo.GetAllTripsToOriginAndDestinationAsync(origin, destination);
 
                 string tripCount = tripsToOriginAndDestination.Count.ToString();
                 await SendMessageToClientAsync(tripCount, networkHelper, token);
@@ -837,7 +856,7 @@ namespace GrpcServer.Server
             List<Trip> trips;
             try
             {
-                trips = ITripRepo.GetTripsFilteredByPetFriendly(petFriendly);
+                trips = await ITripRepo.GetTripsFilteredByPetFriendlyAsync(petFriendly);
 
                 string tripCount = trips.Count.ToString();
                 await SendMessageToClientAsync(tripCount, networkHelper, token);
@@ -858,8 +877,8 @@ namespace GrpcServer.Server
         }
         private static async Task<List<Trip>> ViewAllFutureTripsAsync(NetworkHelper networkHelper, TcpClient client, User user, CancellationToken token)
         {
-            List<Trip> allTrips = ITripRepo.GetAll();
-            List<Trip> trips = ITripRepo.FilterByDeparture(allTrips);
+            List<Trip> allTrips = await ITripRepo.GetAllAsync();
+            List<Trip> trips = await ITripRepo.FilterByDepartureAsync(allTrips);
 
             string tripCount = trips.Count.ToString();
             await SendMessageToClientAsync(tripCount, networkHelper, token);
@@ -977,7 +996,7 @@ namespace GrpcServer.Server
         }
         public static async Task SendUsernamesToClient(NetworkHelper networkHelper, CancellationToken token)
         {
-            List<User> users = userRepository.GetAll();
+            List<User> users = await userRepository.GetAllAsync();
             StringBuilder usernames = new StringBuilder();
             foreach (var user in users)
             {
@@ -1001,7 +1020,7 @@ namespace GrpcServer.Server
         public static async Task ProcessUserSelection(NetworkHelper networkHelper, CancellationToken token)
         {
             string selectedUsername = await ReceiveMessageFromClientAsync(networkHelper, token);
-            User user = userRepository.GetUserByUsername(selectedUsername);
+            User user = await userRepository.GetUserByUsernameAsync(selectedUsername);
 
             if (user == null)
             {
@@ -1009,43 +1028,78 @@ namespace GrpcServer.Server
                 return;
             }
 
-            List<Calification> califications = GetDriverCalifications(user._id);
+            List<Calification> califications = await GetDriverCalificationsAsync(user._id);
             if (califications.Count == 0)
             {
                 await SendMessageToClientAsync("El usuario no tiene calificaciones disponibles.", networkHelper, token);
             }
             else
             {
-                string response = FormatCalifications(califications);
+                string response = await FormatCalificationsAsync(califications);
                 await SendMessageToClientAsync(response, networkHelper, token);
             }
         }
 
-        private static List<Calification> GetDriverCalifications(Guid driverId)
+        private static async Task<List<Calification>> GetDriverCalificationsAsync(Guid driverId)
         {
-            List<Trip> driverTrips = ITripRepo.GetTripsByOwner(driverId);
+            List<Trip> driverTrips = await ITripRepo.GetTripsByOwnerAsync(driverId);
             List<Calification> driverCalifications = new List<Calification>();
 
             foreach (var trip in driverTrips)
             {
-                driverCalifications.AddRange(calificationRepository.GetCalificationsByTripId(trip._id));
+                var califications = await calificationRepository.GetCalificationsByTripIdAsync(trip._id);
+                driverCalifications.AddRange(califications);
             }
 
             return driverCalifications;
         }
 
-
-
-
-        public static string FormatCalifications(List<Calification> califications)
+        public static async Task<string> FormatCalificationsAsync(List<Calification> califications)
         {
             StringBuilder sb = new StringBuilder();
             foreach (var calification in califications)
             {
-                var trip = ITripRepo.Get(calification.GetTrip());
+                var trip = await ITripRepo.GetAsync(calification.GetTrip());
                 sb.AppendLine($"Origen del viaje: {trip.Origin}, Destino del viaje: {trip.Destination}, Score: {calification.Score}, Comment: {calification.Comment}");
             }
             return sb.ToString();
+        }
+
+        public static async Task ReadyToReceiveTrips()
+        {
+            await _serviceQueueTripToAdmin.WaitAsync();
+            await _mutexTripToAdmin.WaitAsync();
+            _readersTripToAdmin++;
+
+            if(_readersTripToAdmin == 1)
+                sendTripToAdmin = true;
+
+            _serviceQueueTripToAdmin.Release();
+            _mutexTripToAdmin.Release();
+        }
+
+        public static async Task StopReceivingTrips()
+        {
+            await _mutexTripToAdmin.WaitAsync();
+            _readersTripToAdmin--;
+
+            if (_readersTripToAdmin == 0)
+                sendTripToAdmin = false;
+
+            _mutexTripToAdmin.Release();
+        }
+
+        public static async Task<bool> CheckIfSendingToAdminAsync()
+        {
+            await _serviceQueueTripToAdmin.WaitAsync(); 
+            await _mutexTripToAdmin.WaitAsync(); 
+
+            bool result = sendTripToAdmin; 
+
+            _mutexTripToAdmin.Release(); 
+            _serviceQueueTripToAdmin.Release(); 
+
+            return result;
         }
     }
 }

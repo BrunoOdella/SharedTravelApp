@@ -91,7 +91,10 @@ namespace GrpcServer.Server.DataAcces.Contexts
 
         public static UserContext CreateInsance()
         {
-            _userInstance = new UserContext();
+            if (_userInstance == null)
+            {
+                _userInstance = new UserContext();
+            }
             return _userInstance;
         }
     }
