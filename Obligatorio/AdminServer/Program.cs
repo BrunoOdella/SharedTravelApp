@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
+using System.Globalization;
 
 namespace AdminServer
 {
@@ -85,33 +86,36 @@ namespace AdminServer
         {
             Console.WriteLine("Ingrese los detalles del nuevo viaje:");
 
-            Console.Write("Owner Username: ");
-            string ownerId = Console.ReadLine();
+            Console.WriteLine("Usuarios disponibles en el sistema:");
+            var usersResponse = await client.GetAllUsersAsync(new Empty());
+            List<UserElem> userElems = usersResponse.Users.ToList();
 
-            Console.Write("Origen: ");
-            string origin = Console.ReadLine();
+            for (int i = 0; i < userElems.Count; i++)
+            {
+                Console.WriteLine($"{userElems[i].Username}");
+            }
 
-            Console.Write("Destino: ");
-            string destination = Console.ReadLine();
+            string ownerId = await PromptForUsername("Nombre de usuario del propietario", client);
 
-            Console.Write("Fecha de salida (yyyy-MM-dd HH:mm): ");
-            string departure = Console.ReadLine();
+            string origin = PromptForNonEmptyString("Origen: ");
 
-            Console.Write("Número total de asientos: ");
-            int totalSeats = int.Parse(Console.ReadLine());
+            string destination = PromptForNonEmptyString("Destino: ");
 
-            Console.Write("Precio por pasajero: ");
-            float pricePerPassenger = float.Parse(Console.ReadLine());
+            DateTime departure = PromptForFutureDateTime("Fecha de salida (yyyy-MM-dd HH)");
+            string departureString = departure.ToString("yyyy-MM-dd HH:mm");
 
-            Console.Write("¿Se permiten mascotas? (true/false): ");
-            bool petsAllowed = bool.Parse(Console.ReadLine());
+            int totalSeats = PromptForInt("Número total de asientos: ");
+
+            float pricePerPassenger = PromptForFloat("Precio por pasajero: ");
+
+            bool petsAllowed = PromptForBoolean("¿Se permiten mascotas? (si/no)");
 
             var request = new CreateTripRequest
             {
                 OwnerId = ownerId,
                 Origin = origin,
                 Destination = destination,
-                Departure = departure,
+                Departure = departureString,
                 TotalSeats = totalSeats,
                 AvailableSeats = totalSeats,
                 PricePerPassenger = pricePerPassenger,
@@ -121,6 +125,7 @@ namespace AdminServer
             var response = await client.CreateTripAsync(request);
 
             Console.WriteLine("Viaje creado con éxito.");
+
         }
 
         private static async Task UpdateTripAsync(AdminGrpc.AdminGrpcClient client)
@@ -139,32 +144,50 @@ namespace AdminServer
                 Console.WriteLine();
             }
 
-            Console.WriteLine("Ingrese el numero del viaje a modificar:");
-            int tripId = int.Parse(Console.ReadLine());
+            int tripId = PromptForValidId("ID del viaje: ", tripElems);
 
-            Console.Write("Origen: ");
-            string origin = Console.ReadLine();
+            bool modificar;
+            string origin = tripElems[tripId].Origin;
+            string destination = tripElems[tripId].Destination;
+            DateTime departure= DateTime.Parse(tripElems[tripId].Departure);
+            float pricePerSeat= tripElems[tripId].PricePerPassenger;
+            bool petsAllowed = tripElems[tripId].PetsAllowed;
 
-            Console.Write("Destino: ");
-            string destination = Console.ReadLine();
-
-            Console.Write("Fecha de salida (yyyy-MM-dd HH:mm): ");
-            string departure = Console.ReadLine();
-
-            Console.Write("Precio por pasajero: ");
-            float pricePerPassenger = float.Parse(Console.ReadLine());
-
-            Console.Write("¿Se permiten mascotas? (true/false): ");
-            bool petsAllowed = bool.Parse(Console.ReadLine());
+            modificar = PromptForBoolean("¿Modificar Origen? (SI/NO)");
+            if (modificar)
+            {
+                origin = PromptForNonEmptyString("Nuevo Origen:");
+            }
+            modificar = PromptForBoolean("¿Modificar Destino? (SI/NO)");
+            if (modificar)
+            {
+                destination = PromptForNonEmptyString("Nuevo Destino:");
+            }
+            modificar = PromptForBoolean("¿Modificar Fecha de Salida? (SI/NO)");
+            if (modificar)
+            {
+                departure = PromptForFutureDateTime("Nueva Fecha de Salida (yyyy-MM-dd HH)");
+            }
+            modificar = PromptForBoolean("¿Modificar Precio por Pasajero? (SI/NO)");
+            if (modificar)
+            {
+                pricePerSeat = PromptForFloat("Nuevo Precio por Pasajero:");
+            }
+            modificar = PromptForBoolean("¿Modificar ¿Se permiten mascotas? (SI/NO)");
+            if (modificar)
+            {
+                petsAllowed = PromptForBoolean("¿Se permiten mascotas? (si/no)");
+            }
+            string departureString = departure.ToString("yyyy-MM-dd HH:mm");
 
             var request = new UpdateTripRequest
             {
                 Index = tripId,
                 Origin = origin,
                 Destination = destination,
-                Departure = departure,
+                Departure = departureString,
                 PetsAllowed = petsAllowed,
-                PricePerPassenger = pricePerPassenger,
+                PricePerPassenger = pricePerSeat,
             };
 
             var response = await client.UpdateTripAsync(request);
@@ -179,7 +202,7 @@ namespace AdminServer
 
             foreach (var tripElem in tripElems)
             {
-                Console.WriteLine($"ID: {tripElem.Index + 1}");
+                Console.WriteLine($"ID: {tripElem.Index}");
                 Console.WriteLine($"Origen: {tripElem.Origin}");
                 Console.WriteLine($"Destino: {tripElem.Destination}");
                 Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
@@ -188,12 +211,11 @@ namespace AdminServer
                 Console.WriteLine();
             }
 
-            Console.WriteLine("Ingrese el numero del viaje a eliminar:");
-            int tripId = int.Parse(Console.ReadLine());
+            int tripId = PromptForValidId("ID del viaje a eliminar: ", tripElems);
 
             var request = new TripIndex
             {
-                Index = tripId - 1
+                Index = tripId
             };
 
             var response = await client.DeleteTripAsync(request);
@@ -208,7 +230,7 @@ namespace AdminServer
 
             foreach (var tripElem in tripElems)
             {
-                Console.WriteLine($"ID: {tripElem.Index + 1}");
+                Console.WriteLine($"ID: {tripElem.Index}");
                 Console.WriteLine($"Origen: {tripElem.Origin}");
                 Console.WriteLine($"Destino: {tripElem.Destination}");
                 Console.WriteLine($"Fecha de salida: {tripElem.Departure}");
@@ -217,25 +239,139 @@ namespace AdminServer
                 Console.WriteLine();
             }
 
-            Console.WriteLine("Ingrese el numero del viaje para ver sus calificaciones:");
-            int tripId = int.Parse(Console.ReadLine());
+            int tripId = PromptForValidId("ID del viaje: ", tripElems);
             Console.WriteLine();
             Console.WriteLine("Lista de calificaciones:");
             Console.WriteLine();
             var request = new TripIndex
             {
-                Index = tripId - 1
+                Index = tripId
             };
 
             var response = await client.GetTripCalificationsAsync(request);
 
             foreach (var calification in response.Ratings)
             {
+                Console.WriteLine($"Usuario: {calification.Username}");
                 Console.WriteLine($"Calificación: {calification.Score}");
                 Console.WriteLine($"Comentario: {calification.Comment}");
                 Console.WriteLine();
             }
         }
 
+
+        private static string PromptForNonEmptyString(string prompt)
+        {
+            string input;
+            do
+            {
+                Console.WriteLine(prompt);
+                input = Console.ReadLine().Trim();
+            } while (string.IsNullOrEmpty(input));
+            return input;
+        }
+
+        private static DateTime PromptForFutureDateTime(string prompt)
+        {
+            DateTime inputDate;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                string input = Console.ReadLine().Trim();
+                if (DateTime.TryParseExact(input, "yyyy-MM-dd HH", CultureInfo.InvariantCulture, DateTimeStyles.None, out inputDate))
+                {
+                    inputDate = new DateTime(inputDate.Year, inputDate.Month, inputDate.Day, inputDate.Hour, 0, 0);
+                    if (inputDate > DateTime.Now)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Por favor, introduzca una fecha y hora futura.");
+                        Console.WriteLine("");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Formato de fecha y hora inválido. Use el formato 'yyyy-MM-dd HH'.");
+                    Console.WriteLine("");
+                }
+            }
+            return inputDate;
+        }
+
+        private static int PromptForInt(string prompt)
+        {
+            int inputValue;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                if (int.TryParse(Console.ReadLine().Trim(), out inputValue))
+                {
+                    return inputValue;
+                }
+                Console.WriteLine("Número inválido, por favor reintente.");
+                Console.WriteLine("");
+            }
+        }
+
+        private static bool PromptForBoolean(string prompt)
+        {
+            string input;
+            do
+            {
+                Console.WriteLine(prompt);
+                input = Console.ReadLine().Trim().ToLower();
+            } while (input != "si" && input != "no");
+            return input == "si";
+        }
+
+        private static float PromptForFloat(string prompt)
+        {
+            float inputValue;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                if (float.TryParse(Console.ReadLine().Trim(), out inputValue))
+                {
+                    return inputValue;
+                }
+                Console.WriteLine("Precio inválido, por favor reintente.");
+                Console.WriteLine("");
+            }
+        }
+
+        private static async Task<string> PromptForUsername(string prompt, AdminGrpc.AdminGrpcClient client)
+        {
+            string input;
+            var usersResponse = await client.GetAllUsersAsync(new Empty());
+            List<UserElem> userElems = usersResponse.Users.ToList();
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                input = Console.ReadLine().Trim();
+                if (userElems.Any(u => u.Username == input))
+                {
+                    return input;
+                }
+                Console.WriteLine("Usuario no encontrado, por favor reintente.");
+                Console.WriteLine("");
+            }
+        }
+
+        private static int PromptForValidId(string prompt, List<TripElem> tripElems)
+        {
+            int inputValue;
+            while (true)
+            {
+                Console.WriteLine(prompt);
+                if (int.TryParse(Console.ReadLine().Trim(), out inputValue) && inputValue > 0 && inputValue <= tripElems.Count-1)
+                {
+                    return inputValue;
+                }
+                Console.WriteLine("ID inválido, por favor reintente.");
+                Console.WriteLine("");
+            }
+        }
     }
 }

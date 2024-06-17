@@ -24,6 +24,11 @@
             return _calificationId;
         }
 
+        public Guid GetUserGuid()
+        {
+            return _userId;
+        }
+
         public void SetGuid(Guid id)
         {
             _calificationId = id;

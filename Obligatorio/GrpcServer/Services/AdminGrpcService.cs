@@ -142,10 +142,26 @@ namespace GrpcServer.Services
             CalificationResponse response = new CalificationResponse();
             foreach (Calification calification in califications)
             {
+                User user = await _userRepository.GetAsync(calification.GetUserGuid());
                 response.Ratings.Add(new CalificationElem
                 {
+                    Username = user.Name,
                     Score = calification.Score,
                     Comment = calification.Comment
+                });
+            }
+            return response;
+        }
+
+        public override async Task<GetUsersResponse> GetAllUsers(Empty request, ServerCallContext context)
+        {
+            GetUsersResponse response = new GetUsersResponse();
+            List<User> users = await _userRepository.GetAllAsync();
+            foreach (User user in users)
+            {
+                response.Users.Add(new UserElem
+                {
+                    Username = user.Name
                 });
             }
             return response;

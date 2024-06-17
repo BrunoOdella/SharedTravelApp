@@ -16,6 +16,18 @@ service AdminGrpc {
 
   // Ver próximos N viajes
   rpc GetNextTrips (NextTripsRequest) returns (stream TripElem);
+
+  rpc GetAllUsers (Empty) returns (GetUsersResponse);
+}
+
+//GetUsers
+
+message UserElem {
+  string username = 1;
+}
+
+message GetUsersResponse {
+  repeated UserElem users = 1;
 }
 
 // GetTrips
