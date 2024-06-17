@@ -133,8 +133,6 @@ namespace StatisticsServer
                                  autoAck: true,
                                  consumer: consumer);
 
-            Console.WriteLine("Press [enter] to exit.");
-            Console.ReadLine();
         }
 
         public static async Task ConnectAndReceiveLogins(ILoginEventRepository loginEventRepository)
@@ -155,7 +153,6 @@ namespace StatisticsServer
                 var message = Encoding.UTF8.GetString(body);
 
                 var loginEvent = JsonSerializer.Deserialize<LoginEvent>(message);
-                Console.WriteLine($"Received login event: User {loginEvent.UserId} at {loginEvent.Timestamp}");
 
                 lock (loginEventRepository)
                 {
@@ -166,9 +163,6 @@ namespace StatisticsServer
             channel.BasicConsume(queue: "logins",
                                  autoAck: true,
                                  consumer: consumer);
-
-            Console.WriteLine("Press [enter] to exit.");
-            Console.ReadLine();
         }
     }
 }
