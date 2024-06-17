@@ -4,6 +4,7 @@ using StatisticsServer.Repositories;
 using System.Text;
 using System.Text.Json;
 using StatisticsServer.DTO;
+using System.Net;
 
 namespace StatisticsServer
 {
@@ -22,6 +23,17 @@ namespace StatisticsServer
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var port = configuration.GetValue<int>("Port");
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Listen(IPAddress.Any, port);
+            });
+
 
             var app = builder.Build();
 
